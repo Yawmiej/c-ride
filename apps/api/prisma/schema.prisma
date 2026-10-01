@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+  output       = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  RIDER
+  DRIVER
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  DISABLED
+}
+
+model User {
+  id           String     @id @default(uuid()) @db.Uuid
+  email        String     @unique
+  passwordHash String
+  role         UserRole
+  status       UserStatus @default(ACTIVE)
+  firstName    String
+  lastName     String
+  phoneNumber  String?    @unique
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  ridesByRider Ride[] @relation("RiderRides")
+  ridesByDriver Ride[] @relation("DriverRides")
+
+  @@index([role])
+
+  @@index([status])
+
+} 
+
+
+model Ride{
+  id String @id @default(uuid()) @db.Uuid
+  riderId String @db.Uuid
+  driverId String @db.Uuid
+  startLocation String
+  endLocation String
+  startTime DateTime
+
+  rider User @relation("RiderRides", fields: [riderId], references: [id], onDelete: Cascade)
+
+  driver User @relation("DriverRides", fields: [driverId], references: [id], onDelete: Cascade)
+}
