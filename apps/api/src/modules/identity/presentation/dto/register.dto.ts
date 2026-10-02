@@ -1,4 +1,5 @@
 import { Transform } from 'class-transformer';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEmail,
   IsEnum,
@@ -15,6 +16,7 @@ import {
 import { UserRole } from '../../domain/enums/user-role.enum';
 
 export class RegisterDto {
+  @ApiProperty({ example: 'Ada' })
   @Transform(({ value }: { value: unknown }) =>
     typeof value === 'string' ? value.trim() : value,
   )
@@ -22,6 +24,7 @@ export class RegisterDto {
   @IsNotEmpty()
   firstName!: string;
 
+  @ApiProperty({ example: 'Lovelace' })
   @Transform(({ value }: { value: unknown }) =>
     typeof value === 'string' ? value.trim() : value,
   )
@@ -29,12 +32,14 @@ export class RegisterDto {
   @IsNotEmpty()
   lastName!: string;
 
+  @ApiProperty({ example: 'ada@example.com' })
   @Transform(({ value }: { value: unknown }) =>
     typeof value === 'string' ? normalizeEmail(value) : value,
   )
   @IsEmail()
   email!: string;
 
+  @ApiPropertyOptional({ example: '+2348012345678' })
   @ValidateIf((_object, value: unknown) => value !== undefined)
   @Transform(({ value }: { value: unknown }) =>
     typeof value === 'string' ? normalizePhoneNumber(value) : value,
@@ -46,6 +51,7 @@ export class RegisterDto {
   })
   phoneNumber?: string;
 
+  @ApiProperty({ example: 'Password123!' })
   @IsString()
   @IsStrongPassword({
     minLength: 8,
@@ -59,6 +65,7 @@ export class RegisterDto {
   })
   password!: string;
 
+  @ApiProperty({ enum: UserRole, example: UserRole.RIDER })
   @IsEnum(UserRole)
   role!: UserRole;
 }

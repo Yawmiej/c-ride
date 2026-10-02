@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@/generated/prisma';
 
 import { PrismaService } from '@/infrastructure/database/prisma.service';
 
 import { User } from '../../domain/entities/user.entity';
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { UserMapper } from './user.mapper';
+import { RegistrationConflictError } from '../../application/errors/registration-conflict.error';
 
 @Injectable()
 export class PrismaUserRepository implements UserRepository {
@@ -35,10 +37,20 @@ export class PrismaUserRepository implements UserRepository {
   }
 
   async create(user: User): Promise<User> {
-    const created = await this.prisma.user.create({
-      data: UserMapper.toPersistence(user),
-    });
+    try {
+      const created = await this.prisma.user.create({
+        data: UserMapper.toPersistence(user),
+      });
 
-    return UserMapper.toDomain(created);
+      return UserMapper.toDomain(created);
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new RegistrationConflictError();
+      }
+      throw error;
+    }
   }
 }

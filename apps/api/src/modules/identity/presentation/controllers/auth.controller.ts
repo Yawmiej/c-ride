@@ -2,26 +2,34 @@ import {
   Body,
   Get,
   UseGuards,
-  ConflictException,
   Controller,
   HttpCode,
   HttpStatus,
   Post,
-  UnauthorizedException,
 } from '@nestjs/common';
-import { AuthenticationError } from '../../application/errors/authentication.error';
 import { LoginUseCase } from '../../application/use-cases/login.use-case';
 import { LoginDto } from '../dto/login.dto';
 import { toRegisterUserCommand } from '../../application/commands/register-user.command';
-import { RegistrationConflictError } from '../../application/errors/registration-conflict.error';
 import { RegisterUserUseCase } from '../../application/use-cases/register-user.use-case';
 import { RegisterDto } from '../dto/register.dto';
 import { GetCurrentUserUseCase } from '../../application/use-cases/get-current-user.use-case';
 import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 import { CurrentUser } from '../decorators/current-user.decorator';
 import { AuthenticatedUser } from '../../application/types/authenticated-user';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiTags,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import { ApiErrorResponseDto } from '@/common/filters/api-error-response.dto';
+import { AuthResponseDto, UserResponseDto } from '../dto/auth-response.dto';
 
 @Controller('auth')
+@ApiTags('identity')
 export class AuthController {
   constructor(
     private readonly registerUser: RegisterUserUseCase,
@@ -31,43 +39,31 @@ export class AuthController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  @ApiOkResponse({ type: UserResponseDto })
+  @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
   async me(@CurrentUser() user: AuthenticatedUser) {
-    try {
-      return await this.getCurrentUser.execute(user.id);
-    } catch (error) {
-      if (error instanceof AuthenticationError) {
-        throw new UnauthorizedException('Invalid authentication');
-      }
-      throw error;
-    }
+    return this.getCurrentUser.execute(user.id);
   }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
+  @ApiOkResponse({ type: AuthResponseDto })
+  @ApiBadRequestResponse({ type: ApiErrorResponseDto })
+  @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
   async login(@Body() dto: LoginDto) {
-    try {
-      return await this.loginUser.execute({
-        email: dto.email,
-        password: dto.password,
-      });
-    } catch (error) {
-      if (error instanceof AuthenticationError) {
-        throw new UnauthorizedException(error.message);
-      }
-      throw error;
-    }
+    return this.loginUser.execute({
+      email: dto.email,
+      password: dto.password,
+    });
   }
 
   @HttpCode(HttpStatus.CREATED)
   @Post('register')
+  @ApiCreatedResponse({ type: AuthResponseDto })
+  @ApiBadRequestResponse({ type: ApiErrorResponseDto })
+  @ApiConflictResponse({ type: ApiErrorResponseDto })
   async register(@Body() dto: RegisterDto) {
-    try {
-      return await this.registerUser.execute(toRegisterUserCommand(dto));
-    } catch (error) {
-      if (error instanceof RegistrationConflictError) {
-        throw new ConflictException(error.message);
-      }
-      throw error;
-    }
+    return this.registerUser.execute(toRegisterUserCommand(dto));
   }
 }
