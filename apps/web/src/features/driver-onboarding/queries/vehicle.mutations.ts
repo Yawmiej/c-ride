@@ -9,7 +9,7 @@ export function useVehicleOnboardingMutation() {
 
   return useMutation({
     mutationFn: (request: VehicleOnboardingRequest) =>
-      apiClient<DriverProfile>('/drivers/me/vehicle', {
+      apiClient<DriverProfile>('/drivers/onboarding', {
         method: 'POST',
         authenticated: true,
         body: request,

@@ -19,8 +19,7 @@ import { PrismaDriverProfileRepository } from '../drivers/infrastructure/persist
 import { VehicleRepository } from '../drivers/domain/repositories/vehicle.repository';
 import { PrismaVehicleRepository } from '../drivers/infrastructure/persistence/prisma-vehicle.repository';
 import { DriversController } from '../drivers/presentation/controllers/drivers.controller';
-import { GetCurrentDriverUseCase } from '../drivers/application/use-cases/get-current-driver.use-case';
-import { OnboardDriverVehicleUseCase } from '../drivers/application/use-cases/onboard-driver-vehicle.use-case';
+import { OnboardDriverUseCase } from '../drivers/application/use-cases/onboard-driver.use-case';
 
 describe('IdentityModule', () => {
   let module: TestingModule;
@@ -76,11 +75,8 @@ describe('IdentityModule', () => {
     expect(module.get(GetDriverProfileUseCase)).toBeInstanceOf(
       GetDriverProfileUseCase,
     );
-    expect(module.get(GetCurrentDriverUseCase)).toBeInstanceOf(
-      GetCurrentDriverUseCase,
-    );
-    expect(module.get(OnboardDriverVehicleUseCase)).toBeInstanceOf(
-      OnboardDriverVehicleUseCase,
+    expect(module.get(OnboardDriverUseCase)).toBeInstanceOf(
+      OnboardDriverUseCase,
     );
   });
 

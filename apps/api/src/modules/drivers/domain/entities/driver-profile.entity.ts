@@ -1,4 +1,5 @@
 import { DriverStatus } from '../enums/driver-status.enum';
+import { DriverOnboardingConflictError } from '../errors/driver-onboarding-conflict.error';
 import { Vehicle, VehicleProps } from './vehicle.entity';
 
 export interface DriverProfileProps {
@@ -59,6 +60,32 @@ export class DriverProfile {
 
   hasVehicle(): boolean {
     return this.vehicle !== null;
+  }
+
+  activateWith(vehicle: Vehicle): DriverProfile {
+    if (this.status !== DriverStatus.PENDING_ONBOARDING) {
+      throw new DriverOnboardingConflictError(
+        'Only pending drivers can complete onboarding',
+      );
+    }
+    if (this.hasVehicle()) {
+      throw new DriverOnboardingConflictError(
+        'A driver profile can have only one vehicle',
+      );
+    }
+    if (vehicle.driverProfileId !== this.id) {
+      throw new DriverOnboardingConflictError(
+        'A vehicle must belong to its driver profile',
+      );
+    }
+
+    return new DriverProfile({
+      ...this.props,
+      status: DriverStatus.ACTIVE,
+      isAvailable: false,
+      vehicle,
+      updatedAt: new Date(),
+    });
   }
 
   toSafeObject(): DriverProfileData {

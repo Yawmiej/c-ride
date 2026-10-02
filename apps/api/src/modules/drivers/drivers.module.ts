@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../../infrastructure/database/database.module';
 import { GetDriverProfileUseCase } from './application/use-cases/get-driver-profile.use-case';
-import { GetCurrentDriverUseCase } from './application/use-cases/get-current-driver.use-case';
-import { OnboardDriverVehicleUseCase } from './application/use-cases/onboard-driver-vehicle.use-case';
+import { OnboardDriverUseCase } from './application/use-cases/onboard-driver.use-case';
+import { DriverOnboarding } from './application/contracts/driver-onboarding';
 import { DriverProfileRepository } from './domain/repositories/driver-profile.repository';
 import { VehicleRepository } from './domain/repositories/vehicle.repository';
 import { PrismaDriverProfileRepository } from './infrastructure/persistence/prisma-driver-profile.repository';
 import { PrismaDriverCreation } from './infrastructure/persistence/prisma-driver-creation';
 import { PrismaVehicleRepository } from './infrastructure/persistence/prisma-vehicle.repository';
+import { PrismaDriverOnboarding } from './infrastructure/persistence/prisma-driver-onboarding';
 import { DriversController } from './presentation/controllers/drivers.controller';
 
 @Module({
@@ -16,8 +17,11 @@ import { DriversController } from './presentation/controllers/drivers.controller
   providers: [
     PrismaDriverCreation,
     GetDriverProfileUseCase,
-    GetCurrentDriverUseCase,
-    OnboardDriverVehicleUseCase,
+    OnboardDriverUseCase,
+    {
+      provide: DriverOnboarding,
+      useClass: PrismaDriverOnboarding,
+    },
     {
       provide: DriverProfileRepository,
       useClass: PrismaDriverProfileRepository,
@@ -30,8 +34,7 @@ import { DriversController } from './presentation/controllers/drivers.controller
   exports: [
     PrismaDriverCreation,
     GetDriverProfileUseCase,
-    GetCurrentDriverUseCase,
-    OnboardDriverVehicleUseCase,
+    OnboardDriverUseCase,
   ],
 })
 export class DriversModule {}

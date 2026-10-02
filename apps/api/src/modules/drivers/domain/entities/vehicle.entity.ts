@@ -28,6 +28,10 @@ export class Vehicle {
     return this.props.licensePlate;
   }
 
+  static register(props: VehicleProps): Vehicle {
+    return new Vehicle(props);
+  }
+
   toSafeObject(): VehicleProps {
     return { ...this.props };
   }
