@@ -1,0 +1,5 @@
+export enum DriverStatus {
+  PENDING_ONBOARDING = 'PENDING_ONBOARDING',
+  ACTIVE = 'ACTIVE',
+  SUSPENDED = 'SUSPENDED',
+}

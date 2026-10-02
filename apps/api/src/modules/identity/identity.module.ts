@@ -9,10 +9,15 @@ import { Argon2PasswordHasher } from './infrastructure/auth/argon2-password-hash
 import { JwtAccessTokenService } from './infrastructure/auth/jwt-access-token.service';
 import { PrismaUserRepository } from './infrastructure/persistence/prisma-user.repository';
 import { AuthController } from './presentation/controllers/auth.controller';
+import { DriversModule } from '../drivers/drivers.module';
+import { AccountRegistration } from './application/contracts/account-registration';
+import { RegisterUserUseCase } from './application/use-cases/register-user.use-case';
+import { PrismaAccountRegistration } from './infrastructure/persistence/prisma-account-registration';
 
 @Module({
   imports: [
     DatabaseModule,
+    DriversModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -29,6 +34,8 @@ import { AuthController } from './presentation/controllers/auth.controller';
   ],
   controllers: [AuthController],
   providers: [
+    RegisterUserUseCase,
+    { provide: AccountRegistration, useClass: PrismaAccountRegistration },
     {
       provide: UserRepository,
       useClass: PrismaUserRepository,

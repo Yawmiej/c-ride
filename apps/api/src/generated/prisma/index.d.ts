@@ -62,7 +62,6 @@ export type UserStatus = (typeof UserStatus)[keyof typeof UserStatus]
 
 export const DriverStatus: {
   PENDING_ONBOARDING: 'PENDING_ONBOARDING',
-  PENDING_VERIFICATION: 'PENDING_VERIFICATION',
   ACTIVE: 'ACTIVE',
   SUSPENDED: 'SUSPENDED'
 };

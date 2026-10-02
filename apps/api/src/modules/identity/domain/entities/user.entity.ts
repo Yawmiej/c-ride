@@ -63,4 +63,18 @@ export class User {
   isActive(): boolean {
     return this.status === UserStatus.ACTIVE;
   }
+
+  toSafeObject(): UserEntity {
+    return {
+      id: this.id,
+      email: this.email,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      phoneNumber: this.phoneNumber,
+      role: this.role,
+      status: this.status,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    };
+  }
 }

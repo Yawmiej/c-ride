@@ -217,7 +217,6 @@ exports.UserStatus = exports.$Enums.UserStatus = {
 
 exports.DriverStatus = exports.$Enums.DriverStatus = {
   PENDING_ONBOARDING: 'PENDING_ONBOARDING',
-  PENDING_VERIFICATION: 'PENDING_VERIFICATION',
   ACTIVE: 'ACTIVE',
   SUSPENDED: 'SUSPENDED'
 };
