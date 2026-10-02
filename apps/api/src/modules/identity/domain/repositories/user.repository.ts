@@ -1,9 +1,8 @@
-import { UserEntity, UserProps } from '../entities/user.entity';
+import { User } from '../entities/user.entity';
 
-export const USER_REPOSITORY = Symbol('USER_REPOSITORY');
-
-export interface UserRepository {
-  findById(id: string): Promise<UserEntity | null>;
-  findByEmail(email: string): Promise<UserEntity | null>;
-  create(input: UserProps): Promise<UserEntity>;
+export abstract class UserRepository {
+  abstract findById(id: string): Promise<User | null>;
+  abstract findByEmail(email: string): Promise<User | null>;
+  abstract findByPhoneNumber(phoneNumber: string): Promise<User | null>;
+  abstract create(user: User): Promise<User>;
 }
