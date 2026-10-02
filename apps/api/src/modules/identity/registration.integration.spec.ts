@@ -1,21 +1,65 @@
-import { INestApplication } from '@nestjs/common';
+import { Controller, Get, INestApplication, UseGuards } from '@nestjs/common';
+import { CurrentUser } from './presentation/decorators/current-user.decorator';
+import { Roles } from './presentation/decorators/roles.decorator';
+import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
+import { RolesGuard } from './presentation/guards/roles.guard';
+import { AuthenticatedUser } from './application/types/authenticated-user';
 import { ConfigModule } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import { randomUUID } from 'node:crypto';
 import { config } from 'dotenv';
 import { createValidationPipe } from '../../common/validation/create-validation-pipe';
 import { PrismaService } from '../../infrastructure/database/prisma.service';
-import { PrismaDriverRegistration } from '../drivers/infrastructure/persistence/prisma-driver-registration';
+import { PrismaDriverRegistration } from '../drivers/infrastructure/persistence/prisma-driver-creation';
 import { AccessTokenService } from './application/contracts/access-token.service';
 import { PasswordHasher } from './application/contracts/password-hasher';
 import { RegisterUserUseCase } from './application/use-cases/register-user.use-case';
 import { UserRole } from './domain/enums/user-role.enum';
 import { UserRepository } from './domain/repositories/user.repository';
 import { IdentityModule } from './identity.module';
+import { DriverProfileRepository } from '../drivers/domain/repositories/driver-profile.repository';
 
 // Opt in: this suite creates and removes only its uniquely named test accounts.
 const databaseTests =
   process.env.RUN_DATABASE_TESTS === '1' ? describe : describe.skip;
+
+@Controller('role-tests')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(UserRole.DRIVER)
+class RoleTestController {
+  @Get('driver')
+  driver(@CurrentUser() user: AuthenticatedUser) {
+    return user;
+  }
+
+  @Get('rider')
+  @Roles(UserRole.RIDER)
+  rider(@CurrentUser() user: AuthenticatedUser) {
+    return user;
+  }
+
+  @Get('either')
+  @Roles(UserRole.RIDER, UserRole.DRIVER)
+  either(@CurrentUser() user: AuthenticatedUser) {
+    return user;
+  }
+
+  @Get('override')
+  @Roles()
+  override(@CurrentUser() user: AuthenticatedUser) {
+    return user;
+  }
+}
+
+@Controller('unrestricted-role-tests')
+@UseGuards(JwtAuthGuard, RolesGuard)
+class NoRoleTestController {
+  @Get()
+  current(@CurrentUser() user: AuthenticatedUser) {
+    return user;
+  }
+}
 
 databaseTests('Registration and login with PostgreSQL', () => {
   let app: INestApplication;
@@ -44,6 +88,7 @@ databaseTests('Registration and login with PostgreSQL', () => {
   beforeAll(async () => {
     config({ quiet: true });
     const module = await Test.createTestingModule({
+      controllers: [RoleTestController, NoRoleTestController],
       imports: [
         ConfigModule.forRoot({
           isGlobal: true,
@@ -104,12 +149,20 @@ databaseTests('Registration and login with PostgreSQL', () => {
         await app.get(PasswordHasher).verify(user.passwordHash, input.password),
       ).toBe(true);
       if (role === UserRole.DRIVER) {
+        expect(result.user).toMatchObject({
+          driverProfile: {
+            status: 'PENDING_ONBOARDING',
+            isAvailable: false,
+            vehicle: null,
+          },
+        });
         expect(user.driverProfile).toMatchObject({
           status: 'PENDING_ONBOARDING',
           isAvailable: false,
           vehicle: null,
         });
       } else {
+        expect(result.user).not.toHaveProperty('driverProfile');
         expect(user.driverProfile).toBeNull();
       }
     },
@@ -277,4 +330,168 @@ databaseTests('Registration and login with PostgreSQL', () => {
     const response = await post(input, 'login');
     expect(response.status).toBe(400);
   });
+
+  const me = (authorization?: string) =>
+    fetch(`${baseUrl}/auth/me`, {
+      headers: authorization ? { authorization } : {},
+    });
+
+  it.each([UserRole.RIDER, UserRole.DRIVER])(
+    'returns the current %s with only appropriate profile data',
+    async (role) => {
+      const response = await post(command(role));
+      const registered = (await response.json()) as {
+        accessToken: string;
+        user: { id: string };
+      };
+      const current = await me(`Bearer ${registered.accessToken}`);
+      expect(current.status).toBe(200);
+      const body = (await current.json()) as Record<string, unknown>;
+      expect(body.id).toBe(registered.user.id);
+      expect(JSON.stringify(body)).not.toMatch(/password|props/);
+      if (role === UserRole.DRIVER) {
+        expect(body.driverProfile).toMatchObject({
+          status: 'PENDING_ONBOARDING',
+          isAvailable: false,
+          vehicle: null,
+        });
+        const repository = app.get(DriverProfileRepository);
+        const profile = await repository.findByUserId(registered.user.id);
+        expect(profile).not.toBeNull();
+        const vehicle = await prisma.vehicle.create({
+          data: {
+            driverProfileId: profile!.id,
+            type: 'SEDAN',
+            make: 'Toyota',
+            model: 'Corolla',
+            color: 'Silver',
+            year: 2022,
+            licensePlate: `TEST-${randomUUID()}`,
+          },
+        });
+        const withVehicle = await repository.findById(profile!.id);
+        expect(withVehicle?.vehicle?.toSafeObject()).toEqual(vehicle);
+        const refreshed = await (
+          await me(`Bearer ${registered.accessToken}`)
+        ).json();
+        expect(refreshed).toMatchObject({
+          driverProfile: {
+            id: profile!.id,
+            userId: registered.user.id,
+            createdAt: profile!.createdAt.toISOString(),
+            vehicle: {
+              id: vehicle.id,
+              driverProfileId: profile!.id,
+              type: 'SEDAN',
+              make: 'Toyota',
+              model: 'Corolla',
+              color: 'Silver',
+              year: 2022,
+              licensePlate: vehicle.licensePlate,
+              createdAt: vehicle.createdAt.toISOString(),
+              updatedAt: vehicle.updatedAt.toISOString(),
+            },
+          },
+        });
+        expect(JSON.stringify(refreshed)).not.toMatch(/password|props/);
+        await prisma.driverProfile.delete({
+          where: { userId: registered.user.id },
+        });
+        expect(
+          await (await me(`Bearer ${registered.accessToken}`)).json(),
+        ).toMatchObject({ driverProfile: null });
+        expect(await repository.findById(profile!.id)).toBeNull();
+        expect(await repository.findByUserId(registered.user.id)).toBeNull();
+      } else {
+        expect(body).not.toHaveProperty('driverProfile');
+      }
+    },
+  );
+
+  it.each([UserRole.RIDER, UserRole.DRIVER])(
+    'enforces role metadata and returns the current %s identity',
+    async (role) => {
+      const registered = (await (await post(command(role))).json()) as {
+        accessToken: string;
+        user: { id: string };
+      };
+      const headers = { authorization: `Bearer ${registered.accessToken}` };
+      for (const [route, expected] of [
+        ['role-tests/rider', role === UserRole.RIDER ? 200 : 403],
+        ['role-tests/driver', role === UserRole.DRIVER ? 200 : 403],
+        ['role-tests/either', 200],
+        ['role-tests/override', 200],
+        ['unrestricted-role-tests', 200],
+      ] as const) {
+        const response = await fetch(`${baseUrl}/${route}`, { headers });
+        expect(response.status).toBe(expected);
+        if (expected === 200)
+          expect(await response.json()).toEqual({
+            id: registered.user.id,
+            role,
+          });
+      }
+    },
+  );
+
+  it('authenticates before role authorization, even without role restrictions', async () => {
+    for (const route of [
+      'role-tests/rider',
+      'role-tests/driver',
+      'role-tests/override',
+      'unrestricted-role-tests',
+    ]) {
+      expect((await fetch(`${baseUrl}/${route}`)).status).toBe(401);
+      expect(
+        (
+          await fetch(`${baseUrl}/${route}`, {
+            headers: { authorization: 'Bearer invalid' },
+          })
+        ).status,
+      ).toBe(401);
+    }
+  });
+
+  it('rejects missing, malformed, expired, invalid-signature and invalid-subject tokens', async () => {
+    const jwt = app.get(JwtService);
+    const claims = { sub: randomUUID(), role: UserRole.RIDER };
+    const expired = await jwt.signAsync(claims, { expiresIn: -1 });
+    const invalid = await jwt.signAsync(claims, { secret: 'wrong-secret' });
+    const badSubject = await jwt.signAsync({ ...claims, sub: 'not-a-uuid' });
+    for (const header of [
+      undefined,
+      'Basic token',
+      'Bearer',
+      'Bearer bad token',
+      'Bearer invalid',
+      `Bearer ${expired}`,
+      `Bearer ${invalid}`,
+      `Bearer ${badSubject}`,
+    ]) {
+      const response = await me(header);
+      expect(response.status).toBe(401);
+      expect(await response.json()).toMatchObject({
+        message: 'Invalid authentication',
+      });
+    }
+  });
+
+  it.each(['SUSPENDED', 'DISABLED', 'DELETED'] as const)(
+    'rejects an existing token after the account is %s',
+    async (status) => {
+      const input = command();
+      const result = (await (await post(input)).json()) as {
+        accessToken: string;
+      };
+      if (status === 'DELETED') {
+        await prisma.user.delete({ where: { email: input.email } });
+      } else {
+        await prisma.user.update({
+          where: { email: input.email },
+          data: { status },
+        });
+      }
+      expect((await me(`Bearer ${result.accessToken}`)).status).toBe(401);
+    },
+  );
 });

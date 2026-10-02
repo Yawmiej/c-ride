@@ -9,6 +9,13 @@ import { UserRepository } from './domain/repositories/user.repository';
 import { IdentityModule } from './identity.module';
 import { PrismaUserRepository } from './infrastructure/persistence/prisma-user.repository';
 import { AuthController } from './presentation/controllers/auth.controller';
+import { RegisterUserUseCase } from './application/use-cases/register-user.use-case';
+import { LoginUseCase } from './application/use-cases/login.use-case';
+import { GetCurrentUserUseCase } from './application/use-cases/get-current-user.use-case';
+import { AuthenticateUserUseCase } from './application/use-cases/authenticate-user.use-case';
+import { GetDriverProfileUseCase } from '../drivers/application/use-cases/get-driver-profile.use-case';
+import { DriverProfileRepository } from '../drivers/domain/repositories/driver-profile.repository';
+import { PrismaDriverProfileRepository } from '../drivers/infrastructure/persistence/prisma-driver-profile.repository';
 
 describe('IdentityModule', () => {
   let module: TestingModule;
@@ -46,6 +53,20 @@ describe('IdentityModule', () => {
   it('resolves the controller and repository without connecting to a database', () => {
     expect(module.get(AuthController)).toBeInstanceOf(AuthController);
     expect(module.get(UserRepository)).toBeInstanceOf(PrismaUserRepository);
+    expect(module.get(DriverProfileRepository)).toBeInstanceOf(
+      PrismaDriverProfileRepository,
+    );
+    expect(module.get(RegisterUserUseCase)).toBeInstanceOf(RegisterUserUseCase);
+    expect(module.get(LoginUseCase)).toBeInstanceOf(LoginUseCase);
+    expect(module.get(GetCurrentUserUseCase)).toBeInstanceOf(
+      GetCurrentUserUseCase,
+    );
+    expect(module.get(AuthenticateUserUseCase)).toBeInstanceOf(
+      AuthenticateUserUseCase,
+    );
+    expect(module.get(GetDriverProfileUseCase)).toBeInstanceOf(
+      GetDriverProfileUseCase,
+    );
   });
 
   it('hashes with Argon2id and verifies passwords through the abstract provider', async () => {

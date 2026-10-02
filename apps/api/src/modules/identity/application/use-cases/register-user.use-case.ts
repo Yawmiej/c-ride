@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { User, UserEntity } from '../../domain/entities/user.entity';
+import { DriverProfileData } from '../../../drivers/domain/entities/driver-profile.entity';
 import { UserStatus } from '../../domain/enums/user-status.enum';
 import { UserRepository } from '../../domain/repositories/user.repository';
 import {
@@ -14,7 +15,7 @@ import { RegistrationConflictError } from '../errors/registration-conflict.error
 
 export interface RegisterUserResult {
   accessToken: string;
-  user: UserEntity;
+  user: UserEntity & { driverProfile?: DriverProfileData };
 }
 
 @Injectable()
@@ -42,7 +43,7 @@ export class RegisterUserUseCase {
 
     const passwordHash = await this.passwords.hash(command.password);
     const now = new Date();
-    const user = await this.registration.create(
+    const { user, driverProfile } = await this.registration.create(
       new User({
         id: randomUUID(),
         firstName: command.firstName,
@@ -60,6 +61,14 @@ export class RegisterUserUseCase {
       sub: user.id,
       role: user.role,
     });
-    return { accessToken, user: user.toSafeObject() };
+    return {
+      accessToken,
+      user: {
+        ...user.toSafeObject(),
+        ...(driverProfile
+          ? { driverProfile: driverProfile.toSafeObject() }
+          : {}),
+      },
+    };
   }
 }

@@ -1,5 +1,7 @@
 import {
   Body,
+  Get,
+  UseGuards,
   ConflictException,
   Controller,
   HttpCode,
@@ -14,13 +16,31 @@ import { toRegisterUserCommand } from '../../application/commands/register-user.
 import { RegistrationConflictError } from '../../application/errors/registration-conflict.error';
 import { RegisterUserUseCase } from '../../application/use-cases/register-user.use-case';
 import { RegisterDto } from '../dto/register.dto';
+import { GetCurrentUserUseCase } from '../../application/use-cases/get-current-user.use-case';
+import { JwtAuthGuard } from '../guards/jwt-auth.guard';
+import { CurrentUser } from '../decorators/current-user.decorator';
+import { AuthenticatedUser } from '../../application/types/authenticated-user';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private readonly registerUser: RegisterUserUseCase,
     private readonly loginUser: LoginUseCase,
+    private readonly getCurrentUser: GetCurrentUserUseCase,
   ) {}
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async me(@CurrentUser() user: AuthenticatedUser) {
+    try {
+      return await this.getCurrentUser.execute(user.id);
+    } catch (error) {
+      if (error instanceof AuthenticationError) {
+        throw new UnauthorizedException('Invalid authentication');
+      }
+      throw error;
+    }
+  }
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
