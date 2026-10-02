@@ -133,18 +133,60 @@ exports.Prisma.UserScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.DriverProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  isAvailable: 'isAvailable',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.VehicleScalarFieldEnum = {
+  id: 'id',
+  driverProfileId: 'driverProfileId',
+  type: 'type',
+  make: 'make',
+  model: 'model',
+  color: 'color',
+  year: 'year',
+  licensePlate: 'licensePlate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.RideScalarFieldEnum = {
   id: 'id',
   riderId: 'riderId',
   driverId: 'driverId',
-  startLocation: 'startLocation',
-  endLocation: 'endLocation',
-  startTime: 'startTime'
+  status: 'status',
+  pickupLat: 'pickupLat',
+  pickupLng: 'pickupLng',
+  dropoffLat: 'dropoffLat',
+  dropoffLng: 'dropoffLng',
+  fare: 'fare',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.RideEventScalarFieldEnum = {
+  id: 'id',
+  rideId: 'rideId',
+  type: 'type',
+  payload: 'payload',
+  actorId: 'actorId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
 };
 
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -155,6 +197,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.UserRole = exports.$Enums.UserRole = {
   RIDER: 'RIDER',
@@ -167,9 +215,41 @@ exports.UserStatus = exports.$Enums.UserStatus = {
   DISABLED: 'DISABLED'
 };
 
+exports.DriverStatus = exports.$Enums.DriverStatus = {
+  PENDING_ONBOARDING: 'PENDING_ONBOARDING',
+  PENDING_VERIFICATION: 'PENDING_VERIFICATION',
+  ACTIVE: 'ACTIVE',
+  SUSPENDED: 'SUSPENDED'
+};
+
+exports.VehicleType = exports.$Enums.VehicleType = {
+  SEDAN: 'SEDAN',
+  SUV: 'SUV',
+  HATCHBACK: 'HATCHBACK'
+};
+
+exports.RideStatus = exports.$Enums.RideStatus = {
+  REQUESTED: 'REQUESTED',
+  ACCEPTED: 'ACCEPTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+};
+
+exports.RideEventType = exports.$Enums.RideEventType = {
+  REQUESTED: 'REQUESTED',
+  ACCEPTED: 'ACCEPTED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
-  Ride: 'Ride'
+  DriverProfile: 'DriverProfile',
+  Vehicle: 'Vehicle',
+  Ride: 'Ride',
+  RideEvent: 'RideEvent'
 };
 
 /**
