@@ -1,9 +1,5 @@
-import { Outlet } from 'react-router-dom';
+import { AppLayout } from './AppLayout';
 
 export function DriverLayout() {
-  return (
-    <main className="min-h-screen bg-white text-slate-950">
-      <Outlet />
-    </main>
-  );
+  return <AppLayout navigation={[{ label: 'Available', to: '/driver' }]} userName="Driver" />;
 }

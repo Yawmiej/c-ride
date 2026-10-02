@@ -11,7 +11,7 @@ import { randomUUID } from 'node:crypto';
 import { config } from 'dotenv';
 import { createValidationPipe } from '../../common/validation/create-validation-pipe';
 import { PrismaService } from '../../infrastructure/database/prisma.service';
-import { PrismaDriverRegistration } from '../drivers/infrastructure/persistence/prisma-driver-creation';
+import { PrismaDriverCreation } from '../drivers/infrastructure/persistence/prisma-driver-creation';
 import { AccessTokenService } from './application/contracts/access-token.service';
 import { PasswordHasher } from './application/contracts/password-hasher';
 import { RegisterUserUseCase } from './application/use-cases/register-user.use-case';
@@ -206,7 +206,7 @@ databaseTests('Registration and login with PostgreSQL', () => {
 
   it('rolls back the account when driver creation fails and issues no token', async () => {
     const input = command(UserRole.DRIVER);
-    const drivers = app.get(PrismaDriverRegistration);
+    const drivers = app.get(PrismaDriverCreation);
     const tokens = app.get(AccessTokenService);
     const createEmpty = drivers.createEmpty.bind(drivers);
     const issue = tokens.issue.bind(tokens);

@@ -1,9 +1,5 @@
-import { Outlet } from 'react-router-dom';
+import { AppLayout } from './AppLayout';
 
 export function RiderLayout() {
-  return (
-    <main className="min-h-screen bg-white text-slate-950">
-      <Outlet />
-    </main>
-  );
+  return <AppLayout navigation={[{ label: 'Home', to: '/rider' }]} userName="Rider" />;
 }

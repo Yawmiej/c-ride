@@ -18,7 +18,7 @@ export class RolesGuard implements CanActivate {
       ROLES_METADATA_KEY,
       [context.getHandler(), context.getClass()],
     );
-    // No metadata (or an explicit empty override) imposes no role restriction.
+
     if (!roles?.length) return true;
     const { user } = context.switchToHttp().getRequest<AuthenticatedRequest>();
     if (!user) throw new UnauthorizedException('Invalid authentication');

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@/generated/prisma';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
-import { PrismaDriverRegistration } from '../../../drivers/infrastructure/persistence/prisma-driver-creation';
+import { PrismaDriverCreation } from '../../../drivers/infrastructure/persistence/prisma-driver-creation';
 import {
   AccountRegistration,
   RegisteredAccount,
@@ -15,7 +15,7 @@ import { UserMapper } from './user.mapper';
 export class PrismaAccountRegistration implements AccountRegistration {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly drivers: PrismaDriverRegistration,
+    private readonly drivers: PrismaDriverCreation,
   ) {}
 
   async create(user: User): Promise<RegisteredAccount> {

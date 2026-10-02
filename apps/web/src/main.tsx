@@ -1,6 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
+import '@fontsource-variable/geist/wght.css';
 import { AppProviders } from './app/providers/AppProviders';
 import { router } from './app/router/router';
 import './app/styles/global.css';
