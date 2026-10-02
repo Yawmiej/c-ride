@@ -16,7 +16,11 @@ export interface DriverProfileData extends Omit<DriverProfileProps, 'vehicle'> {
 }
 
 export class DriverProfile {
-  constructor(private readonly props: DriverProfileProps) {}
+  constructor(private readonly props: DriverProfileProps) {
+    if (props.vehicle && props.vehicle.driverProfileId !== props.id) {
+      throw new Error('A vehicle must belong to its driver profile');
+    }
+  }
 
   static empty(id: string, userId: string): DriverProfile {
     const now = new Date();
@@ -51,6 +55,10 @@ export class DriverProfile {
   }
   get updatedAt() {
     return this.props.updatedAt;
+  }
+
+  hasVehicle(): boolean {
+    return this.vehicle !== null;
   }
 
   toSafeObject(): DriverProfileData {

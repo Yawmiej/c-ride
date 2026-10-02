@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { AuthenticateUserUseCase } from './application/use-cases/authenticate-user.use-case';
 import { GetCurrentUserUseCase } from './application/use-cases/get-current-user.use-case';
 import { JwtAuthGuard } from './presentation/guards/jwt-auth.guard';
@@ -19,6 +19,7 @@ import { RegisterUserUseCase } from './application/use-cases/register-user.use-c
 import { LoginUseCase } from './application/use-cases/login.use-case';
 import { PrismaAccountRegistration } from './infrastructure/persistence/prisma-account-registration';
 
+@Global()
 @Module({
   imports: [
     DatabaseModule,

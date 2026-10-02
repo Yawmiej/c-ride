@@ -16,6 +16,11 @@ import { AuthenticateUserUseCase } from './application/use-cases/authenticate-us
 import { GetDriverProfileUseCase } from '../drivers/application/use-cases/get-driver-profile.use-case';
 import { DriverProfileRepository } from '../drivers/domain/repositories/driver-profile.repository';
 import { PrismaDriverProfileRepository } from '../drivers/infrastructure/persistence/prisma-driver-profile.repository';
+import { VehicleRepository } from '../drivers/domain/repositories/vehicle.repository';
+import { PrismaVehicleRepository } from '../drivers/infrastructure/persistence/prisma-vehicle.repository';
+import { DriversController } from '../drivers/presentation/controllers/drivers.controller';
+import { GetCurrentDriverUseCase } from '../drivers/application/use-cases/get-current-driver.use-case';
+import { OnboardDriverVehicleUseCase } from '../drivers/application/use-cases/onboard-driver-vehicle.use-case';
 
 describe('IdentityModule', () => {
   let module: TestingModule;
@@ -56,6 +61,10 @@ describe('IdentityModule', () => {
     expect(module.get(DriverProfileRepository)).toBeInstanceOf(
       PrismaDriverProfileRepository,
     );
+    expect(module.get(VehicleRepository)).toBeInstanceOf(
+      PrismaVehicleRepository,
+    );
+    expect(module.get(DriversController)).toBeInstanceOf(DriversController);
     expect(module.get(RegisterUserUseCase)).toBeInstanceOf(RegisterUserUseCase);
     expect(module.get(LoginUseCase)).toBeInstanceOf(LoginUseCase);
     expect(module.get(GetCurrentUserUseCase)).toBeInstanceOf(
@@ -66,6 +75,12 @@ describe('IdentityModule', () => {
     );
     expect(module.get(GetDriverProfileUseCase)).toBeInstanceOf(
       GetDriverProfileUseCase,
+    );
+    expect(module.get(GetCurrentDriverUseCase)).toBeInstanceOf(
+      GetCurrentDriverUseCase,
+    );
+    expect(module.get(OnboardDriverVehicleUseCase)).toBeInstanceOf(
+      OnboardDriverVehicleUseCase,
     );
   });
 

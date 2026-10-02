@@ -16,6 +16,18 @@ export interface VehicleProps {
 export class Vehicle {
   constructor(private readonly props: VehicleProps) {}
 
+  get id() {
+    return this.props.id;
+  }
+
+  get driverProfileId() {
+    return this.props.driverProfileId;
+  }
+
+  get licensePlate() {
+    return this.props.licensePlate;
+  }
+
   toSafeObject(): VehicleProps {
     return { ...this.props };
   }
