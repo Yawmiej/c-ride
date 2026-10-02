@@ -17,7 +17,7 @@ import { IdentityModule } from './identity.module';
 const databaseTests =
   process.env.RUN_DATABASE_TESTS === '1' ? describe : describe.skip;
 
-databaseTests('Registration with PostgreSQL', () => {
+databaseTests('Registration and login with PostgreSQL', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let baseUrl: string;
@@ -34,8 +34,8 @@ databaseTests('Registration with PostgreSQL', () => {
       role,
     };
   };
-  const post = (body: unknown) =>
-    fetch(`${baseUrl}/auth/register`, {
+  const post = (body: unknown, route = 'register') =>
+    fetch(`${baseUrl}/auth/${route}`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify(body),
@@ -187,5 +187,94 @@ databaseTests('Registration with PostgreSQL', () => {
     expect(
       await prisma.user.findUnique({ where: { email: input.email } }),
     ).toBeNull();
+  });
+
+  it.each([UserRole.RIDER, UserRole.DRIVER])(
+    'logs in %s with the stored role and safe user data',
+    async (role) => {
+      const input = { ...command(role), password: ' Password123! ' };
+      expect((await post(input)).status).toBe(201);
+      const response = await post(
+        { email: ` ${input.email.toUpperCase()} `, password: input.password },
+        'login',
+      );
+      expect(response.status).toBe(200);
+      const result = (await response.json()) as {
+        accessToken: string;
+        user: { id: string; email: string; role: UserRole };
+      };
+      expect(result.user).toMatchObject({ email: input.email, role });
+      expect(
+        await app.get(AccessTokenService).verify(result.accessToken),
+      ).toEqual({ sub: result.user.id, role });
+      expect(JSON.stringify(result)).not.toMatch(/password|props/);
+      expect(
+        (
+          await post(
+            { email: input.email, password: input.password.trim() },
+            'login',
+          )
+        ).status,
+      ).toBe(401);
+    },
+  );
+
+  it('returns the same 401 for unknown accounts and wrong passwords', async () => {
+    const input = command();
+    expect((await post(input)).status).toBe(201);
+    const wrong = await post(
+      { email: input.email, password: 'wrong' },
+      'login',
+    );
+    const missing = await post(
+      { email: command().email, password: 'wrong' },
+      'login',
+    );
+    expect(wrong.status).toBe(401);
+    expect(missing.status).toBe(401);
+    expect(await wrong.json()).toEqual(await missing.json());
+  });
+
+  it.each(['SUSPENDED', 'DISABLED'] as const)(
+    'rejects %s accounts without issuing a token',
+    async (status) => {
+      const input = command();
+      expect((await post(input)).status).toBe(201);
+      await prisma.user.update({
+        where: { email: input.email },
+        data: { status },
+      });
+      const tokens = app.get(AccessTokenService);
+      const issue = tokens.issue.bind(tokens);
+      let issued = false;
+      tokens.issue = async (claims) => {
+        issued = true;
+        return issue(claims);
+      };
+      try {
+        const response = await post(
+          { email: input.email, password: input.password },
+          'login',
+        );
+        expect(response.status).toBe(401);
+        expect(await response.json()).toMatchObject({
+          message: 'Invalid email or password',
+        });
+        expect(issued).toBe(false);
+      } finally {
+        tokens.issue = issue;
+      }
+    },
+  );
+
+  it.each([
+    { email: 'invalid', password: 'password' },
+    { email: 'user@example.com', password: '' },
+    { email: 'user@example.com', password: 123 },
+    { email: 'user@example.com' },
+    { email: 'user@example.com', password: 'password', role: 'DRIVER' },
+  ])('rejects invalid login input %j', async (input) => {
+    const response = await post(input, 'login');
+    expect(response.status).toBe(400);
   });
 });

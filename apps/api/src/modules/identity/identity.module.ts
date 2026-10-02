@@ -12,6 +12,7 @@ import { AuthController } from './presentation/controllers/auth.controller';
 import { DriversModule } from '../drivers/drivers.module';
 import { AccountRegistration } from './application/contracts/account-registration';
 import { RegisterUserUseCase } from './application/use-cases/register-user.use-case';
+import { LoginUseCase } from './application/use-cases/login.use-case';
 import { PrismaAccountRegistration } from './infrastructure/persistence/prisma-account-registration';
 
 @Module({
@@ -35,6 +36,7 @@ import { PrismaAccountRegistration } from './infrastructure/persistence/prisma-a
   controllers: [AuthController],
   providers: [
     RegisterUserUseCase,
+    LoginUseCase,
     { provide: AccountRegistration, useClass: PrismaAccountRegistration },
     {
       provide: UserRepository,
