@@ -31,7 +31,9 @@ import { toDriverProfileResponse } from '../mappers/driver-profile-response.mapp
 @Controller('drivers')
 @ApiTags('drivers')
 export class DriversController {
-  constructor(private readonly driverOnboarding: OnboardDriverUseCase) {}
+  constructor(
+    private readonly driverOnboarding: OnboardDriverUseCase,
+  ) {}
 
   @Post('onboarding')
   @HttpCode(HttpStatus.CREATED)

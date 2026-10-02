@@ -19,7 +19,6 @@ describe('OnboardDriverUseCase', () => {
       id: 'driver-profile-id',
       userId: 'driver-user-id',
       status,
-      isAvailable: false,
       vehicle,
       createdAt: now,
       updatedAt: now,
@@ -82,7 +81,6 @@ describe('OnboardDriverUseCase', () => {
 
     expect(result).toMatchObject({
       status: DriverStatus.ACTIVE,
-      isAvailable: false,
       vehicle: expect.objectContaining({ licensePlate: command.licensePlate }),
     });
     expect(setup.persisted()?.toSafeObject()).toEqual(result);

@@ -25,7 +25,6 @@ describe('PrismaDriverOnboarding', () => {
     id: 'profile-id',
     userId: 'user-id',
     status: DriverStatus.ACTIVE,
-    isAvailable: false,
     vehicle,
     createdAt: now,
     updatedAt: now,

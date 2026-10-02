@@ -152,13 +152,11 @@ databaseTests('Registration and login with PostgreSQL', () => {
         expect(result.user).toMatchObject({
           driverProfile: {
             status: 'PENDING_ONBOARDING',
-            isAvailable: false,
             vehicle: null,
           },
         });
         expect(user.driverProfile).toMatchObject({
           status: 'PENDING_ONBOARDING',
-          isAvailable: false,
           vehicle: null,
         });
       } else {
@@ -352,7 +350,6 @@ databaseTests('Registration and login with PostgreSQL', () => {
       if (role === UserRole.DRIVER) {
         expect(body.driverProfile).toMatchObject({
           status: 'PENDING_ONBOARDING',
-          isAvailable: false,
           vehicle: null,
         });
         const repository = app.get(DriverProfileRepository);

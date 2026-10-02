@@ -7,7 +7,6 @@ export type DriverProfile = {
   id: string;
   userId: string;
   status: 'PENDING_ONBOARDING' | 'ACTIVE' | 'SUSPENDED';
-  isAvailable: boolean;
   vehicle: {
     id: string;
     type: VehicleType;

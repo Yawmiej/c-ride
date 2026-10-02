@@ -12,7 +12,7 @@ Keep implementation scoped to the requested phase. The initial scaffold should n
 ## Backend Architecture
 
 - Follow DDD/Clean Architecture within each backend bounded context: `application`, `domain`, `infrastructure`, and `presentation`, composed by `<context>.module.ts`. Follow the detailed rules in `apps/api/AGENTS.md`.
-- Identity owns accounts and authentication; drivers owns driver profiles, vehicles, onboarding, and availability; rides owns ride lifecycle and audit history; notifications owns devices and notification delivery. `RIDER` and `DRIVER` remain user roles.
+- Identity owns accounts and authentication; drivers owns driver profiles, vehicles, and onboarding; rides owns ride lifecycle and audit history; notifications owns devices and notification delivery. `RIDER` and `DRIVER` remain user roles.
 - Define repository contracts as abstract classes in the owning context's `domain/repositories`. Bind the class directly with `{ provide: UserRepository, useClass: PrismaUserRepository }` and inject the abstract class. Use abstract classes for other injected application boundaries too; interfaces remain appropriate for data shapes.
 - Keep business rules in domain entities/policies and workflow orchestration in named application use cases. Keep transport concerns in presentation and technical adapters in infrastructure.
 

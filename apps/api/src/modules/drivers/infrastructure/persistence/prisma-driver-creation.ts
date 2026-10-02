@@ -16,7 +16,6 @@ export class PrismaDriverCreation {
         id: profile.id,
         userId: profile.userId,
         status: profile.status,
-        isAvailable: profile.isAvailable,
       },
       include: { vehicle: true },
     });

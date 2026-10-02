@@ -59,7 +59,6 @@ describe('DriversController', () => {
             id: 'profile-id',
             userId: command.userId,
             status: DriverStatus.ACTIVE,
-            isAvailable: false,
             vehicle: {
               id: 'vehicle-id',
               driverProfileId: 'profile-id',
@@ -125,7 +124,6 @@ describe('DriversController', () => {
     ]);
     expect(await response.json()).toMatchObject({
       status: DriverStatus.ACTIVE,
-      isAvailable: false,
       vehicle: { licensePlate: 'LAG-123-AB' },
     });
   });

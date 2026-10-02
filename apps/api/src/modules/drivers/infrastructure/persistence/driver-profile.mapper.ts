@@ -14,7 +14,6 @@ export class DriverProfileMapper {
       id: raw.id,
       userId: raw.userId,
       status: raw.status as DriverStatus,
-      isAvailable: raw.isAvailable,
       createdAt: raw.createdAt,
       updatedAt: raw.updatedAt,
       vehicle: raw.vehicle

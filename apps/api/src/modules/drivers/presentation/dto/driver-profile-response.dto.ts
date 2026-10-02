@@ -44,9 +44,6 @@ export class DriverProfileResponseDto {
   @ApiProperty({ enum: DriverStatus })
   status!: DriverStatus;
 
-  @ApiProperty()
-  isAvailable!: boolean;
-
   @ApiPropertyOptional({ type: VehicleResponseDto, nullable: true })
   vehicle!: VehicleResponseDto | null;
 

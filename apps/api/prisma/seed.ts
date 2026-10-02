@@ -48,7 +48,6 @@ async function upsertDriverWithVehicle(
     firstName: string;
     lastName: string;
     phoneNumber: string;
-    isAvailable: boolean;
     vehicle: {
       type: VehicleType;
       make: string;
@@ -83,12 +82,10 @@ async function upsertDriverWithVehicle(
   const driverProfile = await prisma.driverProfile.upsert({
     where: { userId: user.id },
     update: {
-      isAvailable: driver.isAvailable,
       status: DriverStatus.ACTIVE,
     },
     create: {
       userId: user.id,
-      isAvailable: driver.isAvailable,
       status: DriverStatus.ACTIVE,
     },
   });
@@ -128,12 +125,10 @@ async function upsertPendingDriver(passwordHash: string) {
   const driverProfile = await prisma.driverProfile.upsert({
     where: { userId: user.id },
     update: {
-      isAvailable: false,
       status: DriverStatus.PENDING_ONBOARDING,
     },
     create: {
       userId: user.id,
-      isAvailable: false,
       status: DriverStatus.PENDING_ONBOARDING,
     },
   });
@@ -157,7 +152,6 @@ async function main() {
     firstName: 'John',
     lastName: 'Cena',
     phoneNumber: '+234812345680',
-    isAvailable: true,
     vehicle: {
       type: VehicleType.SEDAN,
       make: 'Toyota',
@@ -173,7 +167,6 @@ async function main() {
     firstName: 'John',
     lastName: 'Cena',
     phoneNumber: '+234812345681',
-    isAvailable: true,
     vehicle: {
       type: VehicleType.SUV,
       make: 'Honda',

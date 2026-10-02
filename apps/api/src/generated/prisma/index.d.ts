@@ -2655,7 +2655,6 @@ export namespace Prisma {
   export type DriverProfileMinAggregateOutputType = {
     id: string | null
     userId: string | null
-    isAvailable: boolean | null
     status: $Enums.DriverStatus | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -2664,7 +2663,6 @@ export namespace Prisma {
   export type DriverProfileMaxAggregateOutputType = {
     id: string | null
     userId: string | null
-    isAvailable: boolean | null
     status: $Enums.DriverStatus | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -2673,7 +2671,6 @@ export namespace Prisma {
   export type DriverProfileCountAggregateOutputType = {
     id: number
     userId: number
-    isAvailable: number
     status: number
     createdAt: number
     updatedAt: number
@@ -2684,7 +2681,6 @@ export namespace Prisma {
   export type DriverProfileMinAggregateInputType = {
     id?: true
     userId?: true
-    isAvailable?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -2693,7 +2689,6 @@ export namespace Prisma {
   export type DriverProfileMaxAggregateInputType = {
     id?: true
     userId?: true
-    isAvailable?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -2702,7 +2697,6 @@ export namespace Prisma {
   export type DriverProfileCountAggregateInputType = {
     id?: true
     userId?: true
-    isAvailable?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -2784,7 +2778,6 @@ export namespace Prisma {
   export type DriverProfileGroupByOutputType = {
     id: string
     userId: string
-    isAvailable: boolean
     status: $Enums.DriverStatus
     createdAt: Date
     updatedAt: Date
@@ -2810,7 +2803,6 @@ export namespace Prisma {
   export type DriverProfileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
-    isAvailable?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -2821,7 +2813,6 @@ export namespace Prisma {
   export type DriverProfileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
-    isAvailable?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -2831,7 +2822,6 @@ export namespace Prisma {
   export type DriverProfileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
-    isAvailable?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -2841,13 +2831,12 @@ export namespace Prisma {
   export type DriverProfileSelectScalar = {
     id?: boolean
     userId?: boolean
-    isAvailable?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type DriverProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "isAvailable" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["driverProfile"]>
+  export type DriverProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["driverProfile"]>
   export type DriverProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     vehicle?: boolean | DriverProfile$vehicleArgs<ExtArgs>
@@ -2868,7 +2857,6 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
-      isAvailable: boolean
       status: $Enums.DriverStatus
       createdAt: Date
       updatedAt: Date
@@ -3299,7 +3287,6 @@ export namespace Prisma {
   interface DriverProfileFieldRefs {
     readonly id: FieldRef<"DriverProfile", 'String'>
     readonly userId: FieldRef<"DriverProfile", 'String'>
-    readonly isAvailable: FieldRef<"DriverProfile", 'Boolean'>
     readonly status: FieldRef<"DriverProfile", 'DriverStatus'>
     readonly createdAt: FieldRef<"DriverProfile", 'DateTime'>
     readonly updatedAt: FieldRef<"DriverProfile", 'DateTime'>
@@ -7296,7 +7283,6 @@ export namespace Prisma {
   export const DriverProfileScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
-    isAvailable: 'isAvailable',
     status: 'status',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -7450,13 +7436,6 @@ export namespace Prisma {
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Boolean'
-   */
-  export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 
@@ -7670,7 +7649,6 @@ export namespace Prisma {
     NOT?: DriverProfileWhereInput | DriverProfileWhereInput[]
     id?: UuidFilter<"DriverProfile"> | string
     userId?: UuidFilter<"DriverProfile"> | string
-    isAvailable?: BoolFilter<"DriverProfile"> | boolean
     status?: EnumDriverStatusFilter<"DriverProfile"> | $Enums.DriverStatus
     createdAt?: DateTimeFilter<"DriverProfile"> | Date | string
     updatedAt?: DateTimeFilter<"DriverProfile"> | Date | string
@@ -7681,7 +7659,6 @@ export namespace Prisma {
   export type DriverProfileOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
-    isAvailable?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -7695,7 +7672,6 @@ export namespace Prisma {
     AND?: DriverProfileWhereInput | DriverProfileWhereInput[]
     OR?: DriverProfileWhereInput[]
     NOT?: DriverProfileWhereInput | DriverProfileWhereInput[]
-    isAvailable?: BoolFilter<"DriverProfile"> | boolean
     status?: EnumDriverStatusFilter<"DriverProfile"> | $Enums.DriverStatus
     createdAt?: DateTimeFilter<"DriverProfile"> | Date | string
     updatedAt?: DateTimeFilter<"DriverProfile"> | Date | string
@@ -7706,7 +7682,6 @@ export namespace Prisma {
   export type DriverProfileOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
-    isAvailable?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -7721,7 +7696,6 @@ export namespace Prisma {
     NOT?: DriverProfileScalarWhereWithAggregatesInput | DriverProfileScalarWhereWithAggregatesInput[]
     id?: UuidWithAggregatesFilter<"DriverProfile"> | string
     userId?: UuidWithAggregatesFilter<"DriverProfile"> | string
-    isAvailable?: BoolWithAggregatesFilter<"DriverProfile"> | boolean
     status?: EnumDriverStatusWithAggregatesFilter<"DriverProfile"> | $Enums.DriverStatus
     createdAt?: DateTimeWithAggregatesFilter<"DriverProfile"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"DriverProfile"> | Date | string
@@ -8079,7 +8053,6 @@ export namespace Prisma {
 
   export type DriverProfileCreateInput = {
     id?: string
-    isAvailable?: boolean
     status?: $Enums.DriverStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8090,7 +8063,6 @@ export namespace Prisma {
   export type DriverProfileUncheckedCreateInput = {
     id?: string
     userId: string
-    isAvailable?: boolean
     status?: $Enums.DriverStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8099,7 +8071,6 @@ export namespace Prisma {
 
   export type DriverProfileUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    isAvailable?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumDriverStatusFieldUpdateOperationsInput | $Enums.DriverStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8110,7 +8081,6 @@ export namespace Prisma {
   export type DriverProfileUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    isAvailable?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumDriverStatusFieldUpdateOperationsInput | $Enums.DriverStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8120,7 +8090,6 @@ export namespace Prisma {
   export type DriverProfileCreateManyInput = {
     id?: string
     userId: string
-    isAvailable?: boolean
     status?: $Enums.DriverStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -8128,7 +8097,6 @@ export namespace Prisma {
 
   export type DriverProfileUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    isAvailable?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumDriverStatusFieldUpdateOperationsInput | $Enums.DriverStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8137,7 +8105,6 @@ export namespace Prisma {
   export type DriverProfileUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    isAvailable?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumDriverStatusFieldUpdateOperationsInput | $Enums.DriverStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -8622,11 +8589,6 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type EnumDriverStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.DriverStatus | EnumDriverStatusFieldRefInput<$PrismaModel>
     in?: $Enums.DriverStatus[] | ListEnumDriverStatusFieldRefInput<$PrismaModel>
@@ -8647,7 +8609,6 @@ export namespace Prisma {
   export type DriverProfileCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
-    isAvailable?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8656,7 +8617,6 @@ export namespace Prisma {
   export type DriverProfileMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
-    isAvailable?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8665,18 +8625,9 @@ export namespace Prisma {
   export type DriverProfileMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
-    isAvailable?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
-  }
-
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type EnumDriverStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -9241,10 +9192,6 @@ export namespace Prisma {
     connect?: VehicleWhereUniqueInput
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
-  }
-
   export type EnumDriverStatusFieldUpdateOperationsInput = {
     set?: $Enums.DriverStatus
   }
@@ -9597,24 +9544,11 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
-  }
-
   export type NestedEnumDriverStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.DriverStatus | EnumDriverStatusFieldRefInput<$PrismaModel>
     in?: $Enums.DriverStatus[] | ListEnumDriverStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.DriverStatus[] | ListEnumDriverStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumDriverStatusFilter<$PrismaModel> | $Enums.DriverStatus
-  }
-
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
   }
 
   export type NestedEnumDriverStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -9809,7 +9743,6 @@ export namespace Prisma {
 
   export type DriverProfileCreateWithoutUserInput = {
     id?: string
-    isAvailable?: boolean
     status?: $Enums.DriverStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9818,7 +9751,6 @@ export namespace Prisma {
 
   export type DriverProfileUncheckedCreateWithoutUserInput = {
     id?: string
-    isAvailable?: boolean
     status?: $Enums.DriverStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9947,7 +9879,6 @@ export namespace Prisma {
 
   export type DriverProfileUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    isAvailable?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumDriverStatusFieldUpdateOperationsInput | $Enums.DriverStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9956,7 +9887,6 @@ export namespace Prisma {
 
   export type DriverProfileUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    isAvailable?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumDriverStatusFieldUpdateOperationsInput | $Enums.DriverStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10187,7 +10117,6 @@ export namespace Prisma {
 
   export type DriverProfileCreateWithoutVehicleInput = {
     id?: string
-    isAvailable?: boolean
     status?: $Enums.DriverStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -10197,7 +10126,6 @@ export namespace Prisma {
   export type DriverProfileUncheckedCreateWithoutVehicleInput = {
     id?: string
     userId: string
-    isAvailable?: boolean
     status?: $Enums.DriverStatus
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -10221,7 +10149,6 @@ export namespace Prisma {
 
   export type DriverProfileUpdateWithoutVehicleInput = {
     id?: StringFieldUpdateOperationsInput | string
-    isAvailable?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumDriverStatusFieldUpdateOperationsInput | $Enums.DriverStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -10231,7 +10158,6 @@ export namespace Prisma {
   export type DriverProfileUncheckedUpdateWithoutVehicleInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    isAvailable?: BoolFieldUpdateOperationsInput | boolean
     status?: EnumDriverStatusFieldUpdateOperationsInput | $Enums.DriverStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

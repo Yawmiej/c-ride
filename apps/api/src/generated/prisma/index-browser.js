@@ -136,7 +136,6 @@ exports.Prisma.UserScalarFieldEnum = {
 exports.Prisma.DriverProfileScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  isAvailable: 'isAvailable',
   status: 'status',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

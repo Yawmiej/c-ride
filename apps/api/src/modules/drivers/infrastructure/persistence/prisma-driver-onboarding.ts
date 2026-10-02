@@ -25,7 +25,6 @@ export class PrismaDriverOnboarding implements DriverOnboarding {
           },
           data: {
             status: 'ACTIVE',
-            isAvailable: false,
           },
         });
         if (updated.count !== 1) {

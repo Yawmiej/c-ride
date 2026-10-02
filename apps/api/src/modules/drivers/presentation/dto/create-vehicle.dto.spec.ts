@@ -40,7 +40,6 @@ describe('CreateVehicleDto', () => {
     { driverProfileId: 'injected' },
     { userId: 'injected' },
     { status: 'ACTIVE' },
-    { isAvailable: true },
   ])('rejects invalid or client-controlled input %j', async (changes) => {
     await expect(validate({ ...input, ...changes })).rejects.toBeInstanceOf(
       BadRequestException,

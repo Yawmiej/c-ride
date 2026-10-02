@@ -6,7 +6,6 @@ export interface DriverProfileProps {
   id: string;
   userId: string;
   status: DriverStatus;
-  isAvailable: boolean;
   vehicle: Vehicle | null;
   createdAt: Date;
   updatedAt: Date;
@@ -29,7 +28,6 @@ export class DriverProfile {
       id,
       userId,
       status: DriverStatus.PENDING_ONBOARDING,
-      isAvailable: false,
       vehicle: null,
       createdAt: now,
       updatedAt: now,
@@ -44,9 +42,6 @@ export class DriverProfile {
   }
   get status() {
     return this.props.status;
-  }
-  get isAvailable() {
-    return this.props.isAvailable;
   }
   get vehicle() {
     return this.props.vehicle;
@@ -82,7 +77,6 @@ export class DriverProfile {
     return new DriverProfile({
       ...this.props,
       status: DriverStatus.ACTIVE,
-      isAvailable: false,
       vehicle,
       updatedAt: new Date(),
     });
@@ -93,7 +87,6 @@ export class DriverProfile {
       id: this.id,
       userId: this.userId,
       status: this.status,
-      isAvailable: this.isAvailable,
       vehicle: this.vehicle?.toSafeObject() ?? null,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
