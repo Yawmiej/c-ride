@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
+import { ApplicationError } from '@/shared/errors/application-error';
+import { ERROR_KINDS } from '@/shared/errors/error-kinds';
+import { ERROR_MESSAGES } from '@/shared/errors/error-messages';
 import { UserEntity } from '../../domain/entities/user.entity';
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { normalizeEmail } from '../commands/register-user.command';
 import { AccessTokenService } from '../contracts/access-token.service';
 import { PasswordHasher } from '../contracts/password-hasher';
-import { AuthenticationError } from '../errors/authentication.error';
 
 export interface LoginCommand {
   email: string;
@@ -31,7 +33,10 @@ export class LoginUseCase {
       !(await this.passwords.verify(user.passwordHash, command.password)) ||
       !user.isActive()
     ) {
-      throw new AuthenticationError();
+      throw new ApplicationError(
+        ERROR_KINDS.AUTHENTICATION,
+        ERROR_MESSAGES.INVALID_CREDENTIALS,
+      );
     }
 
     const accessToken = await this.tokens.issue({

@@ -1,8 +1,8 @@
 import { Prisma } from '@/generated/prisma';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
+import { ERROR_KINDS } from '@/shared/errors/error-kinds';
 import { DriverProfile } from '../../domain/entities/driver-profile.entity';
 import { Vehicle } from '../../domain/entities/vehicle.entity';
-import { DriverOnboardingConflictError } from '../../domain/errors/driver-onboarding-conflict.error';
 import { DriverStatus } from '../../domain/enums/driver-status.enum';
 import { VehicleType } from '../../domain/enums/vehicle-type.enum';
 import { PrismaDriverOnboarding } from './prisma-driver-onboarding';
@@ -52,7 +52,7 @@ describe('PrismaDriverOnboarding', () => {
 
     await expect(
       new PrismaDriverOnboarding(prisma).onboard({ profile, vehicle }),
-    ).rejects.toBeInstanceOf(DriverOnboardingConflictError);
+    ).rejects.toMatchObject({ kind: ERROR_KINDS.CONFLICT });
     expect(created).toBe(false);
   });
 
@@ -82,6 +82,6 @@ describe('PrismaDriverOnboarding', () => {
 
     await expect(
       new PrismaDriverOnboarding(prisma).onboard({ profile, vehicle }),
-    ).rejects.toBeInstanceOf(DriverOnboardingConflictError);
+    ).rejects.toMatchObject({ kind: ERROR_KINDS.CONFLICT });
   });
 });

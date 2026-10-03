@@ -1,3 +1,5 @@
+import { ERROR_MESSAGES } from '@/shared/errors/error-messages';
+
 type Environment = Record<string, string | undefined>;
 
 const requiredVariables = ['DATABASE_URL', 'JWT_SECRET', 'REDIS_URL'] as const;
@@ -7,7 +9,7 @@ export function validateEnvironment(config: Environment) {
 
   if (missingVariables.length > 0) {
     throw new Error(
-      `Missing required environment variables: ${missingVariables.join(', ')}`,
+      ERROR_MESSAGES.MISSING_ENVIRONMENT_VARIABLES(missingVariables),
     );
   }
 

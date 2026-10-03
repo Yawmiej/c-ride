@@ -1,3 +1,5 @@
+import { ERROR_KINDS } from '@/shared/errors/error-kinds';
+import { ERROR_MESSAGES } from '@/shared/errors/error-messages';
 import { DriverOnboarding } from '../contracts/driver-onboarding';
 import { DriverProfile } from '../../domain/entities/driver-profile.entity';
 import { Vehicle } from '../../domain/entities/vehicle.entity';
@@ -5,8 +7,6 @@ import { DriverStatus } from '../../domain/enums/driver-status.enum';
 import { VehicleType } from '../../domain/enums/vehicle-type.enum';
 import { DriverProfileRepository } from '../../domain/repositories/driver-profile.repository';
 import { VehicleRepository } from '../../domain/repositories/vehicle.repository';
-import { DriverOnboardingConflictError } from '../../domain/errors/driver-onboarding-conflict.error';
-import { DriverProfileNotFoundError } from '../errors/driver-profile-not-found.error';
 import { OnboardDriverUseCase } from './onboard-driver.use-case';
 
 describe('OnboardDriverUseCase', () => {
@@ -89,18 +89,21 @@ describe('OnboardDriverUseCase', () => {
   it('rejects missing profiles, duplicate plates, and ineligible profiles before persistence', async () => {
     await expect(
       createUseCase(null).useCase.execute(command),
-    ).rejects.toBeInstanceOf(DriverProfileNotFoundError);
+    ).rejects.toMatchObject({
+      kind: ERROR_KINDS.NOT_FOUND,
+      message: ERROR_MESSAGES.NOT_FOUND('Driver profile'),
+    });
 
     const duplicate = createUseCase(profile(), true);
-    await expect(duplicate.useCase.execute(command)).rejects.toBeInstanceOf(
-      DriverOnboardingConflictError,
-    );
+    await expect(duplicate.useCase.execute(command)).rejects.toMatchObject({
+      kind: ERROR_KINDS.CONFLICT,
+    });
     expect(duplicate.persisted()).toBeNull();
 
     const active = createUseCase(profile(DriverStatus.ACTIVE));
-    await expect(active.useCase.execute(command)).rejects.toBeInstanceOf(
-      DriverOnboardingConflictError,
-    );
+    await expect(active.useCase.execute(command)).rejects.toMatchObject({
+      kind: ERROR_KINDS.CONFLICT,
+    });
     expect(active.persisted()).toBeNull();
   });
 });

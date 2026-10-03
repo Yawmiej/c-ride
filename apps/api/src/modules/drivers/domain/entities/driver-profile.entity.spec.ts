@@ -1,3 +1,4 @@
+import { ERROR_MESSAGES } from '@/shared/errors/error-messages';
 import { DriverProfile } from './driver-profile.entity';
 import { Vehicle } from './vehicle.entity';
 import { DriverStatus } from '../enums/driver-status.enum';
@@ -56,6 +57,6 @@ describe('DriverProfile', () => {
           createdAt: now,
           updatedAt: now,
         }),
-    ).toThrow('A vehicle must belong to its driver profile');
+    ).toThrow(ERROR_MESSAGES.VEHICLE_PROFILE_MISMATCH);
   });
 });

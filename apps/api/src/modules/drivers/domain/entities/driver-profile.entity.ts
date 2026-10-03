@@ -1,5 +1,7 @@
+import { ApplicationError } from '@/shared/errors/application-error';
+import { ERROR_KINDS } from '@/shared/errors/error-kinds';
+import { ERROR_MESSAGES } from '@/shared/errors/error-messages';
 import { DriverStatus } from '../enums/driver-status.enum';
-import { DriverOnboardingConflictError } from '../errors/driver-onboarding-conflict.error';
 import { Vehicle, VehicleProps } from './vehicle.entity';
 
 export interface DriverProfileProps {
@@ -18,7 +20,7 @@ export interface DriverProfileData extends Omit<DriverProfileProps, 'vehicle'> {
 export class DriverProfile {
   constructor(private readonly props: DriverProfileProps) {
     if (props.vehicle && props.vehicle.driverProfileId !== props.id) {
-      throw new Error('A vehicle must belong to its driver profile');
+      throw new Error(ERROR_MESSAGES.VEHICLE_PROFILE_MISMATCH);
     }
   }
 
@@ -59,18 +61,21 @@ export class DriverProfile {
 
   activateWith(vehicle: Vehicle): DriverProfile {
     if (this.status !== DriverStatus.PENDING_ONBOARDING) {
-      throw new DriverOnboardingConflictError(
-        'Only pending drivers can complete onboarding',
+      throw new ApplicationError(
+        ERROR_KINDS.CONFLICT,
+        ERROR_MESSAGES.DRIVER_ONBOARDING_REQUIRES_PENDING,
       );
     }
     if (this.hasVehicle()) {
-      throw new DriverOnboardingConflictError(
-        'A driver profile can have only one vehicle',
+      throw new ApplicationError(
+        ERROR_KINDS.CONFLICT,
+        ERROR_MESSAGES.DRIVER_ALREADY_HAS_VEHICLE,
       );
     }
     if (vehicle.driverProfileId !== this.id) {
-      throw new DriverOnboardingConflictError(
-        'A vehicle must belong to its driver profile',
+      throw new ApplicationError(
+        ERROR_KINDS.CONFLICT,
+        ERROR_MESSAGES.VEHICLE_PROFILE_MISMATCH,
       );
     }
 

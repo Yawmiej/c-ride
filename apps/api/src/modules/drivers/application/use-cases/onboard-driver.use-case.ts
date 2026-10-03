@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
+import { ApplicationError } from '@/shared/errors/application-error';
+import { ERROR_KINDS } from '@/shared/errors/error-kinds';
+import { ERROR_MESSAGES } from '@/shared/errors/error-messages';
 import { DriverProfileData } from '../../domain/entities/driver-profile.entity';
 import { Vehicle } from '../../domain/entities/vehicle.entity';
 import { VehicleType } from '../../domain/enums/vehicle-type.enum';
 import { DriverProfileRepository } from '../../domain/repositories/driver-profile.repository';
 import { VehicleRepository } from '../../domain/repositories/vehicle.repository';
-import { DriverOnboardingConflictError } from '../../domain/errors/driver-onboarding-conflict.error';
 import { DriverOnboarding } from '../contracts/driver-onboarding';
-import { DriverProfileNotFoundError } from '../errors/driver-profile-not-found.error';
 
 export interface OnboardDriverCommand {
   userId: string;
@@ -33,11 +34,17 @@ export class OnboardDriverUseCase {
 
   async execute(command: OnboardDriverCommand): Promise<DriverProfileData> {
     const profile = await this.profiles.findByUserId(command.userId);
-    if (!profile) throw new DriverProfileNotFoundError();
+    if (!profile) {
+      throw new ApplicationError(
+        ERROR_KINDS.NOT_FOUND,
+        ERROR_MESSAGES.NOT_FOUND('Driver profile'),
+      );
+    }
 
     if (await this.vehicles.findByLicensePlate(command.licensePlate)) {
-      throw new DriverOnboardingConflictError(
-        'License plate is already in use',
+      throw new ApplicationError(
+        ERROR_KINDS.CONFLICT,
+        ERROR_MESSAGES.LICENSE_PLATE_IN_USE,
       );
     }
 

@@ -1,14 +1,13 @@
-export type ApplicationErrorKind =
-  | 'authentication'
-  | 'forbidden'
-  | 'not-found'
-  | 'conflict';
+import { ApplicationErrorKind } from './error-kinds';
 
-export abstract class ApplicationError extends Error {
-  abstract readonly kind: ApplicationErrorKind;
+export type { ApplicationErrorKind } from './error-kinds';
 
-  protected constructor(message: string) {
+export class ApplicationError extends Error {
+  constructor(
+    readonly kind: ApplicationErrorKind,
+    message: string,
+  ) {
     super(message);
-    this.name = new.target.name;
+    this.name = ApplicationError.name;
   }
 }

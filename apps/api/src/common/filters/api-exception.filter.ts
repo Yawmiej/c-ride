@@ -7,6 +7,8 @@ import {
   Logger,
 } from '@nestjs/common';
 import { ApplicationError } from '../../shared/errors/application-error';
+import { ERROR_KINDS } from '../../shared/errors/error-kinds';
+import { ERROR_MESSAGES } from '../../shared/errors/error-messages';
 
 export interface ApiErrorResponse {
   statusCode: number;
@@ -51,8 +53,8 @@ export class ApiExceptionFilter implements ExceptionFilter {
       return {
         statusCode: this.statusForApplicationError(exception),
         message:
-          exception.kind === 'authentication'
-            ? 'Invalid authentication'
+          exception.kind === ERROR_KINDS.AUTHENTICATION
+            ? ERROR_MESSAGES.INVALID_AUTHENTICATION
             : exception.message,
       };
     }
@@ -70,7 +72,7 @@ export class ApiExceptionFilter implements ExceptionFilter {
     );
     return {
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      message: 'Internal server error',
+      message: ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
     };
   }
 
@@ -83,7 +85,9 @@ export class ApiExceptionFilter implements ExceptionFilter {
       const { message } = body as { message?: unknown };
       if (typeof message === 'string') return message;
       if (Array.isArray(message))
-        return message.filter((item): item is string => typeof item === 'string');
+        return message.filter(
+          (item): item is string => typeof item === 'string',
+        );
     }
     return fallback;
   }
@@ -101,10 +105,10 @@ export class ApiExceptionFilter implements ExceptionFilter {
 
   private statusForApplicationError(error: ApplicationError): HttpStatus {
     const statuses: Record<ApplicationError['kind'], HttpStatus> = {
-      authentication: HttpStatus.UNAUTHORIZED,
-      forbidden: HttpStatus.FORBIDDEN,
-      'not-found': HttpStatus.NOT_FOUND,
-      conflict: HttpStatus.CONFLICT,
+      [ERROR_KINDS.AUTHENTICATION]: HttpStatus.UNAUTHORIZED,
+      [ERROR_KINDS.FORBIDDEN]: HttpStatus.FORBIDDEN,
+      [ERROR_KINDS.NOT_FOUND]: HttpStatus.NOT_FOUND,
+      [ERROR_KINDS.CONFLICT]: HttpStatus.CONFLICT,
     };
     return statuses[error.kind];
   }

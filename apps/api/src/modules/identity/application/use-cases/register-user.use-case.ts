@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
+import { ApplicationError } from '@/shared/errors/application-error';
+import { ERROR_KINDS } from '@/shared/errors/error-kinds';
+import { ERROR_MESSAGES } from '@/shared/errors/error-messages';
 import { User, UserEntity } from '../../domain/entities/user.entity';
 import { DriverProfileData } from '../../../drivers/domain/entities/driver-profile.entity';
 import { UserStatus } from '../../domain/enums/user-status.enum';
@@ -11,7 +14,6 @@ import {
 import { AccountRegistration } from '../contracts/account-registration';
 import { AccessTokenService } from '../contracts/access-token.service';
 import { PasswordHasher } from '../contracts/password-hasher';
-import { RegistrationConflictError } from '../errors/registration-conflict.error';
 
 export interface RegisterUserResult {
   accessToken: string;
@@ -31,14 +33,20 @@ export class RegisterUserUseCase {
     const command = toRegisterUserCommand(input);
 
     if (await this.users.findByEmail(command.email)) {
-      throw new RegistrationConflictError();
+      throw new ApplicationError(
+        ERROR_KINDS.CONFLICT,
+        ERROR_MESSAGES.REGISTRATION_CONFLICT,
+      );
     }
 
     if (
       command.phoneNumber &&
       (await this.users.findByPhoneNumber(command.phoneNumber))
     ) {
-      throw new RegistrationConflictError();
+      throw new ApplicationError(
+        ERROR_KINDS.CONFLICT,
+        ERROR_MESSAGES.REGISTRATION_CONFLICT,
+      );
     }
 
     const passwordHash = await this.passwords.hash(command.password);

@@ -13,14 +13,18 @@ import {
 } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
-import { ApiBearerAuth, ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsInt, IsString, IsUUID, Min } from 'class-validator';
 import { configureApplication } from './app-setup';
-import { AuthenticationError } from './modules/identity/application/errors/authentication.error';
-import { IdentityForbiddenOperationError } from './modules/identity/application/errors/identity-forbidden-operation.error';
-import { IdentityResourceNotFoundError } from './modules/identity/application/errors/identity-resource-not-found.error';
-import { RegistrationConflictError } from './modules/identity/application/errors/registration-conflict.error';
+import { ApplicationError } from './shared/errors/application-error';
+import { ERROR_KINDS } from './shared/errors/error-kinds';
+import { ERROR_MESSAGES } from './shared/errors/error-messages';
 import { IdentityModule } from './modules/identity/identity.module';
 import { PrismaService } from './infrastructure/database/prisma.service';
 import { AccessTokenService } from './modules/identity/application/contracts/access-token.service';
@@ -53,8 +57,12 @@ class PaginationDto {
 @Injectable()
 class BearerGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
-    return context.switchToHttp().getRequest<{ headers: { authorization?: string } }>()
-      .headers.authorization === 'Bearer test-token';
+    return (
+      context
+        .switchToHttp()
+        .getRequest<{ headers: { authorization?: string } }>().headers
+        .authorization === 'Bearer test-token'
+    );
   }
 }
 
@@ -88,14 +96,26 @@ class TestController {
   @Get('error/:kind')
   error(@Param('kind') kind: string) {
     switch (kind) {
-      case 'authentication':
-        throw new AuthenticationError();
-      case 'forbidden':
-        throw new IdentityForbiddenOperationError();
+      case ERROR_KINDS.AUTHENTICATION:
+        throw new ApplicationError(
+          ERROR_KINDS.AUTHENTICATION,
+          ERROR_MESSAGES.INVALID_AUTHENTICATION,
+        );
+      case ERROR_KINDS.FORBIDDEN:
+        throw new ApplicationError(
+          ERROR_KINDS.FORBIDDEN,
+          ERROR_MESSAGES.OPERATION_FORBIDDEN,
+        );
       case 'missing':
-        throw new IdentityResourceNotFoundError();
-      case 'conflict':
-        throw new RegistrationConflictError();
+        throw new ApplicationError(
+          ERROR_KINDS.NOT_FOUND,
+          ERROR_MESSAGES.NOT_FOUND('Resource'),
+        );
+      case ERROR_KINDS.CONFLICT:
+        throw new ApplicationError(
+          ERROR_KINDS.CONFLICT,
+          ERROR_MESSAGES.ALREADY_EXISTS('Resource'),
+        );
       default:
         throw new Error('database password=do-not-leak');
     }
@@ -174,7 +194,11 @@ describe('API setup', () => {
     expect(valid.status).toBe(200);
     expect(await valid.json()).toEqual({ page: 2, limit: 20 });
 
-    for (const query of ['page=true&limit=20', 'page=1.5&limit=20', 'page=0&limit=20']) {
+    for (const query of [
+      'page=true&limit=20',
+      'page=1.5&limit=20',
+      'page=0&limit=20',
+    ]) {
       const response = await fetch(`${baseUrl}/api/v1/testing/page?${query}`);
       expect(response.status).toBe(400);
     }
@@ -182,23 +206,26 @@ describe('API setup', () => {
   });
 
   it.each([
-    ['authentication', 401, 'UNAUTHORIZED'],
-    ['forbidden', 403, 'FORBIDDEN'],
+    [ERROR_KINDS.AUTHENTICATION, 401, 'UNAUTHORIZED'],
+    [ERROR_KINDS.FORBIDDEN, 403, 'FORBIDDEN'],
     ['missing', 404, 'NOT_FOUND'],
-    ['conflict', 409, 'CONFLICT'],
+    [ERROR_KINDS.CONFLICT, 409, 'CONFLICT'],
     ['unexpected', 500, 'INTERNAL_ERROR'],
-  ])('maps %s errors to the stable public boundary', async (kind, status, code) => {
-    const response = await fetch(`${baseUrl}/api/v1/testing/error/${kind}`);
-    expect(response.status).toBe(status);
-    const body = (await response.json()) as Record<string, unknown>;
-    expect(body).toMatchObject({
-      statusCode: status,
-      code,
-      path: `/api/v1/testing/error/${kind}`,
-    });
-    expect(JSON.stringify(body)).not.toContain('database password');
-    expect(JSON.stringify(body)).not.toContain('stack');
-  });
+  ])(
+    'maps %s errors to the stable public boundary',
+    async (kind, status, code) => {
+      const response = await fetch(`${baseUrl}/api/v1/testing/error/${kind}`);
+      expect(response.status).toBe(status);
+      const body = (await response.json()) as Record<string, unknown>;
+      expect(body).toMatchObject({
+        statusCode: status,
+        code,
+        path: `/api/v1/testing/error/${kind}`,
+      });
+      expect(JSON.stringify(body)).not.toContain('database password');
+      expect(JSON.stringify(body)).not.toContain('stack');
+    },
+  );
 
   it('serves prefixed Swagger documentation and protects the documented route', async () => {
     const documentation = await fetch(`${baseUrl}/api/v1/docs-json`);
@@ -213,7 +240,9 @@ describe('API setup', () => {
       { 'access-token': [] },
     ]);
 
-    expect((await fetch(`${baseUrl}/api/v1/testing/protected`)).status).toBe(403);
+    expect((await fetch(`${baseUrl}/api/v1/testing/protected`)).status).toBe(
+      403,
+    );
     const response = await fetch(`${baseUrl}/api/v1/testing/protected`, {
       headers: { authorization: 'Bearer test-token' },
     });
@@ -228,6 +257,9 @@ describe('API setup', () => {
       headers: { authorization: `Bearer ${token}` },
     });
     expect(me.status).toBe(200);
-    expect(await me.json()).toMatchObject({ id: identity.id, email: identity.email });
+    expect(await me.json()).toMatchObject({
+      id: identity.id,
+      email: identity.email,
+    });
   });
 });

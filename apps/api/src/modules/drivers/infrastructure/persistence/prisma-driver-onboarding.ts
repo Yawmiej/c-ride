@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@/generated/prisma';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
+import { ApplicationError } from '@/shared/errors/application-error';
+import { ERROR_KINDS } from '@/shared/errors/error-kinds';
+import { ERROR_MESSAGES } from '@/shared/errors/error-messages';
 import {
   DriverOnboarding,
   DriverOnboardingInput,
 } from '../../application/contracts/driver-onboarding';
-import { DriverOnboardingConflictError } from '../../domain/errors/driver-onboarding-conflict.error';
 import { DriverProfile } from '../../domain/entities/driver-profile.entity';
 import { DriverProfileMapper } from './driver-profile.mapper';
 import { VehicleMapper } from './vehicle.mapper';
@@ -28,8 +30,9 @@ export class PrismaDriverOnboarding implements DriverOnboarding {
           },
         });
         if (updated.count !== 1) {
-          throw new DriverOnboardingConflictError(
-            'Driver onboarding is no longer available',
+          throw new ApplicationError(
+            ERROR_KINDS.CONFLICT,
+            ERROR_MESSAGES.DRIVER_ONBOARDING_UNAVAILABLE,
           );
         }
 
@@ -47,8 +50,9 @@ export class PrismaDriverOnboarding implements DriverOnboarding {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
-        throw new DriverOnboardingConflictError(
-          'License plate is already in use',
+        throw new ApplicationError(
+          ERROR_KINDS.CONFLICT,
+          ERROR_MESSAGES.LICENSE_PLATE_IN_USE,
         );
       }
       throw error;

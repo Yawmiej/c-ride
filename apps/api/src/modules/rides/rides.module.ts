@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../../infrastructure/database/database.module';
+import { IdentityModule } from '../identity/identity.module';
 import { CreateRideUseCase } from './application/use-cases/create-ride.use-case';
 import { GetRideUseCase } from './application/use-cases/get-ride.use-case';
 import { ListAvailableRidesUseCase } from './application/use-cases/list-available-rides.use-case';
@@ -8,7 +9,7 @@ import { PrismaRideRepository } from './infrastructure/persistence/prisma-ride.r
 import { RidesController } from './presentation/controllers/rides.controller';
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [DatabaseModule, IdentityModule],
   controllers: [RidesController],
   providers: [
     CreateRideUseCase,

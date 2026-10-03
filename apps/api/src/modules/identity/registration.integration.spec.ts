@@ -10,6 +10,7 @@ import { Test } from '@nestjs/testing';
 import { randomUUID } from 'node:crypto';
 import { config } from 'dotenv';
 import { createValidationPipe } from '../../common/validation/create-validation-pipe';
+import { ERROR_MESSAGES } from '../../shared/errors/error-messages';
 import { PrismaService } from '../../infrastructure/database/prisma.service';
 import { PrismaDriverCreation } from '../drivers/infrastructure/persistence/prisma-driver-creation';
 import { AccessTokenService } from './application/contracts/access-token.service';
@@ -309,7 +310,7 @@ databaseTests('Registration and login with PostgreSQL', () => {
         );
         expect(response.status).toBe(401);
         expect(await response.json()).toMatchObject({
-          message: 'Invalid email or password',
+          message: ERROR_MESSAGES.INVALID_CREDENTIALS,
         });
         expect(issued).toBe(false);
       } finally {
@@ -468,7 +469,7 @@ databaseTests('Registration and login with PostgreSQL', () => {
       const response = await me(header);
       expect(response.status).toBe(401);
       expect(await response.json()).toMatchObject({
-        message: 'Invalid authentication',
+        message: ERROR_MESSAGES.INVALID_AUTHENTICATION,
       });
     }
   });

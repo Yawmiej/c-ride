@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { ERROR_MESSAGES } from '@/shared/errors/error-messages';
 import { UserRole } from '../../domain/enums/user-role.enum';
 import { ROLES_METADATA_KEY } from '../decorators/roles.decorator';
 import { AuthenticatedRequest } from '../types/authenticated-request';
@@ -21,7 +22,9 @@ export class RolesGuard implements CanActivate {
 
     if (!roles?.length) return true;
     const { user } = context.switchToHttp().getRequest<AuthenticatedRequest>();
-    if (!user) throw new UnauthorizedException('Invalid authentication');
+    if (!user) {
+      throw new UnauthorizedException(ERROR_MESSAGES.INVALID_AUTHENTICATION);
+    }
     return roles.includes(user.role);
   }
 }

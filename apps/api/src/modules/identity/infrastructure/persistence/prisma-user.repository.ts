@@ -2,11 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@/generated/prisma';
 
 import { PrismaService } from '@/infrastructure/database/prisma.service';
+import { ApplicationError } from '@/shared/errors/application-error';
+import { ERROR_KINDS } from '@/shared/errors/error-kinds';
+import { ERROR_MESSAGES } from '@/shared/errors/error-messages';
 
 import { User } from '../../domain/entities/user.entity';
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { UserMapper } from './user.mapper';
-import { RegistrationConflictError } from '../../application/errors/registration-conflict.error';
 
 @Injectable()
 export class PrismaUserRepository implements UserRepository {
@@ -48,7 +50,10 @@ export class PrismaUserRepository implements UserRepository {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === 'P2002'
       ) {
-        throw new RegistrationConflictError();
+        throw new ApplicationError(
+          ERROR_KINDS.CONFLICT,
+          ERROR_MESSAGES.REGISTRATION_CONFLICT,
+        );
       }
       throw error;
     }

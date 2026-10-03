@@ -1,3 +1,4 @@
+import { ConfigModule } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
 import { PrismaService } from '../../infrastructure/database/prisma.service';
 import { CreateRideUseCase } from './application/use-cases/create-ride.use-case';
@@ -10,7 +11,21 @@ import { RidesModule } from './rides.module';
 
 describe('RidesModule', () => {
   it('binds the abstract repository and context entry points', async () => {
-    const module = await Test.createTestingModule({ imports: [RidesModule] })
+    const module = await Test.createTestingModule({
+      imports: [
+        ConfigModule.forRoot({
+          isGlobal: true,
+          ignoreEnvFile: true,
+          ignoreEnvVars: true,
+          load: [
+            () => ({
+              auth: { jwtSecret: 'rides-test-secret', jwtExpiresIn: '1h' },
+            }),
+          ],
+        }),
+        RidesModule,
+      ],
+    })
       .overrideProvider(PrismaService)
       .useValue({})
       .compile();

@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
+import { ApplicationError } from '@/shared/errors/application-error';
+import { ERROR_KINDS } from '@/shared/errors/error-kinds';
+import { ERROR_MESSAGES } from '@/shared/errors/error-messages';
 import { UserRepository } from '../../domain/repositories/user.repository';
 import { AccessTokenService } from '../contracts/access-token.service';
-import { AuthenticationError } from '../errors/authentication.error';
 import { AuthenticatedUser } from '../types/authenticated-user';
 
 @Injectable()
@@ -19,10 +21,18 @@ export class AuthenticateUserUseCase {
         claims.sub,
       )
     ) {
-      throw new AuthenticationError();
+      throw new ApplicationError(
+        ERROR_KINDS.AUTHENTICATION,
+        ERROR_MESSAGES.INVALID_AUTHENTICATION,
+      );
     }
     const user = await this.users.findById(claims.sub);
-    if (!user?.isActive()) throw new AuthenticationError();
+    if (!user?.isActive()) {
+      throw new ApplicationError(
+        ERROR_KINDS.AUTHENTICATION,
+        ERROR_MESSAGES.INVALID_AUTHENTICATION,
+      );
+    }
     return { id: user.id, role: user.role };
   }
 }
