@@ -3,7 +3,6 @@ import { Test } from '@nestjs/testing';
 import { PrismaService } from '../../infrastructure/database/prisma.service';
 import { CreateRideUseCase } from './application/use-cases/create-ride.use-case';
 import { GetRideUseCase } from './application/use-cases/get-ride.use-case';
-import { ListAvailableRidesUseCase } from './application/use-cases/list-available-rides.use-case';
 import { RideRepository } from './domain/repositories/ride.repository';
 import { PrismaRideRepository } from './infrastructure/persistence/prisma-ride.repository';
 import { RidesController } from './presentation/controllers/rides.controller';
@@ -34,10 +33,6 @@ describe('RidesModule', () => {
     expect(module.get(RideRepository)).toBeInstanceOf(PrismaRideRepository);
     expect(module.get(CreateRideUseCase)).toBeInstanceOf(CreateRideUseCase);
     expect(module.get(GetRideUseCase)).toBeInstanceOf(GetRideUseCase);
-    expect(module.get(ListAvailableRidesUseCase)).toBeInstanceOf(
-      ListAvailableRidesUseCase,
-    );
-
     await module.close();
   });
 });

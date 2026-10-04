@@ -4,12 +4,10 @@ import { RideStatus } from '../../domain/enums/ride-status.enum';
 import { RideRepository } from '../../domain/repositories/ride.repository';
 import { CreateRideUseCase } from './create-ride.use-case';
 import { GetRideUseCase } from './get-ride.use-case';
-import { ListAvailableRidesUseCase } from './list-available-rides.use-case';
 
 class InMemoryRideRepository extends RideRepository {
   created: Ride | null = null;
   rideById: Ride | null = null;
-  available: Ride[] = [];
   requestedId: string | null = null;
 
   async create(ride: Ride): Promise<Ride> {
@@ -20,10 +18,6 @@ class InMemoryRideRepository extends RideRepository {
   async findById(id: string): Promise<Ride | null> {
     this.requestedId = id;
     return this.rideById;
-  }
-
-  async findAvailable(): Promise<Ride[]> {
-    return this.available;
   }
 }
 
@@ -122,14 +116,5 @@ describe('Ride use cases', () => {
     await expect(
       useCase.execute({ rideId: 'ride-id', actorId: 'other-user-id' }),
     ).rejects.toMatchObject({ kind: ERROR_KINDS.FORBIDDEN });
-  });
-
-  it('delegates requested and unassigned ride lookup to the repository', async () => {
-    const repository = new InMemoryRideRepository();
-    repository.available = [ride];
-
-    await expect(
-      new ListAvailableRidesUseCase(repository).execute(),
-    ).resolves.toEqual([ride]);
   });
 });

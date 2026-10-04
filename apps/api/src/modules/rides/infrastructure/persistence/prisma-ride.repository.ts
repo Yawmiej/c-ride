@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { Ride } from '../../domain/entities/ride.entity';
-import { RideStatus } from '../../domain/enums/ride-status.enum';
 import { RideRepository } from '../../domain/repositories/ride.repository';
 import { RideMapper } from './ride.mapper';
 
@@ -32,13 +31,5 @@ export class PrismaRideRepository implements RideRepository {
   async findById(id: string): Promise<Ride | null> {
     const ride = await this.prisma.ride.findUnique({ where: { id } });
     return ride ? RideMapper.toDomain(ride) : null;
-  }
-
-  async findAvailable(): Promise<Ride[]> {
-    const rides = await this.prisma.ride.findMany({
-      where: { status: RideStatus.REQUESTED, driverId: null },
-      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
-    });
-    return rides.map(RideMapper.toDomain);
   }
 }
