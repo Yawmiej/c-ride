@@ -1,3 +1,4 @@
+import { AcceptRideUseCase } from '../../application/use-cases/accept-ride.use-case';
 import {
   Body,
   Controller,
@@ -5,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -12,6 +14,7 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiCreatedResponse,
+  ApiConflictResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
   ApiOkResponse,
@@ -40,6 +43,7 @@ export class RidesController {
   constructor(
     private readonly createRide: CreateRideUseCase,
     private readonly getRide: GetRideUseCase,
+    private readonly acceptRide: AcceptRideUseCase,
   ) {}
 
   @Post()
@@ -55,6 +59,23 @@ export class RidesController {
   ): Promise<RideResponseDto> {
     return toRideResponse(
       await this.createRide.execute({ riderId: user.id, ...dto }),
+    );
+  }
+
+  @Patch(':id/accept')
+  @Roles(UserRole.DRIVER)
+  @ApiOkResponse({ type: RideResponseDto })
+  @ApiBadRequestResponse({ type: ApiErrorResponseDto })
+  @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
+  @ApiForbiddenResponse({ type: ApiErrorResponseDto })
+  @ApiNotFoundResponse({ type: ApiErrorResponseDto })
+  @ApiConflictResponse({ type: ApiErrorResponseDto })
+  async accept(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param() params: RideIdParamDto,
+  ): Promise<RideResponseDto> {
+    return toRideResponse(
+      await this.acceptRide.execute({ rideId: params.id, driverId: user.id }),
     );
   }
 

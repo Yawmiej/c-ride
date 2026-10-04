@@ -10,13 +10,20 @@ export interface RideActor {
 }
 
 export class RideTransitionPolicy {
-  static assertAllowed(ride: Ride, next: RideStatus, actor: RideActor): void {
+  static assertAllowed(
+    ride: Ride,
+    nextStatus: RideStatus,
+    actor: RideActor,
+  ): void {
     const allowed =
       (ride.status === RideStatus.REQUESTED &&
-        (next === RideStatus.ACCEPTED || next === RideStatus.CANCELLED)) ||
+        (nextStatus === RideStatus.ACCEPTED ||
+          nextStatus === RideStatus.CANCELLED)) ||
       (ride.status === RideStatus.ACCEPTED &&
-        (next === RideStatus.IN_PROGRESS || next === RideStatus.CANCELLED)) ||
-      (ride.status === RideStatus.IN_PROGRESS && next === RideStatus.COMPLETED);
+        (nextStatus === RideStatus.IN_PROGRESS ||
+          nextStatus === RideStatus.CANCELLED)) ||
+      (ride.status === RideStatus.IN_PROGRESS &&
+        nextStatus === RideStatus.COMPLETED);
 
     if (!allowed) {
       throw new ApplicationError(
@@ -29,12 +36,12 @@ export class RideTransitionPolicy {
     const isDriver = actor.role === 'DRIVER' && actor.id === ride.driverId;
     let permitted: boolean;
 
-    if (next === RideStatus.ACCEPTED) {
+    if (nextStatus === RideStatus.ACCEPTED) {
       permitted =
         actor.role === 'DRIVER' &&
         actor.id !== ride.riderId &&
         ride.driverId === null;
-    } else if (next === RideStatus.CANCELLED) {
+    } else if (nextStatus === RideStatus.CANCELLED) {
       permitted = isRider || (ride.status === RideStatus.ACCEPTED && isDriver);
     } else {
       permitted = isDriver;

@@ -1,3 +1,4 @@
+import { PrismaDriverEligibility } from './infrastructure/persistence/prisma-driver-eligibility';
 import { DriverEligibility } from './application/contracts/driver-eligibility';
 import { CheckDriverEligibilityUseCase } from './application/use-cases/check-driver-eligibility.use-case';
 import { Module } from '@nestjs/common';
@@ -17,6 +18,7 @@ import { DriversController } from './presentation/controllers/drivers.controller
   imports: [DatabaseModule],
   controllers: [DriversController],
   providers: [
+    PrismaDriverEligibility,
     { provide: DriverEligibility, useClass: CheckDriverEligibilityUseCase },
     PrismaDriverCreation,
     GetDriverProfileUseCase,
@@ -35,6 +37,7 @@ import { DriversController } from './presentation/controllers/drivers.controller
     },
   ],
   exports: [
+    PrismaDriverEligibility,
     DriverEligibility,
     PrismaDriverCreation,
     GetDriverProfileUseCase,

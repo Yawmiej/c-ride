@@ -2,7 +2,7 @@
 
 NestJS backend for the C-Ride assessment.
 
-Implemented workflows include authentication, driver onboarding, and ride creation/retrieval. Ride lifecycle foundations are described below.
+Implemented workflows include authentication, driver onboarding, ride creation/retrieval, and driver acceptance. Ride lifecycle foundations are described below.
 
 ## Ride rules (Phase 5.1–5.2)
 
@@ -18,6 +18,58 @@ profile, and a vehicle. It returns false for an unavailable account or profile.
 The existing global IdentityModule supplies the public account lookup without a
 circular module import or exposing credentials.
 
-These are domain/application foundations. Acceptance and status HTTP endpoints
-and their persistence are deferred to Phases 5.3–5.6. Acceptance must check driver
-eligibility before applying the domain transition. Tests are deferred by request.
+## Driver acceptance (Phase 5.3–5.5)
+
+`PATCH /api/v1/rides/:id/accept` requires a driver bearer token. No body is needed;
+the driver ID comes from the authenticated user, never from request body data.
+
+1. JWT authentication reloads the account and rejects inactive users. The role
+   guard restricts this operation to DRIVER.
+2. `AcceptRideUseCase` checks driver eligibility through the drivers application
+   boundary. It loads the ride, rejects missing/unavailable rides, and asks the
+   domain transition policy whether this driver can accept it.
+3. `RideAcceptance` is the abstract persistence boundary. Its Prisma adapter opens
+   a PostgreSQL transaction at READ COMMITTED isolation.
+4. The drivers-owned persistence helper takes FOR SHARE locks on the driver's
+   account, profile, and vehicle. It reloads their state and applies the same
+   eligibility policy. These locks block changes/deletions of those rows until
+   the acceptance transaction finishes.
+5. A conditional UPDATE assigns the driver and changes the status to ACCEPTED
+   only where the ride ID matches, status is REQUESTED, and driverId is null.
+   This is the decisive concurrency check; the earlier application read alone
+   cannot guarantee the ride is still available.
+6. One updated row means success. Zero updated rows returns a typed conflict,
+   which the use case maps to HTTP 409. On success the adapter reads the saved
+   ride inside the transaction, commits, and then returns it for safe response
+   mapping. A database error rolls back the transaction.
+
+For two drivers accepting the same ride, PostgreSQL serializes their updates to
+that row. If the first commits, the second rechecks its WHERE condition against
+the updated row. The ride is now ACCEPTED with a driver, so the second update
+matches zero rows and cannot overwrite the winner. If the first rolls back,
+the second can still succeed. This works across API processes because the
+coordination happens in PostgreSQL, not in a JavaScript lock or Redis.
+
+Responses: 200 for success, 400 for an invalid ride UUID, 401 for failed
+authentication, 403 for a non-driver/ineligible driver, 404 for a missing ride,
+and 409 for an unavailable ride or lost acceptance race. Repeating acceptance
+after success also returns 409; no idempotency mechanism is added.
+
+`UpdateRideStatusDto` accepts only IN_PROGRESS, COMPLETED, or CANCELLED. It
+cannot request ACCEPTED or reset a ride to REQUESTED. The global validation pipe
+rejects extra fields such as driverId. The status endpoint itself is deferred to
+Phase 5.6 and must use this DTO and the domain transition policy.
+
+### PostgreSQL verification
+
+Run from `apps/api` with a configured PostgreSQL DATABASE_URL and applied schema:
+
+```sh
+RUN_DATABASE_TESTS=1 pnpm run test --runInBand --runTestsByPath src/modules/rides/ride-acceptance.integration.spec.ts
+```
+
+The test creates one rider, two eligible drivers, and one requested ride. It
+synchronizes the real ride reads so both HTTP requests see REQUESTED before
+continuing, then asserts one 200, one 409, and the persisted winning driver.
+It uses real authentication, provider wiring, Prisma, and PostgreSQL, and removes
+only its own fixtures. Other tests remain deferred by request.

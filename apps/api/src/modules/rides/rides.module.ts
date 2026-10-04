@@ -1,3 +1,6 @@
+import { AcceptRideUseCase } from './application/use-cases/accept-ride.use-case';
+import { RideAcceptance } from './application/contracts/ride-acceptance';
+import { PrismaRideAcceptance } from './infrastructure/persistence/prisma-ride-acceptance';
 import { DriversModule } from '../drivers/drivers.module';
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../../infrastructure/database/database.module';
@@ -12,10 +15,12 @@ import { RidesController } from './presentation/controllers/rides.controller';
   imports: [DatabaseModule, IdentityModule, DriversModule],
   controllers: [RidesController],
   providers: [
+    AcceptRideUseCase,
+    { provide: RideAcceptance, useClass: PrismaRideAcceptance },
     CreateRideUseCase,
     GetRideUseCase,
     { provide: RideRepository, useClass: PrismaRideRepository },
   ],
-  exports: [CreateRideUseCase, GetRideUseCase],
+  exports: [AcceptRideUseCase, CreateRideUseCase, GetRideUseCase],
 })
 export class RidesModule {}
