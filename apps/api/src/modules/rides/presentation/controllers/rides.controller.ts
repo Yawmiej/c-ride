@@ -1,3 +1,5 @@
+import { ChangeRideStatusUseCase } from '../../application/use-cases/change-ride-status.use-case';
+import { UpdateRideStatusDto } from '../dto/update-ride-status.dto';
 import { AcceptRideUseCase } from '../../application/use-cases/accept-ride.use-case';
 import {
   Body,
@@ -44,6 +46,7 @@ export class RidesController {
     private readonly createRide: CreateRideUseCase,
     private readonly getRide: GetRideUseCase,
     private readonly acceptRide: AcceptRideUseCase,
+    private readonly changeRideStatus: ChangeRideStatusUseCase,
   ) {}
 
   @Post()
@@ -76,6 +79,28 @@ export class RidesController {
   ): Promise<RideResponseDto> {
     return toRideResponse(
       await this.acceptRide.execute({ rideId: params.id, driverId: user.id }),
+    );
+  }
+
+  @Patch(':id/status')
+  @Roles(UserRole.RIDER, UserRole.DRIVER)
+  @ApiOkResponse({ type: RideResponseDto })
+  @ApiBadRequestResponse({ type: ApiErrorResponseDto })
+  @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
+  @ApiForbiddenResponse({ type: ApiErrorResponseDto })
+  @ApiNotFoundResponse({ type: ApiErrorResponseDto })
+  @ApiConflictResponse({ type: ApiErrorResponseDto })
+  async changeStatus(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param() params: RideIdParamDto,
+    @Body() dto: UpdateRideStatusDto,
+  ): Promise<RideResponseDto> {
+    return toRideResponse(
+      await this.changeRideStatus.execute({
+        rideId: params.id,
+        actor: user,
+        status: dto.status,
+      }),
     );
   }
 

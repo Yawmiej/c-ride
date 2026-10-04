@@ -10,6 +10,21 @@ class InMemoryRideRepository extends RideRepository {
   rideById: Ride | null = null;
   requestedId: string | null = null;
 
+  async updateStatus(
+    ride: Ride,
+    expectedStatus: RideStatus,
+  ): Promise<Ride | null> {
+    if (
+      this.rideById?.id !== ride.id ||
+      this.rideById.status !== expectedStatus ||
+      this.rideById.riderId !== ride.riderId ||
+      this.rideById.driverId !== ride.driverId
+    )
+      return null;
+    this.rideById = ride;
+    return ride;
+  }
+
   async create(ride: Ride): Promise<Ride> {
     this.created = ride;
     return ride;

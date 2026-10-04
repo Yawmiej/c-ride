@@ -2,7 +2,7 @@
 
 NestJS backend for the C-Ride assessment.
 
-Implemented workflows include authentication, driver onboarding, ride creation/retrieval, and driver acceptance. Ride lifecycle foundations are described below.
+Implemented workflows include authentication, driver onboarding, ride creation/retrieval, driver acceptance, and ride status updates. Ride lifecycle foundations are described below.
 
 ## Ride rules (Phase 5.1–5.2)
 
@@ -57,8 +57,7 @@ after success also returns 409; no idempotency mechanism is added.
 
 `UpdateRideStatusDto` accepts only IN_PROGRESS, COMPLETED, or CANCELLED. It
 cannot request ACCEPTED or reset a ride to REQUESTED. The global validation pipe
-rejects extra fields such as driverId. The status endpoint itself is deferred to
-Phase 5.6 and must use this DTO and the domain transition policy.
+rejects extra fields such as driverId. The status endpoint uses this DTO and the domain transition policy.
 
 ### PostgreSQL verification
 
@@ -73,3 +72,31 @@ synchronizes the real ride reads so both HTTP requests see REQUESTED before
 continuing, then asserts one 200, one 409, and the persisted winning driver.
 It uses real authentication, provider wiring, Prisma, and PostgreSQL, and removes
 only its own fixtures. Other tests remain deferred by request.
+
+## Ride status updates (Phase 5.6)
+
+`PATCH /api/v1/rides/:id/status` accepts a bearer token and a body such as:
+
+```json
+{ "status": "IN_PROGRESS" }
+```
+
+The assigned driver can change ACCEPTED to IN_PROGRESS and IN_PROGRESS to
+COMPLETED. The owning rider can cancel REQUESTED or ACCEPTED; the assigned
+driver can cancel ACCEPTED. COMPLETED and CANCELLED are terminal, and a ride
+cannot be cancelled once IN_PROGRESS.
+
+`ChangeRideStatusUseCase` loads the ride, requires the authenticated actor to
+be a participant, and applies `Ride.transitionTo`. Acceptance is rejected here
+even for internal callers, so it must use the dedicated acceptance workflow.
+The repository updates only the status, matching the ride ID, previous status,
+and participants in one conditional UPDATE that returns the saved row. If a
+competing request changes the ride first, the update matches no row and returns
+409 instead of overwriting the newer state. No extra transaction wrapper is
+needed for this single database statement.
+
+The endpoint returns the saved ride with 200; malformed input gives 400,
+unrelated/unauthorized actors give 403, missing rides give 404, and invalid
+transitions or stale writes give 409. Authentication failures give 401.
+No new behavioral tests were added or run for this phase. The existing test
+repository was updated only to satisfy the expanded repository contract.

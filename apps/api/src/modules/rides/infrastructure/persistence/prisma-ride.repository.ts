@@ -1,3 +1,4 @@
+import { RideStatus } from '../../domain/enums/ride-status.enum';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { Ride } from '../../domain/entities/ride.entity';
@@ -7,6 +8,22 @@ import { RideMapper } from './ride.mapper';
 @Injectable()
 export class PrismaRideRepository implements RideRepository {
   constructor(private readonly prisma: PrismaService) {}
+
+  async updateStatus(
+    ride: Ride,
+    expectedStatus: RideStatus,
+  ): Promise<Ride | null> {
+    const [saved] = await this.prisma.ride.updateManyAndReturn({
+      where: {
+        id: ride.id,
+        status: expectedStatus,
+        riderId: ride.riderId,
+        driverId: ride.driverId,
+      },
+      data: { status: ride.status },
+    });
+    return saved ? RideMapper.toDomain(saved) : null;
+  }
 
   async create(ride: Ride): Promise<Ride> {
     const data = ride.toSafeObject();

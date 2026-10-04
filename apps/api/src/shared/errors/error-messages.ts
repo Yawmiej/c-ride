@@ -13,6 +13,8 @@ export const ERROR_MESSAGES = {
   LICENSE_PLATE_IN_USE: 'License plate is already in use',
   DRIVER_INELIGIBLE:
     'You must have an active driver account, profile, and vehicle to accept rides',
+  RIDE_STATUS_CHANGED:
+    'The ride changed before this update could be saved. Refresh and try again',
   RIDE_UNAVAILABLE: 'This ride is no longer available for acceptance',
   RIDE_TRANSITION_INVALID: 'This ride status transition is not allowed',
   RIDE_TRANSITION_FORBIDDEN: 'You are not allowed to change this ride status',

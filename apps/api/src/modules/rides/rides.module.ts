@@ -1,3 +1,4 @@
+import { ChangeRideStatusUseCase } from './application/use-cases/change-ride-status.use-case';
 import { AcceptRideUseCase } from './application/use-cases/accept-ride.use-case';
 import { RideAcceptance } from './application/contracts/ride-acceptance';
 import { PrismaRideAcceptance } from './infrastructure/persistence/prisma-ride-acceptance';
@@ -15,6 +16,7 @@ import { RidesController } from './presentation/controllers/rides.controller';
   imports: [DatabaseModule, IdentityModule, DriversModule],
   controllers: [RidesController],
   providers: [
+    ChangeRideStatusUseCase,
     AcceptRideUseCase,
     { provide: RideAcceptance, useClass: PrismaRideAcceptance },
     CreateRideUseCase,
