@@ -11,6 +11,8 @@ export const ERROR_MESSAGES = {
   DRIVER_ALREADY_HAS_VEHICLE: 'A driver profile can have only one vehicle',
   VEHICLE_PROFILE_MISMATCH: 'A vehicle must belong to its driver profile',
   LICENSE_PLATE_IN_USE: 'License plate is already in use',
+  RIDE_TRANSITION_INVALID: 'This ride status transition is not allowed',
+  RIDE_TRANSITION_FORBIDDEN: 'You are not allowed to change this ride status',
   RIDE_ACCESS_FORBIDDEN: 'You are not allowed to access this ride',
 
   NOT_FOUND: (item: string) => `${item} not found`,

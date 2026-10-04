@@ -1,0 +1,50 @@
+import { ApplicationError } from '@/shared/errors/application-error';
+import { ERROR_KINDS } from '@/shared/errors/error-kinds';
+import { ERROR_MESSAGES } from '@/shared/errors/error-messages';
+import type { Ride } from '../entities/ride.entity';
+import { RideStatus } from '../enums/ride-status.enum';
+
+export interface RideActor {
+  id: string;
+  role: 'RIDER' | 'DRIVER';
+}
+
+export class RideTransitionPolicy {
+  static assertAllowed(ride: Ride, next: RideStatus, actor: RideActor): void {
+    const allowed =
+      (ride.status === RideStatus.REQUESTED &&
+        (next === RideStatus.ACCEPTED || next === RideStatus.CANCELLED)) ||
+      (ride.status === RideStatus.ACCEPTED &&
+        (next === RideStatus.IN_PROGRESS || next === RideStatus.CANCELLED)) ||
+      (ride.status === RideStatus.IN_PROGRESS && next === RideStatus.COMPLETED);
+
+    if (!allowed) {
+      throw new ApplicationError(
+        ERROR_KINDS.CONFLICT,
+        ERROR_MESSAGES.RIDE_TRANSITION_INVALID,
+      );
+    }
+
+    const isRider = actor.role === 'RIDER' && actor.id === ride.riderId;
+    const isDriver = actor.role === 'DRIVER' && actor.id === ride.driverId;
+    let permitted: boolean;
+
+    if (next === RideStatus.ACCEPTED) {
+      permitted =
+        actor.role === 'DRIVER' &&
+        actor.id !== ride.riderId &&
+        ride.driverId === null;
+    } else if (next === RideStatus.CANCELLED) {
+      permitted = isRider || (ride.status === RideStatus.ACCEPTED && isDriver);
+    } else {
+      permitted = isDriver;
+    }
+
+    if (!permitted) {
+      throw new ApplicationError(
+        ERROR_KINDS.FORBIDDEN,
+        ERROR_MESSAGES.RIDE_TRANSITION_FORBIDDEN,
+      );
+    }
+  }
+}

@@ -1,4 +1,8 @@
 import { RideStatus } from '../enums/ride-status.enum';
+import {
+  RideActor,
+  RideTransitionPolicy,
+} from '../policies/ride-transition.policy';
 import { FarePolicy } from '../policies/fare.policy';
 
 export interface RequestedRideProps {
@@ -39,6 +43,16 @@ export class Ride {
       fare: FarePolicy.calculate().amount,
       createdAt: now,
       updatedAt: now,
+    });
+  }
+
+  transitionTo(status: RideStatus, actor: RideActor): Ride {
+    RideTransitionPolicy.assertAllowed(this, status, actor);
+    return new Ride({
+      ...this.props,
+      status,
+      driverId: status === RideStatus.ACCEPTED ? actor.id : this.driverId,
+      updatedAt: new Date(),
     });
   }
 

@@ -1,3 +1,4 @@
+import { DriversModule } from '../drivers/drivers.module';
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../../infrastructure/database/database.module';
 import { IdentityModule } from '../identity/identity.module';
@@ -8,7 +9,7 @@ import { PrismaRideRepository } from './infrastructure/persistence/prisma-ride.r
 import { RidesController } from './presentation/controllers/rides.controller';
 
 @Module({
-  imports: [DatabaseModule, IdentityModule],
+  imports: [DatabaseModule, IdentityModule, DriversModule],
   controllers: [RidesController],
   providers: [
     CreateRideUseCase,

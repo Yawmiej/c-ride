@@ -1,3 +1,5 @@
+import { DriverEligibility } from './application/contracts/driver-eligibility';
+import { CheckDriverEligibilityUseCase } from './application/use-cases/check-driver-eligibility.use-case';
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '../../infrastructure/database/database.module';
 import { GetDriverProfileUseCase } from './application/use-cases/get-driver-profile.use-case';
@@ -15,6 +17,7 @@ import { DriversController } from './presentation/controllers/drivers.controller
   imports: [DatabaseModule],
   controllers: [DriversController],
   providers: [
+    { provide: DriverEligibility, useClass: CheckDriverEligibilityUseCase },
     PrismaDriverCreation,
     GetDriverProfileUseCase,
     OnboardDriverUseCase,
@@ -32,6 +35,7 @@ import { DriversController } from './presentation/controllers/drivers.controller
     },
   ],
   exports: [
+    DriverEligibility,
     PrismaDriverCreation,
     GetDriverProfileUseCase,
     OnboardDriverUseCase,

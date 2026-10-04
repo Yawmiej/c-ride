@@ -1,3 +1,4 @@
+import { GetAccountUseCase } from './application/use-cases/get-account.use-case';
 import { Global, Module } from '@nestjs/common';
 import { AuthenticateUserUseCase } from './application/use-cases/authenticate-user.use-case';
 import { GetCurrentUserUseCase } from './application/use-cases/get-current-user.use-case';
@@ -40,6 +41,7 @@ import { PrismaAccountRegistration } from './infrastructure/persistence/prisma-a
   ],
   controllers: [AuthController],
   providers: [
+    GetAccountUseCase,
     AuthenticateUserUseCase,
     GetCurrentUserUseCase,
     JwtAuthGuard,
@@ -54,6 +56,11 @@ import { PrismaAccountRegistration } from './infrastructure/persistence/prisma-a
     { provide: PasswordHasher, useClass: Argon2PasswordHasher },
     { provide: AccessTokenService, useClass: JwtAccessTokenService },
   ],
-  exports: [AuthenticateUserUseCase, JwtAuthGuard, RolesGuard],
+  exports: [
+    GetAccountUseCase,
+    AuthenticateUserUseCase,
+    JwtAuthGuard,
+    RolesGuard,
+  ],
 })
 export class IdentityModule {}
