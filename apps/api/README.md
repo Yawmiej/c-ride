@@ -100,3 +100,30 @@ unrelated/unauthorized actors give 403, missing rides give 404, and invalid
 transitions or stale writes give 409. Authentication failures give 401.
 No new behavioral tests were added or run for this phase. The existing test
 repository was updated only to satisfy the expanded repository contract.
+
+## Ride events (Phase 6.1–6.3)
+
+Ride events record the ride ID, actor ID, event type, timestamp, actor role, and
+previous/new status. Domain event values match the database: REQUESTED, ACCEPTED,
+IN_PROGRESS, COMPLETED, and CANCELLED. The domain key STARTED uses the value
+IN_PROGRESS. No enum translation tables or schema changes are needed.
+
+Creation uses `RideRepository.create`. `PrismaRideRepository` inserts the ride
+and one requested event in a single transaction. The rider is
+the actor; previous status is null and new status is REQUESTED. The event uses
+the ride's creation timestamp.
+
+Acceptance supplies an accepted event through the existing `RideAcceptance`
+contract. The adapter first checks eligibility and conditionally assigns the
+ride. Only the successful assignment inserts the event, in the same transaction.
+The winning driver is the actor; the transition is REQUESTED to ACCEPTED.
+A rejected/losing request inserts no event. If either event insert fails, the
+corresponding ride creation/assignment rolls back.
+
+`RideEventRepository.findByRideId` reads events in chronological order with an
+ID tie-breaker. It is an internal persistence boundary; no event-history endpoint
+is introduced. Ride HTTP response shapes remain unchanged. Existing rides are
+not backfilled. Started/completed/cancelled event writes remain Phase 6.4.
+
+Tests are deferred by request; event persistence, read mapping, and rollback
+behavior have not been exercised against PostgreSQL in this phase.

@@ -1,3 +1,5 @@
+import { RideEvent } from '../../domain/entities/ride-event.entity';
+import { RideEventMapper } from './ride-event.mapper';
 import { RideStatus } from '../../domain/enums/ride-status.enum';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
@@ -8,6 +10,18 @@ import { RideMapper } from './ride.mapper';
 @Injectable()
 export class PrismaRideRepository implements RideRepository {
   constructor(private readonly prisma: PrismaService) {}
+
+  async create(ride: Ride, event: RideEvent): Promise<Ride> {
+    return this.prisma.$transaction(async (transaction) => {
+      const created = await transaction.ride.create({
+        data: ride.toSafeObject(),
+      });
+      await transaction.rideEvent.create({
+        data: RideEventMapper.toPersistence(event),
+      });
+      return RideMapper.toDomain(created);
+    });
+  }
 
   async updateStatus(
     ride: Ride,
@@ -23,26 +37,6 @@ export class PrismaRideRepository implements RideRepository {
       data: { status: ride.status },
     });
     return saved ? RideMapper.toDomain(saved) : null;
-  }
-
-  async create(ride: Ride): Promise<Ride> {
-    const data = ride.toSafeObject();
-    const created = await this.prisma.ride.create({
-      data: {
-        id: data.id,
-        riderId: data.riderId,
-        driverId: data.driverId,
-        status: data.status,
-        pickupLat: data.pickupLat,
-        pickupLng: data.pickupLng,
-        dropoffLat: data.dropoffLat,
-        dropoffLng: data.dropoffLng,
-        fare: data.fare,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
-      },
-    });
-    return RideMapper.toDomain(created);
   }
 
   async findById(id: string): Promise<Ride | null> {

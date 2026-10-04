@@ -1,3 +1,5 @@
+import { RideEventRepository } from './domain/repositories/ride-event.repository';
+import { PrismaRideEventRepository } from './infrastructure/persistence/prisma-ride-event.repository';
 import { ChangeRideStatusUseCase } from './application/use-cases/change-ride-status.use-case';
 import { AcceptRideUseCase } from './application/use-cases/accept-ride.use-case';
 import { RideAcceptance } from './application/contracts/ride-acceptance';
@@ -18,9 +20,12 @@ import { RidesController } from './presentation/controllers/rides.controller';
   providers: [
     ChangeRideStatusUseCase,
     AcceptRideUseCase,
-    { provide: RideAcceptance, useClass: PrismaRideAcceptance },
     CreateRideUseCase,
     GetRideUseCase,
+    { provide: RideEventRepository, useClass: PrismaRideEventRepository },
+
+    { provide: RideAcceptance, useClass: PrismaRideAcceptance },
+
     { provide: RideRepository, useClass: PrismaRideRepository },
   ],
   exports: [AcceptRideUseCase, CreateRideUseCase, GetRideUseCase],

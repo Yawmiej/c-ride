@@ -1,3 +1,4 @@
+import { RideEvent } from '../../domain/entities/ride-event.entity';
 import { Ride } from '../../domain/entities/ride.entity';
 
 export type RideAcceptanceResult =
@@ -9,5 +10,6 @@ export abstract class RideAcceptance {
   abstract accept(
     rideId: string,
     driverId: string,
+    event: RideEvent,
   ): Promise<RideAcceptanceResult>;
 }

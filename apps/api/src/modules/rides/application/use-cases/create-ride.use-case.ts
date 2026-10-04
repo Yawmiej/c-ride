@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import { Ride } from '../../domain/entities/ride.entity';
 import { RideRepository } from '../../domain/repositories/ride.repository';
+import { RideEvent } from '../../domain/entities/ride-event.entity';
 
 export interface CreateRideCommand {
   riderId: string;
@@ -17,6 +18,7 @@ export class CreateRideUseCase {
 
   async execute(command: CreateRideCommand): Promise<Ride> {
     const ride = Ride.requested({ id: randomUUID(), ...command });
-    return this.rides.create(ride);
+    const event = RideEvent.requested(randomUUID(), ride);
+    return this.rides.create(ride, event);
   }
 }

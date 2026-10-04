@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto';
+import { RideEvent } from '../../domain/entities/ride-event.entity';
 import { Injectable } from '@nestjs/common';
 import { ApplicationError } from '@/shared/errors/application-error';
 import { ERROR_KINDS } from '@/shared/errors/error-kinds';
@@ -48,7 +50,8 @@ export class AcceptRideUseCase {
       role: 'DRIVER',
     });
 
-    const result = await this.acceptance.accept(rideId, driverId);
+    const event = RideEvent.accepted(randomUUID(), ride, driverId);
+    const result = await this.acceptance.accept(rideId, driverId, event);
     if (result.outcome === 'ineligible') {
       throw new ApplicationError(
         ERROR_KINDS.FORBIDDEN,
