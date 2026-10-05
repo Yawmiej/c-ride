@@ -1,6 +1,6 @@
 import { ControlPosition, MapControl, useMap } from '@vis.gl/react-google-maps';
 import { useEffect } from 'react';
-import type { Coordinates } from '@/entities/ride';
+import type { Coordinates } from '../types';
 import { useMapRoute } from '../hooks/use-map-route';
 
 type RideRouteLineProps = { pickup: Coordinates; dropoff: Coordinates };

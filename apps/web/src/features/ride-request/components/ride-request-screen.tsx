@@ -15,7 +15,7 @@ import {
   rideRequestSchema,
   type RideRequestValues,
 } from '../schemas/ride-request.schema';
-import { RideMap } from './ride-map';
+import { RideMap } from '@/entities/ride/components/ride-map';
 import { RideRequestForm } from './ride-request-form';
 
 export function RideRequestScreen() {

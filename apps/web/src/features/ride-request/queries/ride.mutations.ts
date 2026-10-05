@@ -19,7 +19,10 @@ export function useRequestRideMutation() {
         },
       }),
     onSuccess: (ride) => {
-      queryClient.setQueryData(rideKeys.detail(ride.id), ride);
+      queryClient.setQueryData(rideKeys.detail(ride.id), {
+        ...ride,
+        driver: null,
+      });
       void queryClient.invalidateQueries({ queryKey: rideKeys.history() });
     },
   });

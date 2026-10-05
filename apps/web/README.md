@@ -19,10 +19,18 @@ The map ID is not a secret or another API key. The optional value defaults to Go
 
 The existing `VITE_API_BASE_URL` must include the backend prefix, for example `http://localhost:3000/api/v1`. The API client appends `/rides` to this URL.
 
-At `/rider`, choose pickup and drop-off from the suggestions, then request a ride. The map displays icon-only markers and a driving route after both locations are selected, then fits the entire route into view. Changing or clearing a location removes the previous line. If routing fails, a small message appears and ride requests remain available. After a destination is selected, the Standard card displays a static ₦1,000.00 assessment fare. The request still sends only coordinates; the backend owns the actual ride fare. The route is display-only; there is no arrival-time estimate or route-based pricing. A successful request opens `/rider/rides/:rideId`, whose tracking UI belongs to Phase 6.
+At `/rider`, choose pickup and drop-off from the suggestions, then request a ride. The map displays icon-only markers and a driving route after both locations are selected, then fits the entire route into view. Changing or clearing a location removes the previous line. If routing fails, a small message appears and ride requests remain available. After a destination is selected, the Standard card displays a static ₦1,000.00 assessment fare. The request still sends only coordinates; the backend owns the actual ride fare. The route is display-only; there is no arrival-time estimate or route-based pricing. A successful request opens `/rider/rides/:rideId`, which displays the rider active-ride screen.
 
 Without a Maps key, the screen displays an unavailable message and disables location selection/request submission. To verify the live flow, configure the key, run the backend and frontend, sign in as a rider, select two places, and submit. Check the map markers, request error/loading states, and resulting ride URL.
 
 References: [Google Places setup](https://developers.google.com/maps/documentation/javascript/place-get-started), [advanced markers and map IDs](https://developers.google.com/maps/documentation/javascript/advanced-markers/start).
 
 Routing setup: enable Routes API in the same Google Cloud project and add it to the existing browser key’s API restrictions. See [Google Routes setup](https://developers.google.com/maps/documentation/javascript/routes/start).
+
+## Rider active ride (Phase 6)
+
+`/rider/rides/:rideId` loads the authorized ride from the API on entry and refresh. It shows status progress, assigned driver/vehicle information, and the shared pickup/drop-off route map. Ratings, contact controls, arrival estimates, and live driver coordinates are not supplied by this phase.
+
+Use **Refresh ride** for updated status until Phase 9 realtime integration. **Cancel Ride** is available while REQUESTED or ACCEPTED; successful cancellation refetches authoritative details. Completed/cancelled rides offer **Request another ride**. Missing, inaccessible, and unavailable rides have dedicated feedback.
+
+Validation used API/Maps stubs for browser checks; live Google and persisted-backend flows still need an end-to-end check. No new test files were added.

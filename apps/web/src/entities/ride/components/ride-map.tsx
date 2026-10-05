@@ -1,7 +1,7 @@
 import { AdvancedMarker, Map, useMap } from '@vis.gl/react-google-maps';
 import { MapPin, Navigation } from 'lucide-react';
 import { useEffect } from 'react';
-import type { Coordinates } from '@/entities/ride';
+import type { Coordinates } from '../types';
 import { env } from '@/shared/config/env';
 import { RideRouteLine } from './ride-route-line';
 

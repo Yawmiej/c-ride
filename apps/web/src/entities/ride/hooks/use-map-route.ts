@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useMapsLibrary } from '@vis.gl/react-google-maps';
-import type { Coordinates } from '@/entities/ride';
+import type { Coordinates } from '../types';
 
 export function useMapRoute(pickup: Coordinates, dropoff: Coordinates) {
   const routesLibrary = useMapsLibrary('routes');

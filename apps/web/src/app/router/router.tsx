@@ -8,6 +8,7 @@ import { RiderSignupPage } from '@/pages/auth/RiderSignupPage';
 import { DriverSignupPage } from '@/pages/auth/DriverSignupPage';
 import { DriverHomePage } from '@/pages/driver/DriverHomePage';
 import { RiderHomePage } from '@/pages/rider/RiderHomePage';
+import { RiderActiveRidePage } from '@/pages/rider/RiderActiveRidePage';
 import { RidePlaceholderPage } from '@/pages/common/RidePlaceholderPage';
 import { DriverRoute, ProtectedRoute, RiderRoute } from './route-guards';
 
@@ -41,7 +42,7 @@ export const router = createBrowserRouter([
                   { index: true, element: <RiderHomePage /> },
                   {
                     path: 'rides/:rideId',
-                    element: <RidePlaceholderPage description="Ride tracking arrives in Phase 6." title="Your ride" />,
+                    element: <RiderActiveRidePage />,
                   },
                 ],
               },
@@ -58,7 +59,12 @@ export const router = createBrowserRouter([
                   { path: 'onboarding', element: <DriverSignupPage /> },
                   {
                     path: 'rides/:rideId',
-                    element: <RidePlaceholderPage description="Active ride management arrives in Phase 7." title="Active ride" />,
+                    element: (
+                      <RidePlaceholderPage
+                        description="Active ride management arrives in Phase 7."
+                        title="Active ride"
+                      />
+                    ),
                   },
                 ],
               },
