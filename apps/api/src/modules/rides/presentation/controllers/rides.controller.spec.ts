@@ -67,6 +67,7 @@ describe('RidesController', () => {
     })
       .overrideProvider(PrismaService)
       .useValue({
+        driverProfile: { findUnique: async () => null },
         user: {
           findUnique: async ({ where }: { where: { id: string } }) =>
             users.get(where.id) ?? null,

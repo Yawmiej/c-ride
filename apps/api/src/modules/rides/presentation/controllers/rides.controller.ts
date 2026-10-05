@@ -35,7 +35,8 @@ import { Roles } from '../../../identity/presentation/decorators/roles.decorator
 import { JwtAuthGuard } from '../../../identity/presentation/guards/jwt-auth.guard';
 import { RolesGuard } from '../../../identity/presentation/guards/roles.guard';
 import { CreateRideUseCase } from '../../application/use-cases/create-ride.use-case';
-import { GetRideUseCase } from '../../application/use-cases/get-ride.use-case';
+import { GetRideDetailsUseCase } from '../../application/use-cases/get-ride-details.use-case';
+import { RideDetailsResponseDto } from '../dto/ride-details-response.dto';
 import { CreateRideDto } from '../dto/create-ride.dto';
 import { RideIdParamDto } from '../dto/ride-id-param.dto';
 import { RideResponseDto } from '../dto/ride-response.dto';
@@ -48,7 +49,7 @@ import { toRideResponse } from '../mappers/ride-response.mapper';
 export class RidesController {
   constructor(
     private readonly createRide: CreateRideUseCase,
-    private readonly getRide: GetRideUseCase,
+    private readonly getRide: GetRideDetailsUseCase,
     private readonly acceptRide: AcceptRideUseCase,
     private readonly changeRideStatus: ChangeRideStatusUseCase,
     private readonly listRideHistory: ListRideHistoryUseCase,
@@ -134,7 +135,7 @@ export class RidesController {
 
   @Get(':id')
   @Roles(UserRole.RIDER, UserRole.DRIVER)
-  @ApiOkResponse({ type: RideResponseDto })
+  @ApiOkResponse({ type: RideDetailsResponseDto })
   @ApiNotFoundResponse({ type: ApiErrorResponseDto })
   @ApiBadRequestResponse({ type: ApiErrorResponseDto })
   @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
@@ -142,9 +143,11 @@ export class RidesController {
   async getById(
     @CurrentUser() user: AuthenticatedUser,
     @Param() params: RideIdParamDto,
-  ): Promise<RideResponseDto> {
-    return toRideResponse(
-      await this.getRide.execute({ rideId: params.id, actorId: user.id }),
-    );
+  ): Promise<RideDetailsResponseDto> {
+    const result = await this.getRide.execute({
+      rideId: params.id,
+      actorId: user.id,
+    });
+    return { ...toRideResponse(result.ride), driver: result.driver };
   }
 }
