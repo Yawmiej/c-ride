@@ -71,10 +71,13 @@ describe('Ride use cases', () => {
 
     const created = await new CreateRideUseCase(
       repository,
-      new PublishRideStatusUseCase({
-        publishStatusChanged: () => {},
-        publishLocationUpdated: () => {},
-      }),
+      new PublishRideStatusUseCase(
+        {
+          publishStatusChanged: () => {},
+          publishLocationUpdated: () => {},
+        },
+        { publish: async () => {} },
+      ),
     ).execute({
       riderId: 'rider-id',
       pickupLat: 6.5244,
@@ -103,10 +106,13 @@ describe('Ride use cases', () => {
     await expect(
       new CreateRideUseCase(
         repository,
-        new PublishRideStatusUseCase({
-          publishStatusChanged: () => {},
-          publishLocationUpdated: () => {},
-        }),
+        new PublishRideStatusUseCase(
+          {
+            publishStatusChanged: () => {},
+            publishLocationUpdated: () => {},
+          },
+          { publish: async () => {} },
+        ),
       ).execute({
         riderId: 'rider-id',
         pickupLat: 91,

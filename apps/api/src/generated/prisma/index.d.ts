@@ -19,6 +19,11 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
+ * Model UserDevice
+ * 
+ */
+export type UserDevice = $Result.DefaultSelection<Prisma.$UserDevicePayload>
+/**
  * Model DriverProfile
  * 
  */
@@ -89,6 +94,13 @@ export const RideStatus: {
 export type RideStatus = (typeof RideStatus)[keyof typeof RideStatus]
 
 
+export const DevicePlatform: {
+  WEB: 'WEB'
+};
+
+export type DevicePlatform = (typeof DevicePlatform)[keyof typeof DevicePlatform]
+
+
 export const RideEventType: {
   REQUESTED: 'REQUESTED',
   ACCEPTED: 'ACCEPTED',
@@ -120,6 +132,10 @@ export const VehicleType: typeof $Enums.VehicleType
 export type RideStatus = $Enums.RideStatus
 
 export const RideStatus: typeof $Enums.RideStatus
+
+export type DevicePlatform = $Enums.DevicePlatform
+
+export const DevicePlatform: typeof $Enums.DevicePlatform
 
 export type RideEventType = $Enums.RideEventType
 
@@ -255,6 +271,16 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.userDevice`: Exposes CRUD operations for the **UserDevice** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more UserDevices
+    * const userDevices = await prisma.userDevice.findMany()
+    * ```
+    */
+  get userDevice(): Prisma.UserDeviceDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.driverProfile`: Exposes CRUD operations for the **DriverProfile** model.
@@ -743,6 +769,7 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
+    UserDevice: 'UserDevice',
     DriverProfile: 'DriverProfile',
     Vehicle: 'Vehicle',
     Ride: 'Ride',
@@ -762,7 +789,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "driverProfile" | "vehicle" | "ride" | "rideEvent"
+      modelProps: "user" | "userDevice" | "driverProfile" | "vehicle" | "ride" | "rideEvent"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -837,6 +864,80 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
+          }
+        }
+      }
+      UserDevice: {
+        payload: Prisma.$UserDevicePayload<ExtArgs>
+        fields: Prisma.UserDeviceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.UserDeviceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDevicePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.UserDeviceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDevicePayload>
+          }
+          findFirst: {
+            args: Prisma.UserDeviceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDevicePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.UserDeviceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDevicePayload>
+          }
+          findMany: {
+            args: Prisma.UserDeviceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDevicePayload>[]
+          }
+          create: {
+            args: Prisma.UserDeviceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDevicePayload>
+          }
+          createMany: {
+            args: Prisma.UserDeviceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.UserDeviceCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDevicePayload>[]
+          }
+          delete: {
+            args: Prisma.UserDeviceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDevicePayload>
+          }
+          update: {
+            args: Prisma.UserDeviceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDevicePayload>
+          }
+          deleteMany: {
+            args: Prisma.UserDeviceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.UserDeviceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.UserDeviceUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDevicePayload>[]
+          }
+          upsert: {
+            args: Prisma.UserDeviceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$UserDevicePayload>
+          }
+          aggregate: {
+            args: Prisma.UserDeviceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateUserDevice>
+          }
+          groupBy: {
+            args: Prisma.UserDeviceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<UserDeviceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.UserDeviceCountArgs<ExtArgs>
+            result: $Utils.Optional<UserDeviceCountAggregateOutputType> | number
           }
         }
       }
@@ -1260,6 +1361,7 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     user?: UserOmit
+    userDevice?: UserDeviceOmit
     driverProfile?: DriverProfileOmit
     vehicle?: VehicleOmit
     ride?: RideOmit
@@ -1347,12 +1449,14 @@ export namespace Prisma {
     ridesByRider: number
     ridesByDriver: number
     rideEvents: number
+    devices: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     ridesByRider?: boolean | UserCountOutputTypeCountRidesByRiderArgs
     ridesByDriver?: boolean | UserCountOutputTypeCountRidesByDriverArgs
     rideEvents?: boolean | UserCountOutputTypeCountRideEventsArgs
+    devices?: boolean | UserCountOutputTypeCountDevicesArgs
   }
 
   // Custom InputTypes
@@ -1385,6 +1489,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountRideEventsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: RideEventWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountDevicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserDeviceWhereInput
   }
 
 
@@ -1631,6 +1742,7 @@ export namespace Prisma {
     ridesByRider?: boolean | User$ridesByRiderArgs<ExtArgs>
     ridesByDriver?: boolean | User$ridesByDriverArgs<ExtArgs>
     rideEvents?: boolean | User$rideEventsArgs<ExtArgs>
+    devices?: boolean | User$devicesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -1679,6 +1791,7 @@ export namespace Prisma {
     ridesByRider?: boolean | User$ridesByRiderArgs<ExtArgs>
     ridesByDriver?: boolean | User$ridesByDriverArgs<ExtArgs>
     rideEvents?: boolean | User$rideEventsArgs<ExtArgs>
+    devices?: boolean | User$devicesArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -1691,6 +1804,7 @@ export namespace Prisma {
       ridesByRider: Prisma.$RidePayload<ExtArgs>[]
       ridesByDriver: Prisma.$RidePayload<ExtArgs>[]
       rideEvents: Prisma.$RideEventPayload<ExtArgs>[]
+      devices: Prisma.$UserDevicePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2101,6 +2215,7 @@ export namespace Prisma {
     ridesByRider<T extends User$ridesByRiderArgs<ExtArgs> = {}>(args?: Subset<T, User$ridesByRiderArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RidePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     ridesByDriver<T extends User$ridesByDriverArgs<ExtArgs> = {}>(args?: Subset<T, User$ridesByDriverArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RidePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     rideEvents<T extends User$rideEventsArgs<ExtArgs> = {}>(args?: Subset<T, User$rideEventsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$RideEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    devices<T extends User$devicesArgs<ExtArgs> = {}>(args?: Subset<T, User$devicesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserDevicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2624,6 +2739,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.devices
+   */
+  export type User$devicesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDevice
+     */
+    select?: UserDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDevice
+     */
+    omit?: UserDeviceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDeviceInclude<ExtArgs> | null
+    where?: UserDeviceWhereInput
+    orderBy?: UserDeviceOrderByWithRelationInput | UserDeviceOrderByWithRelationInput[]
+    cursor?: UserDeviceWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: UserDeviceScalarFieldEnum | UserDeviceScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2639,6 +2778,1082 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: UserInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model UserDevice
+   */
+
+  export type AggregateUserDevice = {
+    _count: UserDeviceCountAggregateOutputType | null
+    _min: UserDeviceMinAggregateOutputType | null
+    _max: UserDeviceMaxAggregateOutputType | null
+  }
+
+  export type UserDeviceMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    token: string | null
+    platform: $Enums.DevicePlatform | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserDeviceMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    token: string | null
+    platform: $Enums.DevicePlatform | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type UserDeviceCountAggregateOutputType = {
+    id: number
+    userId: number
+    token: number
+    platform: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type UserDeviceMinAggregateInputType = {
+    id?: true
+    userId?: true
+    token?: true
+    platform?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserDeviceMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    token?: true
+    platform?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type UserDeviceCountAggregateInputType = {
+    id?: true
+    userId?: true
+    token?: true
+    platform?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type UserDeviceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserDevice to aggregate.
+     */
+    where?: UserDeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserDevices to fetch.
+     */
+    orderBy?: UserDeviceOrderByWithRelationInput | UserDeviceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: UserDeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserDevices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserDevices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned UserDevices
+    **/
+    _count?: true | UserDeviceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: UserDeviceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: UserDeviceMaxAggregateInputType
+  }
+
+  export type GetUserDeviceAggregateType<T extends UserDeviceAggregateArgs> = {
+        [P in keyof T & keyof AggregateUserDevice]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateUserDevice[P]>
+      : GetScalarType<T[P], AggregateUserDevice[P]>
+  }
+
+
+
+
+  export type UserDeviceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: UserDeviceWhereInput
+    orderBy?: UserDeviceOrderByWithAggregationInput | UserDeviceOrderByWithAggregationInput[]
+    by: UserDeviceScalarFieldEnum[] | UserDeviceScalarFieldEnum
+    having?: UserDeviceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: UserDeviceCountAggregateInputType | true
+    _min?: UserDeviceMinAggregateInputType
+    _max?: UserDeviceMaxAggregateInputType
+  }
+
+  export type UserDeviceGroupByOutputType = {
+    id: string
+    userId: string
+    token: string
+    platform: $Enums.DevicePlatform
+    createdAt: Date
+    updatedAt: Date
+    _count: UserDeviceCountAggregateOutputType | null
+    _min: UserDeviceMinAggregateOutputType | null
+    _max: UserDeviceMaxAggregateOutputType | null
+  }
+
+  type GetUserDeviceGroupByPayload<T extends UserDeviceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<UserDeviceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof UserDeviceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], UserDeviceGroupByOutputType[P]>
+            : GetScalarType<T[P], UserDeviceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type UserDeviceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    token?: boolean
+    platform?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userDevice"]>
+
+  export type UserDeviceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    token?: boolean
+    platform?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userDevice"]>
+
+  export type UserDeviceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    token?: boolean
+    platform?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["userDevice"]>
+
+  export type UserDeviceSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    token?: boolean
+    platform?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type UserDeviceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "token" | "platform" | "createdAt" | "updatedAt", ExtArgs["result"]["userDevice"]>
+  export type UserDeviceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserDeviceIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type UserDeviceIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $UserDevicePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "UserDevice"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      token: string
+      platform: $Enums.DevicePlatform
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["userDevice"]>
+    composites: {}
+  }
+
+  type UserDeviceGetPayload<S extends boolean | null | undefined | UserDeviceDefaultArgs> = $Result.GetResult<Prisma.$UserDevicePayload, S>
+
+  type UserDeviceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<UserDeviceFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: UserDeviceCountAggregateInputType | true
+    }
+
+  export interface UserDeviceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['UserDevice'], meta: { name: 'UserDevice' } }
+    /**
+     * Find zero or one UserDevice that matches the filter.
+     * @param {UserDeviceFindUniqueArgs} args - Arguments to find a UserDevice
+     * @example
+     * // Get one UserDevice
+     * const userDevice = await prisma.userDevice.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends UserDeviceFindUniqueArgs>(args: SelectSubset<T, UserDeviceFindUniqueArgs<ExtArgs>>): Prisma__UserDeviceClient<$Result.GetResult<Prisma.$UserDevicePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one UserDevice that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {UserDeviceFindUniqueOrThrowArgs} args - Arguments to find a UserDevice
+     * @example
+     * // Get one UserDevice
+     * const userDevice = await prisma.userDevice.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends UserDeviceFindUniqueOrThrowArgs>(args: SelectSubset<T, UserDeviceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__UserDeviceClient<$Result.GetResult<Prisma.$UserDevicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserDevice that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDeviceFindFirstArgs} args - Arguments to find a UserDevice
+     * @example
+     * // Get one UserDevice
+     * const userDevice = await prisma.userDevice.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends UserDeviceFindFirstArgs>(args?: SelectSubset<T, UserDeviceFindFirstArgs<ExtArgs>>): Prisma__UserDeviceClient<$Result.GetResult<Prisma.$UserDevicePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first UserDevice that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDeviceFindFirstOrThrowArgs} args - Arguments to find a UserDevice
+     * @example
+     * // Get one UserDevice
+     * const userDevice = await prisma.userDevice.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends UserDeviceFindFirstOrThrowArgs>(args?: SelectSubset<T, UserDeviceFindFirstOrThrowArgs<ExtArgs>>): Prisma__UserDeviceClient<$Result.GetResult<Prisma.$UserDevicePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more UserDevices that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDeviceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all UserDevices
+     * const userDevices = await prisma.userDevice.findMany()
+     * 
+     * // Get first 10 UserDevices
+     * const userDevices = await prisma.userDevice.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const userDeviceWithIdOnly = await prisma.userDevice.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends UserDeviceFindManyArgs>(args?: SelectSubset<T, UserDeviceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserDevicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a UserDevice.
+     * @param {UserDeviceCreateArgs} args - Arguments to create a UserDevice.
+     * @example
+     * // Create one UserDevice
+     * const UserDevice = await prisma.userDevice.create({
+     *   data: {
+     *     // ... data to create a UserDevice
+     *   }
+     * })
+     * 
+     */
+    create<T extends UserDeviceCreateArgs>(args: SelectSubset<T, UserDeviceCreateArgs<ExtArgs>>): Prisma__UserDeviceClient<$Result.GetResult<Prisma.$UserDevicePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many UserDevices.
+     * @param {UserDeviceCreateManyArgs} args - Arguments to create many UserDevices.
+     * @example
+     * // Create many UserDevices
+     * const userDevice = await prisma.userDevice.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends UserDeviceCreateManyArgs>(args?: SelectSubset<T, UserDeviceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many UserDevices and returns the data saved in the database.
+     * @param {UserDeviceCreateManyAndReturnArgs} args - Arguments to create many UserDevices.
+     * @example
+     * // Create many UserDevices
+     * const userDevice = await prisma.userDevice.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many UserDevices and only return the `id`
+     * const userDeviceWithIdOnly = await prisma.userDevice.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends UserDeviceCreateManyAndReturnArgs>(args?: SelectSubset<T, UserDeviceCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserDevicePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a UserDevice.
+     * @param {UserDeviceDeleteArgs} args - Arguments to delete one UserDevice.
+     * @example
+     * // Delete one UserDevice
+     * const UserDevice = await prisma.userDevice.delete({
+     *   where: {
+     *     // ... filter to delete one UserDevice
+     *   }
+     * })
+     * 
+     */
+    delete<T extends UserDeviceDeleteArgs>(args: SelectSubset<T, UserDeviceDeleteArgs<ExtArgs>>): Prisma__UserDeviceClient<$Result.GetResult<Prisma.$UserDevicePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one UserDevice.
+     * @param {UserDeviceUpdateArgs} args - Arguments to update one UserDevice.
+     * @example
+     * // Update one UserDevice
+     * const userDevice = await prisma.userDevice.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends UserDeviceUpdateArgs>(args: SelectSubset<T, UserDeviceUpdateArgs<ExtArgs>>): Prisma__UserDeviceClient<$Result.GetResult<Prisma.$UserDevicePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more UserDevices.
+     * @param {UserDeviceDeleteManyArgs} args - Arguments to filter UserDevices to delete.
+     * @example
+     * // Delete a few UserDevices
+     * const { count } = await prisma.userDevice.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends UserDeviceDeleteManyArgs>(args?: SelectSubset<T, UserDeviceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserDevices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDeviceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many UserDevices
+     * const userDevice = await prisma.userDevice.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends UserDeviceUpdateManyArgs>(args: SelectSubset<T, UserDeviceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more UserDevices and returns the data updated in the database.
+     * @param {UserDeviceUpdateManyAndReturnArgs} args - Arguments to update many UserDevices.
+     * @example
+     * // Update many UserDevices
+     * const userDevice = await prisma.userDevice.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more UserDevices and only return the `id`
+     * const userDeviceWithIdOnly = await prisma.userDevice.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends UserDeviceUpdateManyAndReturnArgs>(args: SelectSubset<T, UserDeviceUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserDevicePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one UserDevice.
+     * @param {UserDeviceUpsertArgs} args - Arguments to update or create a UserDevice.
+     * @example
+     * // Update or create a UserDevice
+     * const userDevice = await prisma.userDevice.upsert({
+     *   create: {
+     *     // ... data to create a UserDevice
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the UserDevice we want to update
+     *   }
+     * })
+     */
+    upsert<T extends UserDeviceUpsertArgs>(args: SelectSubset<T, UserDeviceUpsertArgs<ExtArgs>>): Prisma__UserDeviceClient<$Result.GetResult<Prisma.$UserDevicePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of UserDevices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDeviceCountArgs} args - Arguments to filter UserDevices to count.
+     * @example
+     * // Count the number of UserDevices
+     * const count = await prisma.userDevice.count({
+     *   where: {
+     *     // ... the filter for the UserDevices we want to count
+     *   }
+     * })
+    **/
+    count<T extends UserDeviceCountArgs>(
+      args?: Subset<T, UserDeviceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], UserDeviceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a UserDevice.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDeviceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends UserDeviceAggregateArgs>(args: Subset<T, UserDeviceAggregateArgs>): Prisma.PrismaPromise<GetUserDeviceAggregateType<T>>
+
+    /**
+     * Group by UserDevice.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {UserDeviceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends UserDeviceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: UserDeviceGroupByArgs['orderBy'] }
+        : { orderBy?: UserDeviceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, UserDeviceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetUserDeviceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the UserDevice model
+   */
+  readonly fields: UserDeviceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for UserDevice.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__UserDeviceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the UserDevice model
+   */
+  interface UserDeviceFieldRefs {
+    readonly id: FieldRef<"UserDevice", 'String'>
+    readonly userId: FieldRef<"UserDevice", 'String'>
+    readonly token: FieldRef<"UserDevice", 'String'>
+    readonly platform: FieldRef<"UserDevice", 'DevicePlatform'>
+    readonly createdAt: FieldRef<"UserDevice", 'DateTime'>
+    readonly updatedAt: FieldRef<"UserDevice", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * UserDevice findUnique
+   */
+  export type UserDeviceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDevice
+     */
+    select?: UserDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDevice
+     */
+    omit?: UserDeviceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDeviceInclude<ExtArgs> | null
+    /**
+     * Filter, which UserDevice to fetch.
+     */
+    where: UserDeviceWhereUniqueInput
+  }
+
+  /**
+   * UserDevice findUniqueOrThrow
+   */
+  export type UserDeviceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDevice
+     */
+    select?: UserDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDevice
+     */
+    omit?: UserDeviceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDeviceInclude<ExtArgs> | null
+    /**
+     * Filter, which UserDevice to fetch.
+     */
+    where: UserDeviceWhereUniqueInput
+  }
+
+  /**
+   * UserDevice findFirst
+   */
+  export type UserDeviceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDevice
+     */
+    select?: UserDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDevice
+     */
+    omit?: UserDeviceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDeviceInclude<ExtArgs> | null
+    /**
+     * Filter, which UserDevice to fetch.
+     */
+    where?: UserDeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserDevices to fetch.
+     */
+    orderBy?: UserDeviceOrderByWithRelationInput | UserDeviceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserDevices.
+     */
+    cursor?: UserDeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserDevices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserDevices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserDevices.
+     */
+    distinct?: UserDeviceScalarFieldEnum | UserDeviceScalarFieldEnum[]
+  }
+
+  /**
+   * UserDevice findFirstOrThrow
+   */
+  export type UserDeviceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDevice
+     */
+    select?: UserDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDevice
+     */
+    omit?: UserDeviceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDeviceInclude<ExtArgs> | null
+    /**
+     * Filter, which UserDevice to fetch.
+     */
+    where?: UserDeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserDevices to fetch.
+     */
+    orderBy?: UserDeviceOrderByWithRelationInput | UserDeviceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for UserDevices.
+     */
+    cursor?: UserDeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserDevices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserDevices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserDevices.
+     */
+    distinct?: UserDeviceScalarFieldEnum | UserDeviceScalarFieldEnum[]
+  }
+
+  /**
+   * UserDevice findMany
+   */
+  export type UserDeviceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDevice
+     */
+    select?: UserDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDevice
+     */
+    omit?: UserDeviceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDeviceInclude<ExtArgs> | null
+    /**
+     * Filter, which UserDevices to fetch.
+     */
+    where?: UserDeviceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of UserDevices to fetch.
+     */
+    orderBy?: UserDeviceOrderByWithRelationInput | UserDeviceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing UserDevices.
+     */
+    cursor?: UserDeviceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` UserDevices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` UserDevices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of UserDevices.
+     */
+    distinct?: UserDeviceScalarFieldEnum | UserDeviceScalarFieldEnum[]
+  }
+
+  /**
+   * UserDevice create
+   */
+  export type UserDeviceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDevice
+     */
+    select?: UserDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDevice
+     */
+    omit?: UserDeviceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDeviceInclude<ExtArgs> | null
+    /**
+     * The data needed to create a UserDevice.
+     */
+    data: XOR<UserDeviceCreateInput, UserDeviceUncheckedCreateInput>
+  }
+
+  /**
+   * UserDevice createMany
+   */
+  export type UserDeviceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many UserDevices.
+     */
+    data: UserDeviceCreateManyInput | UserDeviceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * UserDevice createManyAndReturn
+   */
+  export type UserDeviceCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDevice
+     */
+    select?: UserDeviceSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDevice
+     */
+    omit?: UserDeviceOmit<ExtArgs> | null
+    /**
+     * The data used to create many UserDevices.
+     */
+    data: UserDeviceCreateManyInput | UserDeviceCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDeviceIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserDevice update
+   */
+  export type UserDeviceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDevice
+     */
+    select?: UserDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDevice
+     */
+    omit?: UserDeviceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDeviceInclude<ExtArgs> | null
+    /**
+     * The data needed to update a UserDevice.
+     */
+    data: XOR<UserDeviceUpdateInput, UserDeviceUncheckedUpdateInput>
+    /**
+     * Choose, which UserDevice to update.
+     */
+    where: UserDeviceWhereUniqueInput
+  }
+
+  /**
+   * UserDevice updateMany
+   */
+  export type UserDeviceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update UserDevices.
+     */
+    data: XOR<UserDeviceUpdateManyMutationInput, UserDeviceUncheckedUpdateManyInput>
+    /**
+     * Filter which UserDevices to update
+     */
+    where?: UserDeviceWhereInput
+    /**
+     * Limit how many UserDevices to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserDevice updateManyAndReturn
+   */
+  export type UserDeviceUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDevice
+     */
+    select?: UserDeviceSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDevice
+     */
+    omit?: UserDeviceOmit<ExtArgs> | null
+    /**
+     * The data used to update UserDevices.
+     */
+    data: XOR<UserDeviceUpdateManyMutationInput, UserDeviceUncheckedUpdateManyInput>
+    /**
+     * Filter which UserDevices to update
+     */
+    where?: UserDeviceWhereInput
+    /**
+     * Limit how many UserDevices to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDeviceIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * UserDevice upsert
+   */
+  export type UserDeviceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDevice
+     */
+    select?: UserDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDevice
+     */
+    omit?: UserDeviceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDeviceInclude<ExtArgs> | null
+    /**
+     * The filter to search for the UserDevice to update in case it exists.
+     */
+    where: UserDeviceWhereUniqueInput
+    /**
+     * In case the UserDevice found by the `where` argument doesn't exist, create a new UserDevice with this data.
+     */
+    create: XOR<UserDeviceCreateInput, UserDeviceUncheckedCreateInput>
+    /**
+     * In case the UserDevice was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<UserDeviceUpdateInput, UserDeviceUncheckedUpdateInput>
+  }
+
+  /**
+   * UserDevice delete
+   */
+  export type UserDeviceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDevice
+     */
+    select?: UserDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDevice
+     */
+    omit?: UserDeviceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDeviceInclude<ExtArgs> | null
+    /**
+     * Filter which UserDevice to delete.
+     */
+    where: UserDeviceWhereUniqueInput
+  }
+
+  /**
+   * UserDevice deleteMany
+   */
+  export type UserDeviceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which UserDevices to delete
+     */
+    where?: UserDeviceWhereInput
+    /**
+     * Limit how many UserDevices to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * UserDevice without action
+   */
+  export type UserDeviceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the UserDevice
+     */
+    select?: UserDeviceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the UserDevice
+     */
+    omit?: UserDeviceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: UserDeviceInclude<ExtArgs> | null
   }
 
 
@@ -7280,6 +8495,18 @@ export namespace Prisma {
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
 
 
+  export const UserDeviceScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    token: 'token',
+    platform: 'platform',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type UserDeviceScalarFieldEnum = (typeof UserDeviceScalarFieldEnum)[keyof typeof UserDeviceScalarFieldEnum]
+
+
   export const DriverProfileScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
@@ -7440,6 +8667,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'DevicePlatform'
+   */
+  export type EnumDevicePlatformFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DevicePlatform'>
+    
+
+
+  /**
+   * Reference to a field of type 'DevicePlatform[]'
+   */
+  export type ListEnumDevicePlatformFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DevicePlatform[]'>
+    
+
+
+  /**
    * Reference to a field of type 'DriverStatus'
    */
   export type EnumDriverStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DriverStatus'>
@@ -7572,6 +8813,7 @@ export namespace Prisma {
     ridesByRider?: RideListRelationFilter
     ridesByDriver?: RideListRelationFilter
     rideEvents?: RideEventListRelationFilter
+    devices?: UserDeviceListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -7589,6 +8831,7 @@ export namespace Prisma {
     ridesByRider?: RideOrderByRelationAggregateInput
     ridesByDriver?: RideOrderByRelationAggregateInput
     rideEvents?: RideEventOrderByRelationAggregateInput
+    devices?: UserDeviceOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -7609,6 +8852,7 @@ export namespace Prisma {
     ridesByRider?: RideListRelationFilter
     ridesByDriver?: RideListRelationFilter
     rideEvents?: RideEventListRelationFilter
+    devices?: UserDeviceListRelationFilter
   }, "id" | "email" | "phoneNumber">
 
   export type UserOrderByWithAggregationInput = {
@@ -7641,6 +8885,66 @@ export namespace Prisma {
     phoneNumber?: StringNullableWithAggregatesFilter<"User"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"User"> | Date | string
+  }
+
+  export type UserDeviceWhereInput = {
+    AND?: UserDeviceWhereInput | UserDeviceWhereInput[]
+    OR?: UserDeviceWhereInput[]
+    NOT?: UserDeviceWhereInput | UserDeviceWhereInput[]
+    id?: UuidFilter<"UserDevice"> | string
+    userId?: UuidFilter<"UserDevice"> | string
+    token?: StringFilter<"UserDevice"> | string
+    platform?: EnumDevicePlatformFilter<"UserDevice"> | $Enums.DevicePlatform
+    createdAt?: DateTimeFilter<"UserDevice"> | Date | string
+    updatedAt?: DateTimeFilter<"UserDevice"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type UserDeviceOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    token?: SortOrder
+    platform?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type UserDeviceWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    token?: string
+    AND?: UserDeviceWhereInput | UserDeviceWhereInput[]
+    OR?: UserDeviceWhereInput[]
+    NOT?: UserDeviceWhereInput | UserDeviceWhereInput[]
+    userId?: UuidFilter<"UserDevice"> | string
+    platform?: EnumDevicePlatformFilter<"UserDevice"> | $Enums.DevicePlatform
+    createdAt?: DateTimeFilter<"UserDevice"> | Date | string
+    updatedAt?: DateTimeFilter<"UserDevice"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "token">
+
+  export type UserDeviceOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    token?: SortOrder
+    platform?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: UserDeviceCountOrderByAggregateInput
+    _max?: UserDeviceMaxOrderByAggregateInput
+    _min?: UserDeviceMinOrderByAggregateInput
+  }
+
+  export type UserDeviceScalarWhereWithAggregatesInput = {
+    AND?: UserDeviceScalarWhereWithAggregatesInput | UserDeviceScalarWhereWithAggregatesInput[]
+    OR?: UserDeviceScalarWhereWithAggregatesInput[]
+    NOT?: UserDeviceScalarWhereWithAggregatesInput | UserDeviceScalarWhereWithAggregatesInput[]
+    id?: UuidWithAggregatesFilter<"UserDevice"> | string
+    userId?: UuidWithAggregatesFilter<"UserDevice"> | string
+    token?: StringWithAggregatesFilter<"UserDevice"> | string
+    platform?: EnumDevicePlatformWithAggregatesFilter<"UserDevice"> | $Enums.DevicePlatform
+    createdAt?: DateTimeWithAggregatesFilter<"UserDevice"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"UserDevice"> | Date | string
   }
 
   export type DriverProfileWhereInput = {
@@ -7959,6 +9263,7 @@ export namespace Prisma {
     ridesByRider?: RideCreateNestedManyWithoutRiderInput
     ridesByDriver?: RideCreateNestedManyWithoutDriverInput
     rideEvents?: RideEventCreateNestedManyWithoutActorInput
+    devices?: UserDeviceCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -7976,6 +9281,7 @@ export namespace Prisma {
     ridesByRider?: RideUncheckedCreateNestedManyWithoutRiderInput
     ridesByDriver?: RideUncheckedCreateNestedManyWithoutDriverInput
     rideEvents?: RideEventUncheckedCreateNestedManyWithoutActorInput
+    devices?: UserDeviceUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -7993,6 +9299,7 @@ export namespace Prisma {
     ridesByRider?: RideUpdateManyWithoutRiderNestedInput
     ridesByDriver?: RideUpdateManyWithoutDriverNestedInput
     rideEvents?: RideEventUpdateManyWithoutActorNestedInput
+    devices?: UserDeviceUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -8010,6 +9317,7 @@ export namespace Prisma {
     ridesByRider?: RideUncheckedUpdateManyWithoutRiderNestedInput
     ridesByDriver?: RideUncheckedUpdateManyWithoutDriverNestedInput
     rideEvents?: RideEventUncheckedUpdateManyWithoutActorNestedInput
+    devices?: UserDeviceUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -8047,6 +9355,68 @@ export namespace Prisma {
     firstName?: StringFieldUpdateOperationsInput | string
     lastName?: StringFieldUpdateOperationsInput | string
     phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserDeviceCreateInput = {
+    id?: string
+    token: string
+    platform: $Enums.DevicePlatform
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutDevicesInput
+  }
+
+  export type UserDeviceUncheckedCreateInput = {
+    id?: string
+    userId: string
+    token: string
+    platform: $Enums.DevicePlatform
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserDeviceUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    platform?: EnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutDevicesNestedInput
+  }
+
+  export type UserDeviceUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    platform?: EnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserDeviceCreateManyInput = {
+    id?: string
+    userId: string
+    token: string
+    platform: $Enums.DevicePlatform
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserDeviceUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    platform?: EnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserDeviceUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    platform?: EnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8452,6 +9822,12 @@ export namespace Prisma {
     none?: RideEventWhereInput
   }
 
+  export type UserDeviceListRelationFilter = {
+    every?: UserDeviceWhereInput
+    some?: UserDeviceWhereInput
+    none?: UserDeviceWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -8462,6 +9838,10 @@ export namespace Prisma {
   }
 
   export type RideEventOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type UserDeviceOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -8589,16 +9969,60 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type EnumDriverStatusFilter<$PrismaModel = never> = {
-    equals?: $Enums.DriverStatus | EnumDriverStatusFieldRefInput<$PrismaModel>
-    in?: $Enums.DriverStatus[] | ListEnumDriverStatusFieldRefInput<$PrismaModel>
-    notIn?: $Enums.DriverStatus[] | ListEnumDriverStatusFieldRefInput<$PrismaModel>
-    not?: NestedEnumDriverStatusFilter<$PrismaModel> | $Enums.DriverStatus
+  export type EnumDevicePlatformFilter<$PrismaModel = never> = {
+    equals?: $Enums.DevicePlatform | EnumDevicePlatformFieldRefInput<$PrismaModel>
+    in?: $Enums.DevicePlatform[] | ListEnumDevicePlatformFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DevicePlatform[] | ListEnumDevicePlatformFieldRefInput<$PrismaModel>
+    not?: NestedEnumDevicePlatformFilter<$PrismaModel> | $Enums.DevicePlatform
   }
 
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
+  }
+
+  export type UserDeviceCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    token?: SortOrder
+    platform?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserDeviceMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    token?: SortOrder
+    platform?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type UserDeviceMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    token?: SortOrder
+    platform?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumDevicePlatformWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DevicePlatform | EnumDevicePlatformFieldRefInput<$PrismaModel>
+    in?: $Enums.DevicePlatform[] | ListEnumDevicePlatformFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DevicePlatform[] | ListEnumDevicePlatformFieldRefInput<$PrismaModel>
+    not?: NestedEnumDevicePlatformWithAggregatesFilter<$PrismaModel> | $Enums.DevicePlatform
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDevicePlatformFilter<$PrismaModel>
+    _max?: NestedEnumDevicePlatformFilter<$PrismaModel>
+  }
+
+  export type EnumDriverStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.DriverStatus | EnumDriverStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.DriverStatus[] | ListEnumDriverStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DriverStatus[] | ListEnumDriverStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumDriverStatusFilter<$PrismaModel> | $Enums.DriverStatus
   }
 
   export type VehicleNullableScalarRelationFilter = {
@@ -9023,6 +10447,13 @@ export namespace Prisma {
     connect?: RideEventWhereUniqueInput | RideEventWhereUniqueInput[]
   }
 
+  export type UserDeviceCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserDeviceCreateWithoutUserInput, UserDeviceUncheckedCreateWithoutUserInput> | UserDeviceCreateWithoutUserInput[] | UserDeviceUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserDeviceCreateOrConnectWithoutUserInput | UserDeviceCreateOrConnectWithoutUserInput[]
+    createMany?: UserDeviceCreateManyUserInputEnvelope
+    connect?: UserDeviceWhereUniqueInput | UserDeviceWhereUniqueInput[]
+  }
+
   export type DriverProfileUncheckedCreateNestedOneWithoutUserInput = {
     create?: XOR<DriverProfileCreateWithoutUserInput, DriverProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: DriverProfileCreateOrConnectWithoutUserInput
@@ -9048,6 +10479,13 @@ export namespace Prisma {
     connectOrCreate?: RideEventCreateOrConnectWithoutActorInput | RideEventCreateOrConnectWithoutActorInput[]
     createMany?: RideEventCreateManyActorInputEnvelope
     connect?: RideEventWhereUniqueInput | RideEventWhereUniqueInput[]
+  }
+
+  export type UserDeviceUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<UserDeviceCreateWithoutUserInput, UserDeviceUncheckedCreateWithoutUserInput> | UserDeviceCreateWithoutUserInput[] | UserDeviceUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserDeviceCreateOrConnectWithoutUserInput | UserDeviceCreateOrConnectWithoutUserInput[]
+    createMany?: UserDeviceCreateManyUserInputEnvelope
+    connect?: UserDeviceWhereUniqueInput | UserDeviceWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -9122,6 +10560,20 @@ export namespace Prisma {
     deleteMany?: RideEventScalarWhereInput | RideEventScalarWhereInput[]
   }
 
+  export type UserDeviceUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserDeviceCreateWithoutUserInput, UserDeviceUncheckedCreateWithoutUserInput> | UserDeviceCreateWithoutUserInput[] | UserDeviceUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserDeviceCreateOrConnectWithoutUserInput | UserDeviceCreateOrConnectWithoutUserInput[]
+    upsert?: UserDeviceUpsertWithWhereUniqueWithoutUserInput | UserDeviceUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserDeviceCreateManyUserInputEnvelope
+    set?: UserDeviceWhereUniqueInput | UserDeviceWhereUniqueInput[]
+    disconnect?: UserDeviceWhereUniqueInput | UserDeviceWhereUniqueInput[]
+    delete?: UserDeviceWhereUniqueInput | UserDeviceWhereUniqueInput[]
+    connect?: UserDeviceWhereUniqueInput | UserDeviceWhereUniqueInput[]
+    update?: UserDeviceUpdateWithWhereUniqueWithoutUserInput | UserDeviceUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserDeviceUpdateManyWithWhereWithoutUserInput | UserDeviceUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserDeviceScalarWhereInput | UserDeviceScalarWhereInput[]
+  }
+
   export type DriverProfileUncheckedUpdateOneWithoutUserNestedInput = {
     create?: XOR<DriverProfileCreateWithoutUserInput, DriverProfileUncheckedCreateWithoutUserInput>
     connectOrCreate?: DriverProfileCreateOrConnectWithoutUserInput
@@ -9172,6 +10624,38 @@ export namespace Prisma {
     update?: RideEventUpdateWithWhereUniqueWithoutActorInput | RideEventUpdateWithWhereUniqueWithoutActorInput[]
     updateMany?: RideEventUpdateManyWithWhereWithoutActorInput | RideEventUpdateManyWithWhereWithoutActorInput[]
     deleteMany?: RideEventScalarWhereInput | RideEventScalarWhereInput[]
+  }
+
+  export type UserDeviceUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<UserDeviceCreateWithoutUserInput, UserDeviceUncheckedCreateWithoutUserInput> | UserDeviceCreateWithoutUserInput[] | UserDeviceUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: UserDeviceCreateOrConnectWithoutUserInput | UserDeviceCreateOrConnectWithoutUserInput[]
+    upsert?: UserDeviceUpsertWithWhereUniqueWithoutUserInput | UserDeviceUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: UserDeviceCreateManyUserInputEnvelope
+    set?: UserDeviceWhereUniqueInput | UserDeviceWhereUniqueInput[]
+    disconnect?: UserDeviceWhereUniqueInput | UserDeviceWhereUniqueInput[]
+    delete?: UserDeviceWhereUniqueInput | UserDeviceWhereUniqueInput[]
+    connect?: UserDeviceWhereUniqueInput | UserDeviceWhereUniqueInput[]
+    update?: UserDeviceUpdateWithWhereUniqueWithoutUserInput | UserDeviceUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: UserDeviceUpdateManyWithWhereWithoutUserInput | UserDeviceUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: UserDeviceScalarWhereInput | UserDeviceScalarWhereInput[]
+  }
+
+  export type UserCreateNestedOneWithoutDevicesInput = {
+    create?: XOR<UserCreateWithoutDevicesInput, UserUncheckedCreateWithoutDevicesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDevicesInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type EnumDevicePlatformFieldUpdateOperationsInput = {
+    set?: $Enums.DevicePlatform
+  }
+
+  export type UserUpdateOneRequiredWithoutDevicesNestedInput = {
+    create?: XOR<UserCreateWithoutDevicesInput, UserUncheckedCreateWithoutDevicesInput>
+    connectOrCreate?: UserCreateOrConnectWithoutDevicesInput
+    upsert?: UserUpsertWithoutDevicesInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutDevicesInput, UserUpdateWithoutDevicesInput>, UserUncheckedUpdateWithoutDevicesInput>
   }
 
   export type UserCreateNestedOneWithoutDriverProfileInput = {
@@ -9544,6 +11028,23 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
+  export type NestedEnumDevicePlatformFilter<$PrismaModel = never> = {
+    equals?: $Enums.DevicePlatform | EnumDevicePlatformFieldRefInput<$PrismaModel>
+    in?: $Enums.DevicePlatform[] | ListEnumDevicePlatformFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DevicePlatform[] | ListEnumDevicePlatformFieldRefInput<$PrismaModel>
+    not?: NestedEnumDevicePlatformFilter<$PrismaModel> | $Enums.DevicePlatform
+  }
+
+  export type NestedEnumDevicePlatformWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.DevicePlatform | EnumDevicePlatformFieldRefInput<$PrismaModel>
+    in?: $Enums.DevicePlatform[] | ListEnumDevicePlatformFieldRefInput<$PrismaModel>
+    notIn?: $Enums.DevicePlatform[] | ListEnumDevicePlatformFieldRefInput<$PrismaModel>
+    not?: NestedEnumDevicePlatformWithAggregatesFilter<$PrismaModel> | $Enums.DevicePlatform
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumDevicePlatformFilter<$PrismaModel>
+    _max?: NestedEnumDevicePlatformFilter<$PrismaModel>
+  }
+
   export type NestedEnumDriverStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.DriverStatus | EnumDriverStatusFieldRefInput<$PrismaModel>
     in?: $Enums.DriverStatus[] | ListEnumDriverStatusFieldRefInput<$PrismaModel>
@@ -9866,6 +11367,32 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type UserDeviceCreateWithoutUserInput = {
+    id?: string
+    token: string
+    platform: $Enums.DevicePlatform
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserDeviceUncheckedCreateWithoutUserInput = {
+    id?: string
+    token: string
+    platform: $Enums.DevicePlatform
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserDeviceCreateOrConnectWithoutUserInput = {
+    where: UserDeviceWhereUniqueInput
+    create: XOR<UserDeviceCreateWithoutUserInput, UserDeviceUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserDeviceCreateManyUserInputEnvelope = {
+    data: UserDeviceCreateManyUserInput | UserDeviceCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type DriverProfileUpsertWithoutUserInput = {
     update: XOR<DriverProfileUpdateWithoutUserInput, DriverProfileUncheckedUpdateWithoutUserInput>
     create: XOR<DriverProfileCreateWithoutUserInput, DriverProfileUncheckedCreateWithoutUserInput>
@@ -9971,6 +11498,118 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"RideEvent"> | Date | string
   }
 
+  export type UserDeviceUpsertWithWhereUniqueWithoutUserInput = {
+    where: UserDeviceWhereUniqueInput
+    update: XOR<UserDeviceUpdateWithoutUserInput, UserDeviceUncheckedUpdateWithoutUserInput>
+    create: XOR<UserDeviceCreateWithoutUserInput, UserDeviceUncheckedCreateWithoutUserInput>
+  }
+
+  export type UserDeviceUpdateWithWhereUniqueWithoutUserInput = {
+    where: UserDeviceWhereUniqueInput
+    data: XOR<UserDeviceUpdateWithoutUserInput, UserDeviceUncheckedUpdateWithoutUserInput>
+  }
+
+  export type UserDeviceUpdateManyWithWhereWithoutUserInput = {
+    where: UserDeviceScalarWhereInput
+    data: XOR<UserDeviceUpdateManyMutationInput, UserDeviceUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type UserDeviceScalarWhereInput = {
+    AND?: UserDeviceScalarWhereInput | UserDeviceScalarWhereInput[]
+    OR?: UserDeviceScalarWhereInput[]
+    NOT?: UserDeviceScalarWhereInput | UserDeviceScalarWhereInput[]
+    id?: UuidFilter<"UserDevice"> | string
+    userId?: UuidFilter<"UserDevice"> | string
+    token?: StringFilter<"UserDevice"> | string
+    platform?: EnumDevicePlatformFilter<"UserDevice"> | $Enums.DevicePlatform
+    createdAt?: DateTimeFilter<"UserDevice"> | Date | string
+    updatedAt?: DateTimeFilter<"UserDevice"> | Date | string
+  }
+
+  export type UserCreateWithoutDevicesInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    role: $Enums.UserRole
+    status?: $Enums.UserStatus
+    firstName: string
+    lastName: string
+    phoneNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    driverProfile?: DriverProfileCreateNestedOneWithoutUserInput
+    ridesByRider?: RideCreateNestedManyWithoutRiderInput
+    ridesByDriver?: RideCreateNestedManyWithoutDriverInput
+    rideEvents?: RideEventCreateNestedManyWithoutActorInput
+  }
+
+  export type UserUncheckedCreateWithoutDevicesInput = {
+    id?: string
+    email: string
+    passwordHash: string
+    role: $Enums.UserRole
+    status?: $Enums.UserStatus
+    firstName: string
+    lastName: string
+    phoneNumber?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    driverProfile?: DriverProfileUncheckedCreateNestedOneWithoutUserInput
+    ridesByRider?: RideUncheckedCreateNestedManyWithoutRiderInput
+    ridesByDriver?: RideUncheckedCreateNestedManyWithoutDriverInput
+    rideEvents?: RideEventUncheckedCreateNestedManyWithoutActorInput
+  }
+
+  export type UserCreateOrConnectWithoutDevicesInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutDevicesInput, UserUncheckedCreateWithoutDevicesInput>
+  }
+
+  export type UserUpsertWithoutDevicesInput = {
+    update: XOR<UserUpdateWithoutDevicesInput, UserUncheckedUpdateWithoutDevicesInput>
+    create: XOR<UserCreateWithoutDevicesInput, UserUncheckedCreateWithoutDevicesInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutDevicesInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutDevicesInput, UserUncheckedUpdateWithoutDevicesInput>
+  }
+
+  export type UserUpdateWithoutDevicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    driverProfile?: DriverProfileUpdateOneWithoutUserNestedInput
+    ridesByRider?: RideUpdateManyWithoutRiderNestedInput
+    ridesByDriver?: RideUpdateManyWithoutDriverNestedInput
+    rideEvents?: RideEventUpdateManyWithoutActorNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutDevicesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    passwordHash?: StringFieldUpdateOperationsInput | string
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    status?: EnumUserStatusFieldUpdateOperationsInput | $Enums.UserStatus
+    firstName?: StringFieldUpdateOperationsInput | string
+    lastName?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    driverProfile?: DriverProfileUncheckedUpdateOneWithoutUserNestedInput
+    ridesByRider?: RideUncheckedUpdateManyWithoutRiderNestedInput
+    ridesByDriver?: RideUncheckedUpdateManyWithoutDriverNestedInput
+    rideEvents?: RideEventUncheckedUpdateManyWithoutActorNestedInput
+  }
+
   export type UserCreateWithoutDriverProfileInput = {
     id?: string
     email: string
@@ -9985,6 +11624,7 @@ export namespace Prisma {
     ridesByRider?: RideCreateNestedManyWithoutRiderInput
     ridesByDriver?: RideCreateNestedManyWithoutDriverInput
     rideEvents?: RideEventCreateNestedManyWithoutActorInput
+    devices?: UserDeviceCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutDriverProfileInput = {
@@ -10001,6 +11641,7 @@ export namespace Prisma {
     ridesByRider?: RideUncheckedCreateNestedManyWithoutRiderInput
     ridesByDriver?: RideUncheckedCreateNestedManyWithoutDriverInput
     rideEvents?: RideEventUncheckedCreateNestedManyWithoutActorInput
+    devices?: UserDeviceUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutDriverProfileInput = {
@@ -10062,6 +11703,7 @@ export namespace Prisma {
     ridesByRider?: RideUpdateManyWithoutRiderNestedInput
     ridesByDriver?: RideUpdateManyWithoutDriverNestedInput
     rideEvents?: RideEventUpdateManyWithoutActorNestedInput
+    devices?: UserDeviceUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutDriverProfileInput = {
@@ -10078,6 +11720,7 @@ export namespace Prisma {
     ridesByRider?: RideUncheckedUpdateManyWithoutRiderNestedInput
     ridesByDriver?: RideUncheckedUpdateManyWithoutDriverNestedInput
     rideEvents?: RideEventUncheckedUpdateManyWithoutActorNestedInput
+    devices?: UserDeviceUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type VehicleUpsertWithoutDriverProfileInput = {
@@ -10177,6 +11820,7 @@ export namespace Prisma {
     driverProfile?: DriverProfileCreateNestedOneWithoutUserInput
     ridesByDriver?: RideCreateNestedManyWithoutDriverInput
     rideEvents?: RideEventCreateNestedManyWithoutActorInput
+    devices?: UserDeviceCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRidesByRiderInput = {
@@ -10193,6 +11837,7 @@ export namespace Prisma {
     driverProfile?: DriverProfileUncheckedCreateNestedOneWithoutUserInput
     ridesByDriver?: RideUncheckedCreateNestedManyWithoutDriverInput
     rideEvents?: RideEventUncheckedCreateNestedManyWithoutActorInput
+    devices?: UserDeviceUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRidesByRiderInput = {
@@ -10214,6 +11859,7 @@ export namespace Prisma {
     driverProfile?: DriverProfileCreateNestedOneWithoutUserInput
     ridesByRider?: RideCreateNestedManyWithoutRiderInput
     rideEvents?: RideEventCreateNestedManyWithoutActorInput
+    devices?: UserDeviceCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRidesByDriverInput = {
@@ -10230,6 +11876,7 @@ export namespace Prisma {
     driverProfile?: DriverProfileUncheckedCreateNestedOneWithoutUserInput
     ridesByRider?: RideUncheckedCreateNestedManyWithoutRiderInput
     rideEvents?: RideEventUncheckedCreateNestedManyWithoutActorInput
+    devices?: UserDeviceUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRidesByDriverInput = {
@@ -10290,6 +11937,7 @@ export namespace Prisma {
     driverProfile?: DriverProfileUpdateOneWithoutUserNestedInput
     ridesByDriver?: RideUpdateManyWithoutDriverNestedInput
     rideEvents?: RideEventUpdateManyWithoutActorNestedInput
+    devices?: UserDeviceUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRidesByRiderInput = {
@@ -10306,6 +11954,7 @@ export namespace Prisma {
     driverProfile?: DriverProfileUncheckedUpdateOneWithoutUserNestedInput
     ridesByDriver?: RideUncheckedUpdateManyWithoutDriverNestedInput
     rideEvents?: RideEventUncheckedUpdateManyWithoutActorNestedInput
+    devices?: UserDeviceUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserUpsertWithoutRidesByDriverInput = {
@@ -10333,6 +11982,7 @@ export namespace Prisma {
     driverProfile?: DriverProfileUpdateOneWithoutUserNestedInput
     ridesByRider?: RideUpdateManyWithoutRiderNestedInput
     rideEvents?: RideEventUpdateManyWithoutActorNestedInput
+    devices?: UserDeviceUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRidesByDriverInput = {
@@ -10349,6 +11999,7 @@ export namespace Prisma {
     driverProfile?: DriverProfileUncheckedUpdateOneWithoutUserNestedInput
     ridesByRider?: RideUncheckedUpdateManyWithoutRiderNestedInput
     rideEvents?: RideEventUncheckedUpdateManyWithoutActorNestedInput
+    devices?: UserDeviceUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type RideEventUpsertWithWhereUniqueWithoutRideInput = {
@@ -10414,6 +12065,7 @@ export namespace Prisma {
     driverProfile?: DriverProfileCreateNestedOneWithoutUserInput
     ridesByRider?: RideCreateNestedManyWithoutRiderInput
     ridesByDriver?: RideCreateNestedManyWithoutDriverInput
+    devices?: UserDeviceCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutRideEventsInput = {
@@ -10430,6 +12082,7 @@ export namespace Prisma {
     driverProfile?: DriverProfileUncheckedCreateNestedOneWithoutUserInput
     ridesByRider?: RideUncheckedCreateNestedManyWithoutRiderInput
     ridesByDriver?: RideUncheckedCreateNestedManyWithoutDriverInput
+    devices?: UserDeviceUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutRideEventsInput = {
@@ -10501,6 +12154,7 @@ export namespace Prisma {
     driverProfile?: DriverProfileUpdateOneWithoutUserNestedInput
     ridesByRider?: RideUpdateManyWithoutRiderNestedInput
     ridesByDriver?: RideUpdateManyWithoutDriverNestedInput
+    devices?: UserDeviceUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutRideEventsInput = {
@@ -10517,6 +12171,7 @@ export namespace Prisma {
     driverProfile?: DriverProfileUncheckedUpdateOneWithoutUserNestedInput
     ridesByRider?: RideUncheckedUpdateManyWithoutRiderNestedInput
     ridesByDriver?: RideUncheckedUpdateManyWithoutDriverNestedInput
+    devices?: UserDeviceUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type RideCreateManyRiderInput = {
@@ -10550,6 +12205,14 @@ export namespace Prisma {
     rideId: string
     type: $Enums.RideEventType
     payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type UserDeviceCreateManyUserInput = {
+    id?: string
+    token: string
+    platform: $Enums.DevicePlatform
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -10659,6 +12322,30 @@ export namespace Prisma {
     rideId?: StringFieldUpdateOperationsInput | string
     type?: EnumRideEventTypeFieldUpdateOperationsInput | $Enums.RideEventType
     payload?: NullableJsonNullValueInput | InputJsonValue
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserDeviceUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    platform?: EnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserDeviceUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    platform?: EnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type UserDeviceUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    token?: StringFieldUpdateOperationsInput | string
+    platform?: EnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

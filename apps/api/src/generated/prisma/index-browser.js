@@ -133,6 +133,15 @@ exports.Prisma.UserScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.UserDeviceScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  token: 'token',
+  platform: 'platform',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.DriverProfileScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -214,6 +223,10 @@ exports.UserStatus = exports.$Enums.UserStatus = {
   DISABLED: 'DISABLED'
 };
 
+exports.DevicePlatform = exports.$Enums.DevicePlatform = {
+  WEB: 'WEB'
+};
+
 exports.DriverStatus = exports.$Enums.DriverStatus = {
   PENDING_ONBOARDING: 'PENDING_ONBOARDING',
   ACTIVE: 'ACTIVE',
@@ -244,6 +257,7 @@ exports.RideEventType = exports.$Enums.RideEventType = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  UserDevice: 'UserDevice',
   DriverProfile: 'DriverProfile',
   Vehicle: 'Vehicle',
   Ride: 'Ride',

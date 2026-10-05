@@ -22,9 +22,10 @@ import { GetRideDetailsUseCase } from './application/use-cases/get-ride-details.
 import { RideRepository } from './domain/repositories/ride.repository';
 import { PrismaRideRepository } from './infrastructure/persistence/prisma-ride.repository';
 import { RidesController } from './presentation/controllers/rides.controller';
+import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
-  imports: [DatabaseModule, IdentityModule, DriversModule],
+  imports: [DatabaseModule, IdentityModule, DriversModule, NotificationsModule],
   controllers: [RidesController],
   providers: [
     PublishDriverLocationUseCase,

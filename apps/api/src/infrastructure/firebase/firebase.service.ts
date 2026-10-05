@@ -1,9 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnApplicationShutdown } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { App, cert, getApps, initializeApp } from 'firebase-admin/app';
+import {
+  App,
+  cert,
+  deleteApp,
+  getApps,
+  initializeApp,
+} from 'firebase-admin/app';
 
 @Injectable()
-export class FirebaseService {
+export class FirebaseService implements OnApplicationShutdown {
   private readonly app?: App;
 
   constructor(configService: ConfigService) {
@@ -13,18 +19,25 @@ export class FirebaseService {
 
     if (projectId && clientEmail && privateKey) {
       this.app =
-        getApps()[0] ??
-        initializeApp({
-          credential: cert({
-            projectId,
-            clientEmail,
-            privateKey,
-          }),
-        });
+        getApps().find((app) => app.name === 'c-ride') ??
+        initializeApp(
+          {
+            credential: cert({
+              projectId,
+              clientEmail,
+              privateKey,
+            }),
+          },
+          'c-ride',
+        );
     }
   }
 
   getApp() {
     return this.app;
+  }
+
+  async onApplicationShutdown() {
+    if (this.app) await deleteApp(this.app);
   }
 }

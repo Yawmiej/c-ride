@@ -1,4 +1,4 @@
-import { Bell } from 'lucide-react';
+import type { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Avatar, AvatarFallback } from '@/shared/components/ui/avatar';
 import { Button } from '@/shared/components/ui/button';
@@ -14,9 +14,14 @@ export type AppNavigationItem = {
 type AppHeaderProps = {
   navigation: AppNavigationItem[];
   userName?: string;
+  actions?: ReactNode;
 };
 
-export function AppHeader({ navigation, userName = 'User' }: AppHeaderProps) {
+export function AppHeader({
+  actions,
+  navigation,
+  userName = 'User',
+}: AppHeaderProps) {
   const { pathname } = useLocation();
   const initials = userName
     .split(' ')
@@ -52,9 +57,7 @@ export function AppHeader({ navigation, userName = 'User' }: AppHeaderProps) {
           ))}
         </nav>
         <div className="flex items-center gap-2">
-          <Button aria-label="Notifications" size="icon" variant="ghost">
-            <Bell />
-          </Button>
+          {actions}
           <Avatar className="size-8">
             <AvatarFallback className="bg-accent text-xs font-semibold text-accent-foreground">
               {initials}
