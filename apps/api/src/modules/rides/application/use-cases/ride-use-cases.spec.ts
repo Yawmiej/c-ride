@@ -36,6 +36,10 @@ class InMemoryRideRepository extends RideRepository {
     return { ride, event };
   }
 
+  async listAvailable(): Promise<Ride[]> {
+    return [];
+  }
+
   async listHistory(): Promise<RideHistoryResult> {
     return { items: [], total: 0 };
   }

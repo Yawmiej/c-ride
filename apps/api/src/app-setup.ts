@@ -1,12 +1,16 @@
+import { ConfigService } from '@nestjs/config';
+import { SocketIoAdapter } from './common/adapters/socket-io.adapter';
 import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ApiExceptionFilter } from './common/filters/api-exception.filter';
 import { createValidationPipe } from './common/validation/create-validation-pipe';
 
 export function configureApplication(app: INestApplication): void {
-  app.enableCors({
-    origin: 'http://localhost:5173',
-  });
+  const webOrigin = app
+    .get(ConfigService)
+    .get<string>('app.webOrigin', 'http://localhost:5173');
+  app.enableCors({ origin: webOrigin });
+  app.useWebSocketAdapter(new SocketIoAdapter(app, webOrigin));
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(createValidationPipe());
   app.useGlobalFilters(new ApiExceptionFilter());

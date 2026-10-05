@@ -1,3 +1,8 @@
+import { RidesGateway } from './presentation/gateways/rides.gateway';
+import { SocketIoRidePublisher } from './infrastructure/realtime/socket-io-ride-publisher';
+import { RideRealtimePublisher } from './application/contracts/ride-realtime-publisher';
+import { ListAvailableRidesUseCase } from './application/use-cases/list-available-rides.use-case';
+import { AuthorizeRideRoomUseCase } from './application/use-cases/authorize-ride-room.use-case';
 import { ListRideHistoryUseCase } from './application/use-cases/list-ride-history.use-case';
 import { RideEventRepository } from './domain/repositories/ride-event.repository';
 import { PrismaRideEventRepository } from './infrastructure/persistence/prisma-ride-event.repository';
@@ -20,6 +25,11 @@ import { RidesController } from './presentation/controllers/rides.controller';
   imports: [DatabaseModule, IdentityModule, DriversModule],
   controllers: [RidesController],
   providers: [
+    RidesGateway,
+    SocketIoRidePublisher,
+    { provide: RideRealtimePublisher, useExisting: SocketIoRidePublisher },
+    ListAvailableRidesUseCase,
+    AuthorizeRideRoomUseCase,
     ListRideHistoryUseCase,
     ChangeRideStatusUseCase,
     AcceptRideUseCase,

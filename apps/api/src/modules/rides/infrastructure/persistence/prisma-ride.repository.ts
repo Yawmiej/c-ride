@@ -86,6 +86,14 @@ export class PrismaRideRepository implements RideRepository {
     return { items: rides.map(RideMapper.toDomain), total };
   }
 
+  async listAvailable(): Promise<Ride[]> {
+    const rides = await this.prisma.ride.findMany({
+      where: { status: RideStatus.REQUESTED, driverId: null },
+      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+    });
+    return rides.map(RideMapper.toDomain);
+  }
+
   async findById(id: string): Promise<Ride | null> {
     const ride = await this.prisma.ride.findUnique({ where: { id } });
     return ride ? RideMapper.toDomain(ride) : null;

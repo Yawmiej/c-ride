@@ -31,5 +31,7 @@ export abstract class RideRepository {
   ): Promise<RideMutationResult | null>;
   abstract listHistory(query: RideHistoryQuery): Promise<RideHistoryResult>;
 
+  abstract listAvailable(): Promise<Ride[]>;
+
   abstract findById(id: string): Promise<Ride | null>;
 }
