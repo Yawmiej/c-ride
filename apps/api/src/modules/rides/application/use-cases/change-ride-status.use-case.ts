@@ -1,3 +1,4 @@
+import { PublishRideStatusUseCase } from './publish-ride-status.use-case';
 import { randomUUID } from 'node:crypto';
 import { RideEvent } from '../../domain/entities/ride-event.entity';
 import { Injectable } from '@nestjs/common';
@@ -18,7 +19,10 @@ export interface ChangeRideStatusCommand {
 
 @Injectable()
 export class ChangeRideStatusUseCase {
-  constructor(private readonly rides: RideRepository) {}
+  constructor(
+    private readonly rides: RideRepository,
+    private readonly publishStatus: PublishRideStatusUseCase,
+  ) {}
 
   async execute({
     rideId,
@@ -55,6 +59,7 @@ export class ChangeRideStatusUseCase {
         ERROR_MESSAGES.RIDE_STATUS_CHANGED,
       );
     }
+    await this.publishStatus.execute(saved);
     return saved.ride;
   }
 }

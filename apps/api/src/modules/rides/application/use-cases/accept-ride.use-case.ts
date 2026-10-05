@@ -1,3 +1,4 @@
+import { PublishRideStatusUseCase } from './publish-ride-status.use-case';
 import { randomUUID } from 'node:crypto';
 import { RideEvent } from '../../domain/entities/ride-event.entity';
 import { Injectable } from '@nestjs/common';
@@ -22,6 +23,7 @@ export class AcceptRideUseCase {
     private readonly rides: RideRepository,
     private readonly eligibility: DriverEligibility,
     private readonly acceptance: RideAcceptance,
+    private readonly publishStatus: PublishRideStatusUseCase,
   ) {}
 
   async execute({ rideId, driverId }: AcceptRideCommand): Promise<Ride> {
@@ -64,6 +66,7 @@ export class AcceptRideUseCase {
         ERROR_MESSAGES.RIDE_UNAVAILABLE,
       );
     }
+    await this.publishStatus.execute(result);
     return result.ride;
   }
 }

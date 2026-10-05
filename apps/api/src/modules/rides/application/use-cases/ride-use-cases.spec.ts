@@ -1,3 +1,4 @@
+import { PublishRideStatusUseCase } from './publish-ride-status.use-case';
 import { RideEvent } from '../../domain/entities/ride-event.entity';
 import {
   RideMutationResult,
@@ -68,7 +69,13 @@ describe('Ride use cases', () => {
   it('persists a domain ride through the repository contract', async () => {
     const repository = new InMemoryRideRepository();
 
-    const created = await new CreateRideUseCase(repository).execute({
+    const created = await new CreateRideUseCase(
+      repository,
+      new PublishRideStatusUseCase({
+        publishStatusChanged: () => {},
+        publishLocationUpdated: () => {},
+      }),
+    ).execute({
       riderId: 'rider-id',
       pickupLat: 6.5244,
       pickupLng: 3.3792,
@@ -94,7 +101,13 @@ describe('Ride use cases', () => {
     const repository = new InMemoryRideRepository();
 
     await expect(
-      new CreateRideUseCase(repository).execute({
+      new CreateRideUseCase(
+        repository,
+        new PublishRideStatusUseCase({
+          publishStatusChanged: () => {},
+          publishLocationUpdated: () => {},
+        }),
+      ).execute({
         riderId: 'rider-id',
         pickupLat: 91,
         pickupLng: 3.3792,

@@ -1,3 +1,5 @@
+import { PublishDriverLocationUseCase } from './application/use-cases/publish-driver-location.use-case';
+import { PublishRideStatusUseCase } from './application/use-cases/publish-ride-status.use-case';
 import { RidesGateway } from './presentation/gateways/rides.gateway';
 import { SocketIoRidePublisher } from './infrastructure/realtime/socket-io-ride-publisher';
 import { RideRealtimePublisher } from './application/contracts/ride-realtime-publisher';
@@ -25,9 +27,10 @@ import { RidesController } from './presentation/controllers/rides.controller';
   imports: [DatabaseModule, IdentityModule, DriversModule],
   controllers: [RidesController],
   providers: [
+    PublishDriverLocationUseCase,
+    PublishRideStatusUseCase,
     RidesGateway,
     SocketIoRidePublisher,
-    { provide: RideRealtimePublisher, useExisting: SocketIoRidePublisher },
     ListAvailableRidesUseCase,
     AuthorizeRideRoomUseCase,
     ListRideHistoryUseCase,
@@ -36,10 +39,9 @@ import { RidesController } from './presentation/controllers/rides.controller';
     CreateRideUseCase,
     GetRideUseCase,
     GetRideDetailsUseCase,
+    { provide: RideRealtimePublisher, useExisting: SocketIoRidePublisher },
     { provide: RideEventRepository, useClass: PrismaRideEventRepository },
-
     { provide: RideAcceptance, useClass: PrismaRideAcceptance },
-
     { provide: RideRepository, useClass: PrismaRideRepository },
   ],
   exports: [AcceptRideUseCase, CreateRideUseCase, GetRideUseCase],

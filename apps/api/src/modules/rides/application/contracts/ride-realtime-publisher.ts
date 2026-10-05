@@ -6,6 +6,16 @@ export interface RideStatusChanged {
   timestamp: string;
 }
 
+export interface RideLocationUpdated {
+  rideId: string;
+  latitude: number;
+  longitude: number;
+  timestamp: string;
+}
+
 export abstract class RideRealtimePublisher {
-  abstract publishStatusChanged(event: RideStatusChanged): void;
+  abstract publishLocationUpdated(
+    event: RideLocationUpdated,
+  ): void | Promise<void>;
+  abstract publishStatusChanged(event: RideStatusChanged): void | Promise<void>;
 }

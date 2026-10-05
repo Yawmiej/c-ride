@@ -3,6 +3,7 @@ import { Namespace } from 'socket.io';
 import {
   RideRealtimePublisher,
   RideStatusChanged,
+  RideLocationUpdated,
 } from '../../application/contracts/ride-realtime-publisher';
 import {
   RIDE_SOCKET_EVENTS,
@@ -15,6 +16,14 @@ export class SocketIoRidePublisher extends RideRealtimePublisher {
 
   attach(namespace: Namespace): void {
     this.namespace = namespace;
+  }
+
+  publishLocationUpdated(event: RideLocationUpdated): void {
+    if (!this.namespace)
+      throw new Error('Ride socket transport is not initialized');
+    this.namespace
+      .to(rideRoom(event.rideId))
+      .emit(RIDE_SOCKET_EVENTS.LOCATION_UPDATED, event);
   }
 
   publishStatusChanged(event: RideStatusChanged): void {

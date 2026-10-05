@@ -1,3 +1,9 @@
+import { PublishDriverLocationUseCase } from '../../application/use-cases/publish-driver-location.use-case';
+import { DriverLocationDto } from '../dto/driver-location.dto';
+import {
+  RideStatusChanged,
+  RideLocationUpdated,
+} from '../../application/contracts/ride-realtime-publisher';
 import { Logger, OnModuleDestroy } from '@nestjs/common';
 import {
   ConnectedSocket,
@@ -29,11 +35,14 @@ import { toRideResponse } from '../mappers/ride-response.mapper';
 import { RIDE_SOCKET_EVENTS, rideRoom } from './ride-socket.events';
 
 interface ClientEvents {
+  'driver:location': (payload: DriverLocationDto) => void;
   'get-rides': () => void;
   'ride:join': (payload: JoinRideDto) => void;
 }
 
 interface ServerEvents {
+  'ride:location_updated': (payload: RideLocationUpdated) => void;
+  'ride:status_changed': (payload: RideStatusChanged) => void;
   'rides:list': (payload: AvailableRidesDto) => void;
   'ride:joined': (payload: RideJoinedDto) => void;
   'ride:error': (payload: RideSocketErrorDto) => void;
@@ -62,6 +71,7 @@ export class RidesGateway
     private readonly listRides: ListAvailableRidesUseCase,
     private readonly authorizeRoom: AuthorizeRideRoomUseCase,
     private readonly publisher: SocketIoRidePublisher,
+    private readonly publishLocation: PublishDriverLocationUseCase,
   ) {}
 
   afterInit(namespace: Namespace): void {
@@ -143,6 +153,39 @@ export class RidesGateway
       } satisfies RideJoinedDto);
     } catch (error) {
       this.sendError(socket, RIDE_SOCKET_EVENTS.JOIN, error);
+    }
+  }
+
+  @SubscribeMessage(RIDE_SOCKET_EVENTS.LOCATION)
+  async receiveLocation(
+    @ConnectedSocket() socket: RideSocket,
+    @MessageBody() payload: unknown,
+  ): Promise<void> {
+    try {
+      const actor = await this.authenticateSocket(socket);
+      const input = plainToInstance(
+        DriverLocationDto,
+        payload && typeof payload === 'object' && !Array.isArray(payload)
+          ? payload
+          : {},
+      );
+      const errors = await validate(input, {
+        whitelist: true,
+        forbidNonWhitelisted: true,
+        forbidUnknownValues: true,
+      });
+      if (errors.length) {
+        socket.emit(RIDE_SOCKET_EVENTS.ERROR, {
+          event: RIDE_SOCKET_EVENTS.LOCATION,
+          code: 'validation',
+          message: ERROR_MESSAGES.INVALID_DRIVER_LOCATION,
+        } satisfies RideSocketErrorDto);
+        return;
+      }
+      if (!socket.connected) return;
+      await this.publishLocation.execute(actor, input);
+    } catch (error) {
+      this.sendError(socket, RIDE_SOCKET_EVENTS.LOCATION, error);
     }
   }
 

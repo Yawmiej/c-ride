@@ -1,4 +1,10 @@
 export const ERROR_MESSAGES = {
+  INVALID_DRIVER_LOCATION:
+    'Provide a rideId UUID, numeric latitude (-90 to 90), and numeric longitude (-180 to 180), with no extra fields',
+  DRIVER_LOCATION_FORBIDDEN:
+    'Only the assigned driver can publish ride location',
+  DRIVER_LOCATION_INACTIVE_RIDE:
+    'Location updates require an accepted or in-progress ride',
   INVALID_AUTHENTICATION: 'Invalid authentication',
   INVALID_CREDENTIALS: 'Invalid email or password',
   INTERNAL_SERVER_ERROR: 'Internal server error',
