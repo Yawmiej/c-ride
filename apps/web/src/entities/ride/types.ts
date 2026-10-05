@@ -30,3 +30,10 @@ export type Ride = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type RideHistory = {
+  items: Ride[];
+  total: number;
+  page: number;
+  limit: number;
+};

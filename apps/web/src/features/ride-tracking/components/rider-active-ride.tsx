@@ -7,6 +7,7 @@ import { ButtonLoading } from '@/shared/components/button-loading';
 import { Button } from '@/shared/components/ui/button';
 import { Alert, AlertDescription } from '@/shared/components/ui/alert';
 import { useCancelRideMutation } from '../queries/cancel-ride.mutation';
+import { useDriverLocation } from '@/features/ride-realtime';
 import { ActiveRideMap } from './active-ride-map';
 import { DriverSummary } from './driver-summary';
 import { ActiveRideError, ActiveRideSkeleton } from './active-ride-feedback';
@@ -14,6 +15,7 @@ import { ActiveRideError, ActiveRideSkeleton } from './active-ride-feedback';
 export function RiderActiveRide({ rideId }: { rideId: string }) {
   const query = useRideQuery(rideId);
   const cancel = useCancelRideMutation(rideId);
+  const driverLocation = useDriverLocation(rideId);
   if (query.isPending) return <ActiveRideSkeleton />;
   if (query.isError)
     return (
@@ -45,7 +47,7 @@ export function RiderActiveRide({ rideId }: { rideId: string }) {
         aria-label="Ride map"
         className="h-80 overflow-hidden rounded-xl bg-muted sm:h-96"
       >
-        <ActiveRideMap ride={ride} />
+        <ActiveRideMap driverLocation={driverLocation} ride={ride} />
       </section>
       {cancel.isError && (
         <Alert variant="destructive">

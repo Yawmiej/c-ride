@@ -1,3 +1,5 @@
+import { AvailableRidesScreen } from '@/features/driver/available-rides';
+
 export function DriverHomePage() {
-  return <div>Driver</div>;
+  return <AvailableRidesScreen />;
 }

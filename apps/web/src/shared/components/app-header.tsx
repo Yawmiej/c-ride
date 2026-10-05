@@ -8,6 +8,7 @@ import { CRideLogo } from './c-ride-logo';
 export type AppNavigationItem = {
   label: string;
   to: string;
+  activePathPrefix?: string;
 };
 
 type AppHeaderProps = {
@@ -28,13 +29,19 @@ export function AppHeader({ navigation, userName = 'User' }: AppHeaderProps) {
     <header className="border-b bg-card">
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <CRideLogo />
-        <nav aria-label="Primary navigation" className="hidden items-center gap-1 sm:flex">
+        <nav
+          aria-label="Primary navigation"
+          className="hidden items-center gap-1 sm:flex"
+        >
           {navigation.map((item) => (
             <Button
               asChild
               className={cn(
                 'text-muted-foreground',
-                pathname === item.to && 'bg-accent text-accent-foreground',
+                (pathname === item.to ||
+                  (item.activePathPrefix !== undefined &&
+                    pathname.startsWith(item.activePathPrefix))) &&
+                  'bg-accent text-accent-foreground',
               )}
               key={item.to}
               size="sm"

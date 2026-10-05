@@ -1,22 +1,15 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { rideKeys, type Ride } from '@/entities/ride';
 import { apiClient } from '@/shared/api';
-import type { RideRequestSubmission } from '../schemas/ride-request.schema';
 
-export function useRequestRideMutation() {
+export function useAcceptRideMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ pickup, dropoff }: RideRequestSubmission) =>
-      apiClient<Ride>('/rides', {
-        method: 'POST',
+    mutationFn: (rideId: string) =>
+      apiClient<Ride>(`/rides/${encodeURIComponent(rideId)}/accept`, {
+        method: 'PATCH',
         authenticated: true,
-        body: {
-          pickupLat: pickup.lat,
-          pickupLng: pickup.lng,
-          dropoffLat: dropoff.lat,
-          dropoffLng: dropoff.lng,
-        },
       }),
     onSuccess: (ride) => {
       queryClient.setQueryData(rideKeys.detail(ride.id), {
@@ -24,7 +17,6 @@ export function useRequestRideMutation() {
         driver: null,
       });
       void queryClient.invalidateQueries({ queryKey: rideKeys.active() });
-      void queryClient.invalidateQueries({ queryKey: rideKeys.history() });
     },
   });
 }

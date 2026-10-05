@@ -1,5 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuthSession } from '@/features/authentication/hooks/use-auth-session';
+import { RidesRealtimeProvider } from '@/features/ride-realtime';
 import { Skeleton } from '@/shared/components/ui/skeleton';
 import type { UserRole } from '@/features/authentication/types/auth.types';
 
@@ -11,7 +12,13 @@ export function ProtectedRoute() {
     return <RouteLoader />;
   }
 
-  return user ? <Outlet /> : <Navigate replace state={{ from: location }} to="/login" />;
+  return user ? (
+    <RidesRealtimeProvider>
+      <Outlet />
+    </RidesRealtimeProvider>
+  ) : (
+    <Navigate replace state={{ from: location }} to="/login" />
+  );
 }
 
 function createRoleRoute(role: UserRole) {
@@ -28,12 +35,15 @@ function createRoleRoute(role: UserRole) {
     }
 
     if (user.role !== role) {
-      return <Navigate replace to={user.role === 'RIDER' ? '/rider' : '/driver'} />;
+      return (
+        <Navigate replace to={user.role === 'RIDER' ? '/rider' : '/driver'} />
+      );
     }
 
     if (role === 'DRIVER') {
       const needsOnboarding =
-        user.driverProfile?.status === 'PENDING_ONBOARDING' || !user.driverProfile?.vehicle;
+        user.driverProfile?.status === 'PENDING_ONBOARDING' ||
+        !user.driverProfile?.vehicle;
       const onOnboardingRoute = location.pathname === '/driver/onboarding';
 
       if (needsOnboarding && !onOnboardingRoute) {

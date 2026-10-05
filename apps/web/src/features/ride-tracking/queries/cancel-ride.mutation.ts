@@ -15,6 +15,7 @@ export function useCancelRideMutation(rideId: string) {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: rideKeys.detail(rideId) }),
         queryClient.invalidateQueries({ queryKey: rideKeys.history() }),
+        queryClient.invalidateQueries({ queryKey: rideKeys.active() }),
       ]);
     },
     onError: () => {

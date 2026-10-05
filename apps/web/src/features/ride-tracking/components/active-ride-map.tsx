@@ -5,23 +5,35 @@ import {
 } from '@vis.gl/react-google-maps';
 import { MapPin } from 'lucide-react';
 import { useMemo } from 'react';
-import type { Ride } from '@/entities/ride';
+import type { Coordinates, Ride } from '@/entities/ride';
 import { RideMap } from '@/entities/ride/components/ride-map';
 import { env } from '@/shared/config/env';
 
-export function ActiveRideMap({ ride }: { ride: Ride }) {
+export function ActiveRideMap({
+  ride,
+  driverLocation,
+}: {
+  ride: Ride;
+  driverLocation: Coordinates | null;
+}) {
   if (!env.VITE_GOOGLE_MAPS_API_KEY)
     return (
       <MapMessage text="Map unavailable. Your ride details are shown above." />
     );
   return (
     <APIProvider apiKey={env.VITE_GOOGLE_MAPS_API_KEY}>
-      <LoadedRideMap ride={ride} />
+      <LoadedRideMap driverLocation={driverLocation} ride={ride} />
     </APIProvider>
   );
 }
 
-function LoadedRideMap({ ride }: { ride: Ride }) {
+function LoadedRideMap({
+  ride,
+  driverLocation,
+}: {
+  ride: Ride;
+  driverLocation: Coordinates | null;
+}) {
   const status = useApiLoadingStatus();
   const pickup = useMemo(
     () => ({ lat: ride.pickupLat, lng: ride.pickupLng }),
@@ -32,7 +44,13 @@ function LoadedRideMap({ ride }: { ride: Ride }) {
     [ride.dropoffLat, ride.dropoffLng],
   );
   if (status === APILoadingStatus.LOADED)
-    return <RideMap pickup={pickup} dropoff={dropoff} />;
+    return (
+      <RideMap
+        driverLocation={driverLocation}
+        pickup={pickup}
+        dropoff={dropoff}
+      />
+    );
   if (
     status === APILoadingStatus.FAILED ||
     status === APILoadingStatus.AUTH_FAILURE

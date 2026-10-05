@@ -58,10 +58,19 @@ export const router = createBrowserRouter([
                   { index: true, element: <DriverHomePage /> },
                   { path: 'onboarding', element: <DriverSignupPage /> },
                   {
+                    path: 'active',
+                    element: (
+                      <RidePlaceholderPage
+                        description="Accept a ride to see its active details here."
+                        title="Active ride"
+                      />
+                    ),
+                  },
+                  {
                     path: 'rides/:rideId',
                     element: (
                       <RidePlaceholderPage
-                        description="Active ride management arrives in Phase 7."
+                        description="Active ride management arrives in the next phase."
                         title="Active ride"
                       />
                     ),
