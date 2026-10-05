@@ -81,6 +81,7 @@ src/
 ## Server State and API
 
 - Use TanStack Query for API/server state; do not fetch server data manually in `useEffect`.
+- Do not define queries or mutations inside JSX/TSX component files. Put `useQuery`/`useMutation` calls and their fetching options in dedicated `.ts` custom hooks or query/mutation files within the owning feature/entity. Components consume those hooks; for example, `hooks/use-map-route.ts` exposes `useMapRoute` to `ride-route-line.tsx`.
 - Colocate capability-specific queries/mutations with the feature, for example `features/ride-tracking/queries`; place reusable ride queries/types under `entities/ride`.
 - Reuse query keys/options such as `rideKeys.detail(rideId)`, `rideKeys.history()`, and `rideKeys.available()`.
 - Mutations must invalidate or update the relevant query cache. Do not duplicate fetching logic across components.

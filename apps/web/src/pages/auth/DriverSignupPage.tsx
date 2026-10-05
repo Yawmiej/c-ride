@@ -11,7 +11,10 @@ import { useAuthSession } from '@/features/authentication/hooks/use-auth-session
 import { driverAccountSchema } from '@/features/authentication/schemas/driver-signup.schema';
 import type { RiderSignupValues } from '@/features/authentication/schemas/rider-signup.schema';
 import { VehicleSelector } from '@/features/driver-onboarding/components/vehicle-selector';
-import { carBrands, carColors } from '@/features/driver-onboarding/vehicle-options';
+import {
+  carBrands,
+  carColors,
+} from '@/features/driver-onboarding/vehicle-options';
 import { useVehicleOnboardingMutation } from '@/features/driver-onboarding/queries/vehicle.mutations';
 import {
   vehicleOnboardingSchema,
@@ -19,6 +22,7 @@ import {
 } from '@/features/driver-onboarding/schemas/vehicle-onboarding.schema';
 import { getErrorMessage } from '@/shared/api';
 import { Button } from '@/shared/components/ui/button';
+import { ButtonLoading } from '@/shared/components/button-loading';
 import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
 import {
@@ -196,9 +200,15 @@ function DriverAccountForm({
             {form.formState.errors.root.message}
           </p>
         )}
-        <Button size="xl" className="w-full" disabled={isPending} type="submit">
-          {isPending ? 'Creating account…' : 'Continue'}
-        </Button>
+        <ButtonLoading
+          size="xl"
+          className="w-full"
+          isLoading={isPending}
+          loadingText="Creating account…"
+          type="submit"
+        >
+          Continue
+        </ButtonLoading>
       </form>
     </>
   );
@@ -243,14 +253,24 @@ function VehicleForm({
             label="Car brand"
           >
             <Select
-              onValueChange={(make) => form.setValue('make', make, { shouldValidate: true })}
+              onValueChange={(make) =>
+                form.setValue('make', make, { shouldValidate: true })
+              }
               value={form.watch('make')}
             >
-              <SelectTrigger aria-invalid={Boolean(form.formState.errors.make)} className="w-full" id="make">
+              <SelectTrigger
+                aria-invalid={Boolean(form.formState.errors.make)}
+                className="w-full"
+                id="make"
+              >
                 <SelectValue placeholder="Choose a brand" />
               </SelectTrigger>
               <SelectContent>
-                {carBrands.map((brand) => <SelectItem key={brand} value={brand}>{brand}</SelectItem>)}
+                {carBrands.map((brand) => (
+                  <SelectItem key={brand} value={brand}>
+                    {brand}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </TextField>
@@ -278,14 +298,24 @@ function VehicleForm({
             label="Car color"
           >
             <Select
-              onValueChange={(color) => form.setValue('color', color, { shouldValidate: true })}
+              onValueChange={(color) =>
+                form.setValue('color', color, { shouldValidate: true })
+              }
               value={form.watch('color')}
             >
-              <SelectTrigger aria-invalid={Boolean(form.formState.errors.color)} className="w-full" id="color">
+              <SelectTrigger
+                aria-invalid={Boolean(form.formState.errors.color)}
+                className="w-full"
+                id="color"
+              >
                 <SelectValue placeholder="Choose a color" />
               </SelectTrigger>
               <SelectContent>
-                {carColors.map((color) => <SelectItem key={color} value={color}>{color}</SelectItem>)}
+                {carColors.map((color) => (
+                  <SelectItem key={color} value={color}>
+                    {color}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </TextField>
@@ -313,9 +343,15 @@ function VehicleForm({
               Back
             </Button>
           )}
-          <Button className={onBack ? '' : 'col-span-2'} size="xl" disabled={isPending} type="submit">
-            {isPending ? 'Saving…' : 'Create account'}
-          </Button>
+          <ButtonLoading
+            className={onBack ? '' : 'col-span-2'}
+            size="xl"
+            isLoading={isPending}
+            loadingText="Saving…"
+            type="submit"
+          >
+            Create account
+          </ButtonLoading>
         </div>
       </form>
     </>

@@ -11,7 +11,7 @@ import {
   type RiderSignupValues,
 } from '@/features/authentication/schemas/rider-signup.schema';
 import { getErrorMessage } from '@/shared/api';
-import { Button } from '@/shared/components/ui/button';
+import { ButtonLoading } from '@/shared/components/button-loading';
 import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
 
@@ -129,9 +129,15 @@ export function SignupForm({ form, isPending, onSubmit }: SignupFormProps) {
           {form.formState.errors.root.message}
         </p>
       )}
-      <Button size="xl" className="w-full" disabled={isPending} type="submit">
-        {isPending ? 'Creating account…' : 'Create account'}
-      </Button>
+      <ButtonLoading
+        size="xl"
+        className="w-full"
+        isLoading={isPending}
+        loadingText="Creating account…"
+        type="submit"
+      >
+        Create account
+      </ButtonLoading>
     </form>
   );
 }

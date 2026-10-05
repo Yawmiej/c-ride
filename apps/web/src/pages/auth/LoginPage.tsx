@@ -7,10 +7,13 @@ import { AuthHeading } from '@/features/authentication/components/auth-heading';
 import { PasswordInput } from '@/features/authentication/components/password-input';
 import { RoleSelector } from '@/features/authentication/components/role-selector';
 import { useLoginMutation } from '@/features/authentication/queries/auth.mutations';
-import { loginSchema, type LoginValues } from '@/features/authentication/schemas/login.schema';
+import {
+  loginSchema,
+  type LoginValues,
+} from '@/features/authentication/schemas/login.schema';
 import type { UserRole } from '@/features/authentication/types/auth.types';
 import { getErrorMessage } from '@/shared/api';
-import { Button } from '@/shared/components/ui/button';
+import { ButtonLoading } from '@/shared/components/button-loading';
 import { Input } from '@/shared/components/ui/input';
 import { Label } from '@/shared/components/ui/label';
 
@@ -36,7 +39,9 @@ export function LoginPage() {
             : '/driver';
       navigate(destination, { replace: true });
     } catch (error) {
-      form.setError('root', { message: getErrorMessage(error, 'Unable to sign in.') });
+      form.setError('root', {
+        message: getErrorMessage(error, 'Unable to sign in.'),
+      });
     }
   }
 
@@ -66,13 +71,21 @@ export function LoginPage() {
           <FieldError message={form.formState.errors.password?.message} />
         </div>
         <FieldError message={form.formState.errors.root?.message} />
-        <Button className="w-full" disabled={login.isPending} type="submit">
-          {login.isPending ? 'Signing in…' : 'Sign in'}
-        </Button>
+        <ButtonLoading
+          className="w-full"
+          isLoading={login.isPending}
+          loadingText="Signing in…"
+          type="submit"
+        >
+          Sign in
+        </ButtonLoading>
       </form>
       <p className="text-center text-sm text-muted-foreground">
         New to C-Ride?{' '}
-        <Link className="font-medium text-primary hover:underline" to={`/signup/${selectedRole.toLowerCase()}`}>
+        <Link
+          className="font-medium text-primary hover:underline"
+          to={`/signup/${selectedRole.toLowerCase()}`}
+        >
           Create an account
         </Link>
       </p>

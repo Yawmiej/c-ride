@@ -1,3 +1,5 @@
+import { RideRequestScreen } from '@/features/ride-request';
+
 export function RiderHomePage() {
-  return <div>Rider</div>;
+  return <RideRequestScreen />;
 }
