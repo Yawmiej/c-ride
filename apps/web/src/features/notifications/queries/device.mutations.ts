@@ -10,11 +10,11 @@ interface DeviceResponse {
 
 export function useRegisterDeviceMutation() {
   return useMutation({
-    mutationFn: (token: string) =>
+    mutationFn: (fid: string) =>
       apiClient<DeviceResponse>('/devices', {
         authenticated: true,
         method: 'POST',
-        body: { token, platform: 'WEB' },
+        body: { fid, platform: 'WEB' },
       }),
   });
 }

@@ -9,12 +9,12 @@ import {
 import { DevicePlatform } from '../../domain/enums/device-platform.enum';
 
 export class RegisterDeviceDto {
-  @ApiProperty({ description: 'FCM registration token' })
+  @ApiProperty({ description: 'Firebase Installation ID (FID)' })
   @IsString()
   @IsNotEmpty()
-  @Matches(/\S/, { message: 'token must contain a non-whitespace character' })
+  @Matches(/\S/, { message: 'fid must contain a non-whitespace character' })
   @MaxLength(4096)
-  token!: string;
+  fid!: string;
 
   @ApiProperty({ enum: DevicePlatform })
   @IsEnum(DevicePlatform)

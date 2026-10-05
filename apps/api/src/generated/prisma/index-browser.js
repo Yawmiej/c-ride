@@ -136,7 +136,7 @@ exports.Prisma.UserScalarFieldEnum = {
 exports.Prisma.UserDeviceScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
-  token: 'token',
+  fid: 'fid',
   platform: 'platform',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

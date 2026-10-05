@@ -11,14 +11,14 @@ export class PrismaUserDeviceRepository implements UserDeviceRepository {
 
   async register(
     userId: string,
-    token: string,
+    fid: string,
     platform: DevicePlatform,
   ): Promise<UserDevice> {
     const device = await this.prisma.userDevice.upsert({
-      where: { token },
+      where: { fid },
       create: {
         userId,
-        token,
+        fid,
         platform: UserDeviceMapper.toPrismaPlatform(platform),
       },
       update: {

@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { rideKeys } from '@/entities/ride';
 import {
   canUseNotifications,
-  getFcmToken,
+  registerFcmInstallation,
   subscribeToForegroundMessages,
 } from '@/shared/notifications/firebase-messaging';
 import { useRegisterDeviceMutation } from '../queries/device.mutations';
@@ -23,19 +23,27 @@ export function useNotificationRegistration() {
   const queryClient = useQueryClient();
   const { mutateAsync: registerDevice } = useRegisterDeviceMutation();
   const startedAutomatically = useRef(false);
+  const stopFcmRegistration = useRef<(() => void) | null>(null);
   const [state, setState] = useState<NotificationRegistrationState>('checking');
 
   const register = useCallback(async () => {
     setState('registering');
     try {
-      const token = await getFcmToken();
-      if (!token) throw new Error('Firebase did not return a device token.');
-      await registerDevice(token);
-      setState('enabled');
+      stopFcmRegistration.current?.();
+      stopFcmRegistration.current = await registerFcmInstallation((fid) => {
+        void registerDevice(fid).then(
+          () => setState('enabled'),
+          () => setState('error'),
+        );
+      });
     } catch {
       setState('error');
     }
   }, [registerDevice]);
+
+  useEffect(() => {
+    return () => stopFcmRegistration.current?.();
+  }, []);
 
   useEffect(() => {
     let cancelled = false;

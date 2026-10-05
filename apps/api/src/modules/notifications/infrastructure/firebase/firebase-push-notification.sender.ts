@@ -14,12 +14,12 @@ export class FirebasePushNotificationSender extends PushNotificationSender {
     super();
   }
 
-  async send(tokens: string[], notification: PushNotification): Promise<void> {
+  async send(fids: string[], notification: PushNotification): Promise<void> {
     const app = this.firebase.getApp();
     if (!app) return;
 
     const result = await getMessaging(app).sendEachForMulticast({
-      tokens,
+      fids,
       notification: {
         title: notification.title,
         body: notification.body,
@@ -31,7 +31,7 @@ export class FirebasePushNotificationSender extends PushNotificationSender {
     });
     if (result.failureCount > 0) {
       this.logger.warn(
-        `FCM rejected ${result.failureCount} of ${tokens.length} notification deliveries`,
+        `FCM rejected ${result.failureCount} of ${fids.length} notification deliveries`,
       );
     }
   }

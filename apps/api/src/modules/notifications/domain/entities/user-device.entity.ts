@@ -3,7 +3,7 @@ import { DevicePlatform } from '../enums/device-platform.enum';
 export interface UserDeviceProps {
   id: string;
   userId: string;
-  token: string;
+  fid: string;
   platform: DevicePlatform;
   createdAt: Date;
   updatedAt: Date;
@@ -12,11 +12,11 @@ export interface UserDeviceProps {
 export class UserDevice {
   constructor(private readonly props: UserDeviceProps) {}
 
-  get token() {
-    return this.props.token;
+  get fid() {
+    return this.props.fid;
   }
 
-  toSafeObject(): Omit<UserDeviceProps, 'token' | 'userId'> {
+  toSafeObject(): Omit<UserDeviceProps, 'fid' | 'userId'> {
     return {
       id: this.props.id,
       platform: this.props.platform,

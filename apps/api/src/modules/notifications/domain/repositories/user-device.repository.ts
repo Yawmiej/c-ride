@@ -4,7 +4,7 @@ import { DevicePlatform } from '../enums/device-platform.enum';
 export abstract class UserDeviceRepository {
   abstract register(
     userId: string,
-    token: string,
+    fid: string,
     platform: DevicePlatform,
   ): Promise<UserDevice>;
 

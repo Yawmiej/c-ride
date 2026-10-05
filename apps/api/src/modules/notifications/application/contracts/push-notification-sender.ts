@@ -5,8 +5,5 @@ export interface PushNotification {
 }
 
 export abstract class PushNotificationSender {
-  abstract send(
-    tokens: string[],
-    notification: PushNotification,
-  ): Promise<void>;
+  abstract send(fids: string[], notification: PushNotification): Promise<void>;
 }

@@ -2794,7 +2794,7 @@ export namespace Prisma {
   export type UserDeviceMinAggregateOutputType = {
     id: string | null
     userId: string | null
-    token: string | null
+    fid: string | null
     platform: $Enums.DevicePlatform | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -2803,7 +2803,7 @@ export namespace Prisma {
   export type UserDeviceMaxAggregateOutputType = {
     id: string | null
     userId: string | null
-    token: string | null
+    fid: string | null
     platform: $Enums.DevicePlatform | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -2812,7 +2812,7 @@ export namespace Prisma {
   export type UserDeviceCountAggregateOutputType = {
     id: number
     userId: number
-    token: number
+    fid: number
     platform: number
     createdAt: number
     updatedAt: number
@@ -2823,7 +2823,7 @@ export namespace Prisma {
   export type UserDeviceMinAggregateInputType = {
     id?: true
     userId?: true
-    token?: true
+    fid?: true
     platform?: true
     createdAt?: true
     updatedAt?: true
@@ -2832,7 +2832,7 @@ export namespace Prisma {
   export type UserDeviceMaxAggregateInputType = {
     id?: true
     userId?: true
-    token?: true
+    fid?: true
     platform?: true
     createdAt?: true
     updatedAt?: true
@@ -2841,7 +2841,7 @@ export namespace Prisma {
   export type UserDeviceCountAggregateInputType = {
     id?: true
     userId?: true
-    token?: true
+    fid?: true
     platform?: true
     createdAt?: true
     updatedAt?: true
@@ -2923,7 +2923,7 @@ export namespace Prisma {
   export type UserDeviceGroupByOutputType = {
     id: string
     userId: string
-    token: string
+    fid: string
     platform: $Enums.DevicePlatform
     createdAt: Date
     updatedAt: Date
@@ -2949,7 +2949,7 @@ export namespace Prisma {
   export type UserDeviceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
-    token?: boolean
+    fid?: boolean
     platform?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -2959,7 +2959,7 @@ export namespace Prisma {
   export type UserDeviceSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
-    token?: boolean
+    fid?: boolean
     platform?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -2969,7 +2969,7 @@ export namespace Prisma {
   export type UserDeviceSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     userId?: boolean
-    token?: boolean
+    fid?: boolean
     platform?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -2979,13 +2979,13 @@ export namespace Prisma {
   export type UserDeviceSelectScalar = {
     id?: boolean
     userId?: boolean
-    token?: boolean
+    fid?: boolean
     platform?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type UserDeviceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "token" | "platform" | "createdAt" | "updatedAt", ExtArgs["result"]["userDevice"]>
+  export type UserDeviceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "fid" | "platform" | "createdAt" | "updatedAt", ExtArgs["result"]["userDevice"]>
   export type UserDeviceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
   }
@@ -3004,7 +3004,7 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       userId: string
-      token: string
+      fid: string
       platform: $Enums.DevicePlatform
       createdAt: Date
       updatedAt: Date
@@ -3434,7 +3434,7 @@ export namespace Prisma {
   interface UserDeviceFieldRefs {
     readonly id: FieldRef<"UserDevice", 'String'>
     readonly userId: FieldRef<"UserDevice", 'String'>
-    readonly token: FieldRef<"UserDevice", 'String'>
+    readonly fid: FieldRef<"UserDevice", 'String'>
     readonly platform: FieldRef<"UserDevice", 'DevicePlatform'>
     readonly createdAt: FieldRef<"UserDevice", 'DateTime'>
     readonly updatedAt: FieldRef<"UserDevice", 'DateTime'>
@@ -8498,7 +8498,7 @@ export namespace Prisma {
   export const UserDeviceScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
-    token: 'token',
+    fid: 'fid',
     platform: 'platform',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -8893,7 +8893,7 @@ export namespace Prisma {
     NOT?: UserDeviceWhereInput | UserDeviceWhereInput[]
     id?: UuidFilter<"UserDevice"> | string
     userId?: UuidFilter<"UserDevice"> | string
-    token?: StringFilter<"UserDevice"> | string
+    fid?: StringFilter<"UserDevice"> | string
     platform?: EnumDevicePlatformFilter<"UserDevice"> | $Enums.DevicePlatform
     createdAt?: DateTimeFilter<"UserDevice"> | Date | string
     updatedAt?: DateTimeFilter<"UserDevice"> | Date | string
@@ -8903,7 +8903,7 @@ export namespace Prisma {
   export type UserDeviceOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
-    token?: SortOrder
+    fid?: SortOrder
     platform?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8912,7 +8912,7 @@ export namespace Prisma {
 
   export type UserDeviceWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    token?: string
+    fid?: string
     AND?: UserDeviceWhereInput | UserDeviceWhereInput[]
     OR?: UserDeviceWhereInput[]
     NOT?: UserDeviceWhereInput | UserDeviceWhereInput[]
@@ -8921,12 +8921,12 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"UserDevice"> | Date | string
     updatedAt?: DateTimeFilter<"UserDevice"> | Date | string
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
-  }, "id" | "token">
+  }, "id" | "fid">
 
   export type UserDeviceOrderByWithAggregationInput = {
     id?: SortOrder
     userId?: SortOrder
-    token?: SortOrder
+    fid?: SortOrder
     platform?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -8941,7 +8941,7 @@ export namespace Prisma {
     NOT?: UserDeviceScalarWhereWithAggregatesInput | UserDeviceScalarWhereWithAggregatesInput[]
     id?: UuidWithAggregatesFilter<"UserDevice"> | string
     userId?: UuidWithAggregatesFilter<"UserDevice"> | string
-    token?: StringWithAggregatesFilter<"UserDevice"> | string
+    fid?: StringWithAggregatesFilter<"UserDevice"> | string
     platform?: EnumDevicePlatformWithAggregatesFilter<"UserDevice"> | $Enums.DevicePlatform
     createdAt?: DateTimeWithAggregatesFilter<"UserDevice"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"UserDevice"> | Date | string
@@ -9361,7 +9361,7 @@ export namespace Prisma {
 
   export type UserDeviceCreateInput = {
     id?: string
-    token: string
+    fid: string
     platform: $Enums.DevicePlatform
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9371,7 +9371,7 @@ export namespace Prisma {
   export type UserDeviceUncheckedCreateInput = {
     id?: string
     userId: string
-    token: string
+    fid: string
     platform: $Enums.DevicePlatform
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9379,7 +9379,7 @@ export namespace Prisma {
 
   export type UserDeviceUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
+    fid?: StringFieldUpdateOperationsInput | string
     platform?: EnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9389,7 +9389,7 @@ export namespace Prisma {
   export type UserDeviceUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
+    fid?: StringFieldUpdateOperationsInput | string
     platform?: EnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9398,7 +9398,7 @@ export namespace Prisma {
   export type UserDeviceCreateManyInput = {
     id?: string
     userId: string
-    token: string
+    fid: string
     platform: $Enums.DevicePlatform
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -9406,7 +9406,7 @@ export namespace Prisma {
 
   export type UserDeviceUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
+    fid?: StringFieldUpdateOperationsInput | string
     platform?: EnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9415,7 +9415,7 @@ export namespace Prisma {
   export type UserDeviceUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
+    fid?: StringFieldUpdateOperationsInput | string
     platform?: EnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -9984,7 +9984,7 @@ export namespace Prisma {
   export type UserDeviceCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
-    token?: SortOrder
+    fid?: SortOrder
     platform?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -9993,7 +9993,7 @@ export namespace Prisma {
   export type UserDeviceMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
-    token?: SortOrder
+    fid?: SortOrder
     platform?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -10002,7 +10002,7 @@ export namespace Prisma {
   export type UserDeviceMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
-    token?: SortOrder
+    fid?: SortOrder
     platform?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -11369,7 +11369,7 @@ export namespace Prisma {
 
   export type UserDeviceCreateWithoutUserInput = {
     id?: string
-    token: string
+    fid: string
     platform: $Enums.DevicePlatform
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11377,7 +11377,7 @@ export namespace Prisma {
 
   export type UserDeviceUncheckedCreateWithoutUserInput = {
     id?: string
-    token: string
+    fid: string
     platform: $Enums.DevicePlatform
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -11520,7 +11520,7 @@ export namespace Prisma {
     NOT?: UserDeviceScalarWhereInput | UserDeviceScalarWhereInput[]
     id?: UuidFilter<"UserDevice"> | string
     userId?: UuidFilter<"UserDevice"> | string
-    token?: StringFilter<"UserDevice"> | string
+    fid?: StringFilter<"UserDevice"> | string
     platform?: EnumDevicePlatformFilter<"UserDevice"> | $Enums.DevicePlatform
     createdAt?: DateTimeFilter<"UserDevice"> | Date | string
     updatedAt?: DateTimeFilter<"UserDevice"> | Date | string
@@ -12211,7 +12211,7 @@ export namespace Prisma {
 
   export type UserDeviceCreateManyUserInput = {
     id?: string
-    token: string
+    fid: string
     platform: $Enums.DevicePlatform
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -12328,7 +12328,7 @@ export namespace Prisma {
 
   export type UserDeviceUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
+    fid?: StringFieldUpdateOperationsInput | string
     platform?: EnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12336,7 +12336,7 @@ export namespace Prisma {
 
   export type UserDeviceUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
+    fid?: StringFieldUpdateOperationsInput | string
     platform?: EnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -12344,7 +12344,7 @@ export namespace Prisma {
 
   export type UserDeviceUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
-    token?: StringFieldUpdateOperationsInput | string
+    fid?: StringFieldUpdateOperationsInput | string
     platform?: EnumDevicePlatformFieldUpdateOperationsInput | $Enums.DevicePlatform
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string

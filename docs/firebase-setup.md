@@ -40,10 +40,10 @@ These are public browser identifiers, not Firebase Admin credentials. Web push r
 
 1. Apply the generated Prisma migration, then start the API and web app with the environments above.
 2. Sign in as a rider in a supported browser and choose **Enable notifications**. Accept the browser permission.
-3. Confirm `POST /api/v1/devices` returns `201` and a `UserDevice` row exists for that rider. Repeating registration should update the same token rather than create a duplicate.
+3. Confirm `POST /api/v1/devices` returns `201` and a `UserDevice` row exists for that rider. Repeating registration should update the same Firebase Installation ID (FID) rather than create a duplicate.
 4. Create a ride, then accept it from a signed-in active driver session. The rider should receive **Ride accepted**. Starting and completing the ride should send the corresponding messages.
 5. Check once with the rider tab focused (foreground toast) and once in the background (browser notification). Clicking the notification should open the rider’s ride page.
 
 Real FCM delivery cannot be verified without valid project credentials, a VAPID key, and browser permission. Local build/API checks validate wiring only.
 
-`POST /devices` derives the owner from the access token. Registering the same FCM token again is idempotent; if a different authenticated account registers that browser token, ownership is reassigned to that account.
+`POST /devices` derives the owner from the access token. Registering the same Firebase Installation ID (FID) again is idempotent; if a different authenticated account registers that browser installation, ownership is reassigned to that account.

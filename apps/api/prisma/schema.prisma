@@ -76,7 +76,7 @@ model User {
 model UserDevice {
   id        String         @id @default(uuid()) @db.Uuid
   userId    String         @db.Uuid
-  token     String         @unique
+  fid       String         @unique
   platform  DevicePlatform
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt

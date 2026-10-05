@@ -16,7 +16,7 @@ export class SendNotificationUseCase {
     const devices = await this.devices.findByUserId(userId);
     if (devices.length === 0) return;
     await this.sender.send(
-      devices.map((device) => device.token),
+      devices.map((device) => device.fid),
       notification,
     );
   }

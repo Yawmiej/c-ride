@@ -1,9 +1,10 @@
 import { getApp, getApps, initializeApp } from 'firebase/app';
 import {
   getMessaging,
-  getToken,
   isSupported,
+  onRegistered,
   onMessage,
+  register,
   type MessagePayload,
 } from 'firebase/messaging';
 import { env } from '@/shared/config';
@@ -34,15 +35,27 @@ export async function canUseNotifications() {
   );
 }
 
-export async function getFcmToken() {
+export async function registerFcmInstallation(
+  onRegistration: (fid: string) => void,
+): Promise<() => void> {
   const app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
   const registration = await navigator.serviceWorker.register(
     '/firebase-messaging-sw.js',
   );
-  return getToken(getMessaging(app), {
-    vapidKey: env.VITE_FIREBASE_VAPID_KEY,
-    serviceWorkerRegistration: registration,
-  });
+  const messaging = getMessaging(app);
+  const unsubscribe = onRegistered(messaging, onRegistration);
+
+  try {
+    await register(messaging, {
+      vapidKey: env.VITE_FIREBASE_VAPID_KEY,
+      serviceWorkerRegistration: registration,
+    });
+  } catch (error) {
+    unsubscribe();
+    throw error;
+  }
+
+  return unsubscribe;
 }
 
 export async function subscribeToForegroundMessages(
