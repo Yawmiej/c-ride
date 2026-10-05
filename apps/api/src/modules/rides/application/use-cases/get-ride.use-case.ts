@@ -5,6 +5,7 @@ import { ERROR_MESSAGES } from '@/shared/errors/error-messages';
 import { Ride } from '../../domain/entities/ride.entity';
 import { RideOwnershipPolicy } from '../../domain/policies/ride-ownership.policy';
 import { RideRepository } from '../../domain/repositories/ride.repository';
+import { RideCache } from '../contracts/ride-cache';
 
 export interface GetRideCommand {
   rideId: string;
@@ -13,10 +14,14 @@ export interface GetRideCommand {
 
 @Injectable()
 export class GetRideUseCase {
-  constructor(private readonly rides: RideRepository) {}
+  constructor(
+    private readonly rides: RideRepository,
+    private readonly cache: RideCache,
+  ) {}
 
   async execute(command: GetRideCommand): Promise<Ride> {
-    const ride = await this.rides.findById(command.rideId);
+    const cached = await this.cache.get(command.rideId);
+    const ride = cached ?? (await this.rides.findById(command.rideId));
     if (!ride) {
       throw new ApplicationError(
         ERROR_KINDS.NOT_FOUND,
@@ -29,6 +34,7 @@ export class GetRideUseCase {
         ERROR_MESSAGES.RIDE_ACCESS_FORBIDDEN,
       );
     }
+    if (!cached) await this.cache.set(ride);
     return ride;
   }
 }

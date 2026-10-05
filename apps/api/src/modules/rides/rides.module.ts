@@ -24,9 +24,18 @@ import { RideRepository } from './domain/repositories/ride.repository';
 import { PrismaRideRepository } from './infrastructure/persistence/prisma-ride.repository';
 import { RidesController } from './presentation/controllers/rides.controller';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { CacheModule } from '@/infrastructure/cache/cache.module';
+import { RideCache } from './application/contracts/ride-cache';
+import { RedisRideCache } from './infrastructure/cache/redis-ride-cache';
 
 @Module({
-  imports: [DatabaseModule, IdentityModule, DriversModule, NotificationsModule],
+  imports: [
+    DatabaseModule,
+    IdentityModule,
+    DriversModule,
+    NotificationsModule,
+    CacheModule,
+  ],
   controllers: [RidesController],
   providers: [
     PublishDriverLocationUseCase,
@@ -46,6 +55,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
     { provide: RideEventRepository, useClass: PrismaRideEventRepository },
     { provide: RideAcceptance, useClass: PrismaRideAcceptance },
     { provide: RideRepository, useClass: PrismaRideRepository },
+    { provide: RideCache, useClass: RedisRideCache },
   ],
   exports: [AcceptRideUseCase, CreateRideUseCase, GetRideUseCase],
 })

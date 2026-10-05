@@ -9,6 +9,9 @@ import { ConfigService } from '@nestjs/config';
       useFactory: (configService: ConfigService) => ({
         connection: {
           url: configService.getOrThrow<string>('redis.url'),
+          enableOfflineQueue: false,
+          maxRetriesPerRequest: null,
+          connectTimeout: 1000,
         },
       }),
     }),

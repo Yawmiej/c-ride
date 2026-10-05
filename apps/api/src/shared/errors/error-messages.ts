@@ -1,4 +1,7 @@
 export const ERROR_MESSAGES = {
+  NOTIFICATION_QUEUE_UNAVAILABLE: 'Notification queue is unavailable',
+  PUSH_NOT_CONFIGURED: 'Push notification delivery is not configured',
+  PUSH_DELIVERY_FAILED: 'One or more push notification deliveries failed',
   INVALID_DRIVER_LOCATION:
     'Provide a rideId UUID, numeric latitude (-90 to 90), and numeric longitude (-180 to 180), with no extra fields',
   DRIVER_LOCATION_FORBIDDEN:

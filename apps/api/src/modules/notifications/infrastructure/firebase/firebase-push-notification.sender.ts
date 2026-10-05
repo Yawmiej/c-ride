@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { getMessaging } from 'firebase-admin/messaging';
 import { FirebaseService } from '@/infrastructure/firebase/firebase.service';
+import { ERROR_MESSAGES } from '@/shared/errors/error-messages';
 import {
   PushNotification,
   PushNotificationSender,
@@ -16,7 +17,7 @@ export class FirebasePushNotificationSender extends PushNotificationSender {
 
   async send(fids: string[], notification: PushNotification): Promise<void> {
     const app = this.firebase.getApp();
-    if (!app) return;
+    if (!app) throw new Error(ERROR_MESSAGES.PUSH_NOT_CONFIGURED);
 
     const result = await getMessaging(app).sendEachForMulticast({
       fids,
@@ -33,6 +34,7 @@ export class FirebasePushNotificationSender extends PushNotificationSender {
       this.logger.warn(
         `FCM rejected ${result.failureCount} of ${fids.length} notification deliveries`,
       );
+      throw new Error(ERROR_MESSAGES.PUSH_DELIVERY_FAILED);
     }
   }
 }
