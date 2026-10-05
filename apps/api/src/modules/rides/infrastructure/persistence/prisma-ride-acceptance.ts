@@ -38,14 +38,18 @@ export class PrismaRideAcceptance implements RideAcceptance {
         });
         if (updated.count === 0) return { outcome: 'conflict' };
 
-        await transaction.rideEvent.create({
+        const savedEvent = await transaction.rideEvent.create({
           data: RideEventMapper.toPersistence(event),
         });
 
         const saved = await transaction.ride.findUniqueOrThrow({
           where: { id: rideId },
         });
-        return { outcome: 'accepted', ride: RideMapper.toDomain(saved) };
+        return {
+          outcome: 'accepted',
+          ride: RideMapper.toDomain(saved),
+          event: RideEventMapper.toDomain(savedEvent),
+        };
       },
       { isolationLevel: Prisma.TransactionIsolationLevel.ReadCommitted },
     );

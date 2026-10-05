@@ -1,3 +1,8 @@
+import { RideEvent } from '../../domain/entities/ride-event.entity';
+import {
+  RideMutationResult,
+  RideHistoryResult,
+} from '../../domain/repositories/ride.repository';
 import { ERROR_KINDS } from '@/shared/errors/error-kinds';
 import { Ride } from '../../domain/entities/ride.entity';
 import { RideStatus } from '../../domain/enums/ride-status.enum';
@@ -13,7 +18,8 @@ class InMemoryRideRepository extends RideRepository {
   async updateStatus(
     ride: Ride,
     expectedStatus: RideStatus,
-  ): Promise<Ride | null> {
+    event: RideEvent,
+  ): Promise<RideMutationResult | null> {
     if (
       this.rideById?.id !== ride.id ||
       this.rideById.status !== expectedStatus ||
@@ -22,12 +28,16 @@ class InMemoryRideRepository extends RideRepository {
     )
       return null;
     this.rideById = ride;
-    return ride;
+    return { ride, event };
   }
 
-  async create(ride: Ride): Promise<Ride> {
+  async create(ride: Ride, event: RideEvent): Promise<RideMutationResult> {
     this.created = ride;
-    return ride;
+    return { ride, event };
+  }
+
+  async listHistory(): Promise<RideHistoryResult> {
+    return { items: [], total: 0 };
   }
 
   async findById(id: string): Promise<Ride | null> {

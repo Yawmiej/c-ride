@@ -13,6 +13,6 @@ export class PrismaRideEventRepository implements RideEventRepository {
       where: { rideId },
       orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
     });
-    return events.map(RideEventMapper.toDomain);
+    return events.map((event) => RideEventMapper.toDomain(event));
   }
 }

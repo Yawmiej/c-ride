@@ -1,3 +1,4 @@
+import { ListRideHistoryUseCase } from './application/use-cases/list-ride-history.use-case';
 import { RideEventRepository } from './domain/repositories/ride-event.repository';
 import { PrismaRideEventRepository } from './infrastructure/persistence/prisma-ride-event.repository';
 import { ChangeRideStatusUseCase } from './application/use-cases/change-ride-status.use-case';
@@ -18,6 +19,7 @@ import { RidesController } from './presentation/controllers/rides.controller';
   imports: [DatabaseModule, IdentityModule, DriversModule],
   controllers: [RidesController],
   providers: [
+    ListRideHistoryUseCase,
     ChangeRideStatusUseCase,
     AcceptRideUseCase,
     CreateRideUseCase,

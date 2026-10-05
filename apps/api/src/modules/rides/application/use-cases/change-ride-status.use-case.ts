@@ -1,3 +1,5 @@
+import { randomUUID } from 'node:crypto';
+import { RideEvent } from '../../domain/entities/ride-event.entity';
 import { Injectable } from '@nestjs/common';
 import { ApplicationError } from '@/shared/errors/application-error';
 import { ERROR_KINDS } from '@/shared/errors/error-kinds';
@@ -45,13 +47,14 @@ export class ChangeRideStatusUseCase {
     }
 
     const changed = ride.transitionTo(status, actor);
-    const saved = await this.rides.updateStatus(changed, ride.status);
+    const event = RideEvent.statusChanged(randomUUID(), ride, changed, actor);
+    const saved = await this.rides.updateStatus(changed, ride.status, event);
     if (!saved) {
       throw new ApplicationError(
         ERROR_KINDS.CONFLICT,
         ERROR_MESSAGES.RIDE_STATUS_CHANGED,
       );
     }
-    return saved;
+    return saved.ride;
   }
 }

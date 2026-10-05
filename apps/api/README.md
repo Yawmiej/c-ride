@@ -92,8 +92,8 @@ even for internal callers, so it must use the dedicated acceptance workflow.
 The repository updates only the status, matching the ride ID, previous status,
 and participants in one conditional UPDATE that returns the saved row. If a
 competing request changes the ride first, the update matches no row and returns
-409 instead of overwriting the newer state. No extra transaction wrapper is
-needed for this single database statement.
+409 instead of overwriting the newer state. The conditional update and its
+lifecycle event now run in one transaction (Phase 6.4).
 
 The endpoint returns the saved ride with 200; malformed input gives 400,
 unrelated/unauthorized actors give 403, missing rides give 404, and invalid
@@ -101,7 +101,7 @@ transitions or stale writes give 409. Authentication failures give 401.
 No new behavioral tests were added or run for this phase. The existing test
 repository was updated only to satisfy the expanded repository contract.
 
-## Ride events (Phase 6.1–6.3)
+## Ride events (Phase 6.1–6.5)
 
 Ride events record the ride ID, actor ID, event type, timestamp, actor role, and
 previous/new status. Domain event values match the database: REQUESTED, ACCEPTED,
@@ -123,7 +123,46 @@ corresponding ride creation/assignment rolls back.
 `RideEventRepository.findByRideId` reads events in chronological order with an
 ID tie-breaker. It is an internal persistence boundary; no event-history endpoint
 is introduced. Ride HTTP response shapes remain unchanged. Existing rides are
-not backfilled. Started/completed/cancelled event writes remain Phase 6.4.
+not backfilled.
 
-Tests are deferred by request; event persistence, read mapping, and rollback
-behavior have not been exercised against PostgreSQL in this phase.
+Starting, completing, and cancelling a ride each insert one event with the
+acting participant, previous/new status, and the same timestamp as the status
+change. Status updates and their event inserts share one transaction. If the
+conditional update loses a race, it inserts no event; if the event insert fails,
+the status change rolls back.
+
+Successful mutation adapters return both the persisted ride and event after the
+transaction commits. Use cases currently return only the ride to HTTP callers;
+the committed event is available for future notification/socket orchestration.
+No publisher or notification behavior is added in this phase.
+
+## Ride history (Phase 6.6–6.7)
+
+`GET /api/v1/rides/history?page=1&limit=20` requires a bearer token. Pagination
+uses positive integers, defaults to page 1 and limit 20, and caps limit at 100.
+Unknown query fields are rejected. The response contains `items`, `total`,
+`page`, and `limit`; items use the existing safe ride response shape.
+
+Riders see rides they requested; drivers see rides assigned to their account.
+History includes REQUESTED, ACCEPTED, IN_PROGRESS, COMPLETED, and CANCELLED.
+Unassigned rides are not driver history. Results sort by creation time descending,
+then ID descending to make ties deterministic. Out-of-range pages return empty
+items while retaining the total. The item/count queries use one repeatable-read
+snapshot. Client-supplied rider/driver IDs are not supported.
+
+### Phase 6.4–6.7 verification
+
+No new test cases/files were added. The existing test repository was adjusted
+for the expanded contracts. All 26 existing ride tests passed, including the
+PostgreSQL acceptance race test. Temporary PostgreSQL/HTTP checks verified:
+
+- Lifecycle events, actor/status metadata, timestamps, and rejected transitions.
+- Rider/driver history isolation, empty results, defaults, invalid pagination,
+  multiple pages, safe responses, and deterministic ordering with timestamp ties.
+- Event-insert failures roll back ride creation, acceptance, and status changes.
+- Stale and competing status updates emit no losing event; the winner returns
+  committed event data.
+- Event reads use chronological order with an ID tie-breaker.
+
+Temporary fixtures were removed after validation. These manual checks are not
+new automated regression coverage.

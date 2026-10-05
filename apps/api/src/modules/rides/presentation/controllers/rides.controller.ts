@@ -1,3 +1,6 @@
+import { ListRideHistoryUseCase } from '../../application/use-cases/list-ride-history.use-case';
+import { RideHistoryQueryDto } from '../dto/ride-history-query.dto';
+import { RideHistoryResponseDto } from '../dto/ride-history-response.dto';
 import { ChangeRideStatusUseCase } from '../../application/use-cases/change-ride-status.use-case';
 import { UpdateRideStatusDto } from '../dto/update-ride-status.dto';
 import { AcceptRideUseCase } from '../../application/use-cases/accept-ride.use-case';
@@ -10,6 +13,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -47,6 +51,7 @@ export class RidesController {
     private readonly getRide: GetRideUseCase,
     private readonly acceptRide: AcceptRideUseCase,
     private readonly changeRideStatus: ChangeRideStatusUseCase,
+    private readonly listRideHistory: ListRideHistoryUseCase,
   ) {}
 
   @Post()
@@ -102,6 +107,29 @@ export class RidesController {
         status: dto.status,
       }),
     );
+  }
+
+  @Get('history')
+  @Roles(UserRole.RIDER, UserRole.DRIVER)
+  @ApiOkResponse({ type: RideHistoryResponseDto })
+  @ApiBadRequestResponse({ type: ApiErrorResponseDto })
+  @ApiUnauthorizedResponse({ type: ApiErrorResponseDto })
+  @ApiForbiddenResponse({ type: ApiErrorResponseDto })
+  async history(
+    @CurrentUser() user: AuthenticatedUser,
+    @Query() query: RideHistoryQueryDto,
+  ): Promise<RideHistoryResponseDto> {
+    const result = await this.listRideHistory.execute({
+      actor: user,
+      page: query.page,
+      limit: query.limit,
+    });
+    return {
+      items: result.items.map(toRideResponse),
+      total: result.total,
+      page: result.page,
+      limit: result.limit,
+    };
   }
 
   @Get(':id')

@@ -1,3 +1,6 @@
+import { ApplicationError } from '@/shared/errors/application-error';
+import { ERROR_KINDS } from '@/shared/errors/error-kinds';
+import { ERROR_MESSAGES } from '@/shared/errors/error-messages';
 import { RideEventType } from '../enums/ride-event-type.enum';
 import { RideStatus } from '../enums/ride-status.enum';
 import { RideActor } from '../policies/ride-transition.policy';
@@ -47,6 +50,43 @@ export class RideEvent {
         actorRole: 'DRIVER',
         previousStatus: ride.status,
         newStatus: RideStatus.ACCEPTED,
+      },
+    });
+  }
+
+  static statusChanged(
+    id: string,
+    previous: Ride,
+    changed: Ride,
+    actor: RideActor,
+  ): RideEvent {
+    let type: RideEventType;
+    switch (changed.status) {
+      case RideStatus.IN_PROGRESS:
+        type = RideEventType.STARTED;
+        break;
+      case RideStatus.COMPLETED:
+        type = RideEventType.COMPLETED;
+        break;
+      case RideStatus.CANCELLED:
+        type = RideEventType.CANCELLED;
+        break;
+      default:
+        throw new ApplicationError(
+          ERROR_KINDS.CONFLICT,
+          ERROR_MESSAGES.RIDE_TRANSITION_INVALID,
+        );
+    }
+    return new RideEvent({
+      id,
+      rideId: changed.id,
+      type,
+      actorId: actor.id,
+      createdAt: changed.updatedAt,
+      payload: {
+        actorRole: actor.role,
+        previousStatus: previous.status,
+        newStatus: changed.status,
       },
     });
   }

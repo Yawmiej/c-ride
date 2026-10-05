@@ -19,6 +19,7 @@ export class CreateRideUseCase {
   async execute(command: CreateRideCommand): Promise<Ride> {
     const ride = Ride.requested({ id: randomUUID(), ...command });
     const event = RideEvent.requested(randomUUID(), ride);
-    return this.rides.create(ride, event);
+    const saved = await this.rides.create(ride, event);
+    return saved.ride;
   }
 }

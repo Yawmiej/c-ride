@@ -2,7 +2,7 @@ import { RideEvent } from '../../domain/entities/ride-event.entity';
 import { Ride } from '../../domain/entities/ride.entity';
 
 export type RideAcceptanceResult =
-  | { outcome: 'accepted'; ride: Ride }
+  | { outcome: 'accepted'; ride: Ride; event: RideEvent }
   | { outcome: 'conflict' }
   | { outcome: 'ineligible' };
 
