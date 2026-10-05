@@ -7,6 +7,7 @@ import { LoginPage } from '@/pages/auth/LoginPage';
 import { RiderSignupPage } from '@/pages/auth/RiderSignupPage';
 import { DriverSignupPage } from '@/pages/auth/DriverSignupPage';
 import { DriverHomePage } from '@/pages/driver/DriverHomePage';
+import { DriverActiveRidePage } from '@/pages/driver/DriverActiveRidePage';
 import { RiderHomePage } from '@/pages/rider/RiderHomePage';
 import { RiderActiveRidePage } from '@/pages/rider/RiderActiveRidePage';
 import { RidePlaceholderPage } from '@/pages/common/RidePlaceholderPage';
@@ -68,12 +69,7 @@ export const router = createBrowserRouter([
                   },
                   {
                     path: 'rides/:rideId',
-                    element: (
-                      <RidePlaceholderPage
-                        description="Active ride management arrives in the next phase."
-                        title="Active ride"
-                      />
-                    ),
+                    element: <DriverActiveRidePage />,
                   },
                 ],
               },

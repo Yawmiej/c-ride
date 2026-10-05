@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { ActiveRideMap } from '@/entities/ride';
 import { useRideQuery } from '@/entities/ride/ride.queries';
 import { rideStatusDisplay } from '@/entities/ride/ride-status';
 import { RideStatusProgress } from '@/entities/ride/components/ride-status-progress';
@@ -8,7 +9,6 @@ import { Button } from '@/shared/components/ui/button';
 import { Alert, AlertDescription } from '@/shared/components/ui/alert';
 import { useCancelRideMutation } from '../queries/cancel-ride.mutation';
 import { useDriverLocation } from '@/features/ride-realtime';
-import { ActiveRideMap } from './active-ride-map';
 import { DriverSummary } from './driver-summary';
 import { ActiveRideError, ActiveRideSkeleton } from './active-ride-feedback';
 

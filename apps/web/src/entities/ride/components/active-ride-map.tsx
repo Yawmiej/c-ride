@@ -5,9 +5,21 @@ import {
 } from '@vis.gl/react-google-maps';
 import { MapPin } from 'lucide-react';
 import { useMemo } from 'react';
-import type { Coordinates, Ride } from '@/entities/ride';
-import { RideMap } from '@/entities/ride/components/ride-map';
+import type { Coordinates, Ride } from '../types';
 import { env } from '@/shared/config/env';
+import { RideMap } from './ride-map';
+
+function MapMessage({ text }: { text: string }) {
+  return (
+    <div
+      role="status"
+      className="flex h-full flex-col items-center justify-center gap-3 bg-muted p-6 text-center text-sm text-muted-foreground"
+    >
+      <MapPin className="size-7" />
+      <p>{text}</p>
+    </div>
+  );
+}
 
 export function ActiveRideMap({
   ride,
@@ -59,16 +71,4 @@ function LoadedRideMap({
       <MapMessage text="Unable to load the map. Your ride details are still available." />
     );
   return <MapMessage text="Loading map…" />;
-}
-
-function MapMessage({ text }: { text: string }) {
-  return (
-    <div
-      role="status"
-      className="flex h-full flex-col items-center justify-center gap-3 bg-muted p-6 text-center text-sm text-muted-foreground"
-    >
-      <MapPin className="size-7" />
-      <p>{text}</p>
-    </div>
-  );
 }
