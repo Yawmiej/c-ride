@@ -17,7 +17,7 @@ export class PrismaDriverEligibility {
       JOIN "DriverProfile" p ON p."userId" = u.id
       JOIN "Vehicle" v ON v."driverProfileId" = p.id
       WHERE u.id = ${userId}::uuid
-      FOR SHARE OF u, p, v
+      FOR UPDATE OF u, p, v
     `;
     if (rows.length === 0) return false;
 

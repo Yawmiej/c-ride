@@ -1,7 +1,9 @@
 import type { RideStatus } from '@/entities/ride';
+import { Link } from 'react-router-dom';
 import { getErrorMessage } from '@/shared/api';
 import { ButtonLoading } from '@/shared/components/button-loading';
 import { Alert, AlertDescription } from '@/shared/components/ui/alert';
+import { Button } from '@/shared/components/ui/button';
 import { useChangeRideStatusMutation } from '../queries/ride.mutations';
 
 export function RideStatusAction({
@@ -46,6 +48,11 @@ export function RideStatusAction({
         >
           {label}
         </ButtonLoading>
+      )}
+      {status === 'COMPLETED' && (
+        <Button asChild className="w-full">
+          <Link to="/driver">Find Ride</Link>
+        </Button>
       )}
     </div>
   );

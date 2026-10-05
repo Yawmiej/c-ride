@@ -6,6 +6,7 @@ import { RideRealtimePublisher } from './application/contracts/ride-realtime-pub
 import { ListAvailableRidesUseCase } from './application/use-cases/list-available-rides.use-case';
 import { AuthorizeRideRoomUseCase } from './application/use-cases/authorize-ride-room.use-case';
 import { ListRideHistoryUseCase } from './application/use-cases/list-ride-history.use-case';
+import { GetActiveRideUseCase } from './application/use-cases/get-active-ride.use-case';
 import { RideEventRepository } from './domain/repositories/ride-event.repository';
 import { PrismaRideEventRepository } from './infrastructure/persistence/prisma-ride-event.repository';
 import { ChangeRideStatusUseCase } from './application/use-cases/change-ride-status.use-case';
@@ -35,6 +36,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
     ListAvailableRidesUseCase,
     AuthorizeRideRoomUseCase,
     ListRideHistoryUseCase,
+    GetActiveRideUseCase,
     ChangeRideStatusUseCase,
     AcceptRideUseCase,
     CreateRideUseCase,

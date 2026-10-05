@@ -21,7 +21,11 @@ export interface RideHistoryResult {
 
 export abstract class RideRepository {
   /** Persist the requested ride and its event atomically. */
-  abstract create(ride: Ride, event: RideEvent): Promise<RideMutationResult>;
+  /** Returns null when the rider already has a requested, accepted, or in-progress ride. */
+  abstract create(
+    ride: Ride,
+    event: RideEvent,
+  ): Promise<RideMutationResult | null>;
 
   /** Returns null when the ride no longer matches the expected state/participants. */
   abstract updateStatus(
@@ -32,6 +36,8 @@ export abstract class RideRepository {
   abstract listHistory(query: RideHistoryQuery): Promise<RideHistoryResult>;
 
   abstract listAvailable(): Promise<Ride[]>;
+
+  abstract findActiveForActor(actor: RideActor): Promise<Ride | null>;
 
   abstract findById(id: string): Promise<Ride | null>;
 }

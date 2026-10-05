@@ -17,8 +17,28 @@ import { RideMapper } from './ride.mapper';
 export class PrismaRideRepository implements RideRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(ride: Ride, event: RideEvent): Promise<RideMutationResult> {
+  async create(
+    ride: Ride,
+    event: RideEvent,
+  ): Promise<RideMutationResult | null> {
     return this.prisma.$transaction(async (transaction) => {
+      await transaction.$queryRaw`
+        SELECT id FROM "User" WHERE id = ${ride.riderId}::uuid FOR UPDATE
+      `;
+      const activeRide = await transaction.ride.findFirst({
+        where: {
+          riderId: ride.riderId,
+          status: {
+            in: [
+              RideStatus.REQUESTED,
+              RideStatus.ACCEPTED,
+              RideStatus.IN_PROGRESS,
+            ],
+          },
+        },
+      });
+      if (activeRide) return null;
+
       const created = await transaction.ride.create({
         data: ride.toSafeObject(),
       });
@@ -89,9 +109,30 @@ export class PrismaRideRepository implements RideRepository {
   async listAvailable(): Promise<Ride[]> {
     const rides = await this.prisma.ride.findMany({
       where: { status: RideStatus.REQUESTED, driverId: null },
-      orderBy: [{ createdAt: 'asc' }, { id: 'asc' }],
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
     });
     return rides.map(RideMapper.toDomain);
+  }
+
+  async findActiveForActor(
+    actor: RideHistoryQuery['actor'],
+  ): Promise<Ride | null> {
+    const participant =
+      actor.role === 'RIDER' ? { riderId: actor.id } : { driverId: actor.id };
+    const ride = await this.prisma.ride.findFirst({
+      where: {
+        ...participant,
+        status: {
+          in: [
+            RideStatus.REQUESTED,
+            RideStatus.ACCEPTED,
+            RideStatus.IN_PROGRESS,
+          ],
+        },
+      },
+      orderBy: [{ createdAt: 'desc' }, { id: 'desc' }],
+    });
+    return ride ? RideMapper.toDomain(ride) : null;
   }
 
   async findById(id: string): Promise<Ride | null> {

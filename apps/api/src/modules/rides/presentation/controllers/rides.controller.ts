@@ -1,4 +1,5 @@
 import { ListRideHistoryUseCase } from '../../application/use-cases/list-ride-history.use-case';
+import { GetActiveRideUseCase } from '../../application/use-cases/get-active-ride.use-case';
 import { RideHistoryQueryDto } from '../dto/ride-history-query.dto';
 import { RideHistoryResponseDto } from '../dto/ride-history-response.dto';
 import { ChangeRideStatusUseCase } from '../../application/use-cases/change-ride-status.use-case';
@@ -53,6 +54,7 @@ export class RidesController {
     private readonly acceptRide: AcceptRideUseCase,
     private readonly changeRideStatus: ChangeRideStatusUseCase,
     private readonly listRideHistory: ListRideHistoryUseCase,
+    private readonly getActiveRide: GetActiveRideUseCase,
   ) {}
 
   @Post()
@@ -131,6 +133,16 @@ export class RidesController {
       page: result.page,
       limit: result.limit,
     };
+  }
+
+  @Get('active')
+  @Roles(UserRole.RIDER, UserRole.DRIVER)
+  @ApiOkResponse({ type: RideResponseDto })
+  async active(
+    @CurrentUser() user: AuthenticatedUser,
+  ): Promise<RideResponseDto | null> {
+    const ride = await this.getActiveRide.execute(user);
+    return ride ? toRideResponse(ride) : null;
   }
 
   @Get(':id')

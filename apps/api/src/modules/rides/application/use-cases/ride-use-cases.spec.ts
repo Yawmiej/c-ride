@@ -15,6 +15,7 @@ class InMemoryRideRepository extends RideRepository {
   created: Ride | null = null;
   rideById: Ride | null = null;
   requestedId: string | null = null;
+  allowCreate = true;
 
   async updateStatus(
     ride: Ride,
@@ -32,13 +33,21 @@ class InMemoryRideRepository extends RideRepository {
     return { ride, event };
   }
 
-  async create(ride: Ride, event: RideEvent): Promise<RideMutationResult> {
+  async create(
+    ride: Ride,
+    event: RideEvent,
+  ): Promise<RideMutationResult | null> {
+    if (!this.allowCreate) return null;
     this.created = ride;
     return { ride, event };
   }
 
   async listAvailable(): Promise<Ride[]> {
     return [];
+  }
+
+  async findActiveForActor(): Promise<Ride | null> {
+    return null;
   }
 
   async listHistory(): Promise<RideHistoryResult> {
@@ -122,6 +131,30 @@ describe('Ride use cases', () => {
       }),
     ).rejects.toBeInstanceOf(RangeError);
     expect(repository.created).toBeNull();
+  });
+
+  it('rejects a new ride when the rider already has an active ride', async () => {
+    const repository = new InMemoryRideRepository();
+    repository.allowCreate = false;
+
+    await expect(
+      new CreateRideUseCase(
+        repository,
+        new PublishRideStatusUseCase(
+          {
+            publishStatusChanged: () => {},
+            publishLocationUpdated: () => {},
+          },
+          { publish: async () => {} },
+        ),
+      ).execute({
+        riderId: 'rider-id',
+        pickupLat: 6.5244,
+        pickupLng: 3.3792,
+        dropoffLat: 6.6018,
+        dropoffLng: 3.3515,
+      }),
+    ).rejects.toMatchObject({ kind: ERROR_KINDS.CONFLICT });
   });
 
   it('returns a ride to its owning rider', async () => {

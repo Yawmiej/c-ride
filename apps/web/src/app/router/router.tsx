@@ -10,7 +10,6 @@ import { DriverHomePage } from '@/pages/driver/DriverHomePage';
 import { DriverActiveRidePage } from '@/pages/driver/DriverActiveRidePage';
 import { RiderHomePage } from '@/pages/rider/RiderHomePage';
 import { RiderActiveRidePage } from '@/pages/rider/RiderActiveRidePage';
-import { RidePlaceholderPage } from '@/pages/common/RidePlaceholderPage';
 import { DriverRoute, ProtectedRoute, RiderRoute } from './route-guards';
 
 export const router = createBrowserRouter([
@@ -60,12 +59,7 @@ export const router = createBrowserRouter([
                   { path: 'onboarding', element: <DriverSignupPage /> },
                   {
                     path: 'active',
-                    element: (
-                      <RidePlaceholderPage
-                        description="Accept a ride to see its active details here."
-                        title="Active ride"
-                      />
-                    ),
+                    element: <DriverActiveRidePage />,
                   },
                   {
                     path: 'rides/:rideId',

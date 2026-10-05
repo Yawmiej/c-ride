@@ -28,6 +28,14 @@ export class PrismaRideAcceptance implements RideAcceptance {
           return { outcome: 'ineligible' };
         }
 
+        const activeRide = await transaction.ride.findFirst({
+          where: {
+            driverId,
+            status: { in: ['ACCEPTED', 'IN_PROGRESS'] },
+          },
+        });
+        if (activeRide) return { outcome: 'conflict' };
+
         const updated = await transaction.ride.updateMany({
           where: { id: rideId, status: 'REQUESTED', driverId: null },
           data: {

@@ -25,6 +25,7 @@ export const ERROR_MESSAGES = {
   RIDE_STATUS_CHANGED:
     'The ride changed before this update could be saved. Refresh and try again',
   RIDE_UNAVAILABLE: 'This ride is no longer available for acceptance',
+  RIDER_ACTIVE_RIDE: 'You already have an active ride',
   RIDE_TRANSITION_INVALID: 'This ride status transition is not allowed',
   RIDE_TRANSITION_FORBIDDEN: 'You are not allowed to change this ride status',
   RIDE_ACCESS_FORBIDDEN: 'You are not allowed to access this ride',

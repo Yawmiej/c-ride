@@ -26,16 +26,18 @@ describe('authentication form schemas', () => {
   });
 
   it('requires a supported vehicle and valid details', () => {
-    expect(
-      vehicleOnboardingSchema.safeParse({
-        type: 'SUV',
-        make: 'Toyota',
-        model: 'RAV4',
-        licensePlate: 'ABC 1234',
-        color: 'White',
-        year: '2024',
-      }).success,
-    ).toBe(true);
+    const validVehicle = vehicleOnboardingSchema.safeParse({
+      type: 'SUV',
+      make: 'Toyota',
+      model: 'RAV4',
+      licensePlate: 'lag 123 ab',
+      color: 'White',
+      year: '2024',
+    });
+    expect(validVehicle.success).toBe(true);
+    if (validVehicle.success) {
+      expect(validVehicle.data.licensePlate).toBe('LAG-123-AB');
+    }
     expect(
       vehicleOnboardingSchema.safeParse({
         type: 'TRUCK',
@@ -46,5 +48,23 @@ describe('authentication form schemas', () => {
         year: '1800',
       }).success,
     ).toBe(false);
+  });
+
+  it('explains the required license plate format', () => {
+    const result = vehicleOnboardingSchema.safeParse({
+      type: 'SUV',
+      make: 'Toyota',
+      model: 'RAV4',
+      licensePlate: 'INVALID',
+      color: 'White',
+      year: '2024',
+    });
+
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues[0]?.message).toBe(
+        'Enter a license plate in the format LAG-123-AB.',
+      );
+    }
   });
 });

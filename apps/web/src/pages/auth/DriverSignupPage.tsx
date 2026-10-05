@@ -288,7 +288,7 @@ function VehicleForm({
           >
             <Input
               id="licensePlate"
-              placeholder="ABC 1234"
+              placeholder="LAG-123-AB"
               {...form.register('licensePlate')}
             />
           </TextField>

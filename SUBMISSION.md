@@ -26,6 +26,10 @@ I left observability incomplete due to time constraints, its lower priority rela
 
 ## Q4: How would you scale this system to support 10,000 concurrent rides?
 
+- An immediate point of optimisation at 10,000 concurrent rides would be the driver location socket update. The app currently authenticates every location ping and reaches for the database, this could break at scale. An optimisation option would be to cache the authorization policy/data with a refresh policy
+- I would add multiple instances of backend server layered behind a load-balancer to spread load across instances
+- I would increase cache data coverage for non-frequently updated record.
+
 ## Q5: What security considerations would you address?
 
 - **User verification:** • 1. The current app doesn’t include user verification, an email or phone verification would be necessary in a production system to guard the application from bots, fake accounts and abuse
