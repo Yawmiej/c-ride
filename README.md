@@ -18,6 +18,21 @@ This repository is a Turborepo monorepo for the C-Ride assessment
 - Firebase
 - Google Maps API
 
+## Tech Stack
+
+- NestJS
+- React
+- TailwindCSS
+- Shadcn UI
+- TanStack Query
+- TypeScript
+- Prisma
+- PostgreSQL
+- Redis
+- Firebase
+- Google Maps API
+- Socket.io
+
 ## Running the Project
 
 1. Install dependencies:
@@ -57,18 +72,18 @@ pnpm run dev
 
 Running the seed command creates the following local accounts. Every seeded account uses the password `Password123!`.
 
-| Role | Email | Status |
-| --- | --- | --- |
-| Rider | `rider@example.com` | Active |
-| Driver | `driver.one@example.com` | Active, with a Toyota Camry |
-| Driver | `driver.two@example.com` | Active, with a Honda CR-V |
+| Role   | Email                        | Status                                |
+| ------ | ---------------------------- | ------------------------------------- |
+| Rider  | `rider@example.com`          | Active                                |
+| Driver | `driver.one@example.com`     | Active, with a Toyota Camry           |
+| Driver | `driver.two@example.com`     | Active, with a Honda CR-V             |
 | Driver | `pending.driver@example.com` | Pending onboarding, without a vehicle |
 
 ## Project Links
 
 - [Repository](https://github.com/Yawmiej/c-ride)
 - [Backend URL](https://cride-api.up.railway.app/api/v1)
-- [Frontend URL](https://cride.up.railway.app)
+- [Frontend URL](https://cride-ui.up.railway.app)
 - [Swagger Documentation](https://cride-api.up.railway.app/api/v1/docs)
 
 ## Submission Answers

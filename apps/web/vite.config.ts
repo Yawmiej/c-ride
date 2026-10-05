@@ -1,6 +1,6 @@
 import react from '@vitejs/plugin-react';
 import { fileURLToPath, URL } from 'node:url';
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
   plugins: [react()],
@@ -12,15 +12,6 @@ export default defineConfig({
       '@/features': fileURLToPath(new URL('./src/features', import.meta.url)),
       '@/entities': fileURLToPath(new URL('./src/entities', import.meta.url)),
       '@/shared': fileURLToPath(new URL('./src/shared', import.meta.url)),
-    },
-  },
-  test: {
-    environment: 'jsdom',
-    globals: true,
-    setupFiles: ['./vitest.setup.ts'],
-    env: {
-      VITE_API_BASE_URL: 'http://localhost:3000',
-      VITE_SOCKET_URL: 'http://localhost:3000',
     },
   },
 });
