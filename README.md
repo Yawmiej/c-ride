@@ -40,18 +40,29 @@ cd apps/api
 pnpm run db:migrate
 ```
 
-5. Seed the database:
+4. Seed the database:
 
 ```bash
 cd apps/api
 pnpm run db:seed
 ```
 
-6. Run the project:
+5. Run the project:
 
 ```bash
 pnpm run dev
 ```
+
+## Seeded test accounts
+
+Running the seed command creates the following local accounts. Every seeded account uses the password `Password123!`.
+
+| Role | Email | Status |
+| --- | --- | --- |
+| Rider | `rider@example.com` | Active |
+| Driver | `driver.one@example.com` | Active, with a Toyota Camry |
+| Driver | `driver.two@example.com` | Active, with a Honda CR-V |
+| Driver | `pending.driver@example.com` | Pending onboarding, without a vehicle |
 
 ## Project Links
 

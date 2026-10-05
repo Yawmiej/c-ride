@@ -1,4 +1,5 @@
 import { type PropsWithChildren, useEffect, useState } from 'react';
+import { useMatch } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   type Coordinates,
@@ -25,7 +26,10 @@ type DriverLocationUpdated = {
 
 export function RidesRealtimeProvider({ children }: PropsWithChildren) {
   const queryClient = useQueryClient();
+  const rideRoute = useMatch('/:role/rides/:rideId');
+  const routeRideId = rideRoute?.params.rideId;
   const { data: activeRide, refetch: refetchActiveRide } = useActiveRideQuery();
+  const subscribedRideId = routeRideId ?? activeRide?.id;
   const [driverLocations, setDriverLocations] = useState<
     Record<string, Coordinates>
   >({});
@@ -33,9 +37,15 @@ export function RidesRealtimeProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     const socket = getSocket();
 
+    let disposed = false;
     const recoverActiveRide = async () => {
+      if (routeRideId) {
+        socket.emit('ride:join', { rideId: routeRideId });
+        return;
+      }
       const { data: ride } = await refetchActiveRide();
-      if (ride) socket.emit('ride:join', { rideId: ride.id });
+      if (!disposed && socket.connected && ride)
+        socket.emit('ride:join', { rideId: ride.id });
     };
     const handleRideJoined = ({ rideId }: RideJoined) => {
       void queryClient.invalidateQueries({ queryKey: rideKeys.detail(rideId) });
@@ -60,25 +70,30 @@ export function RidesRealtimeProvider({ children }: PropsWithChildren) {
     socket.on('ride:status_changed', handleStatusChanged);
     socket.on('ride:location_updated', handleLocationUpdated);
 
-    if (socket.connected) void recoverActiveRide();
-    else connectSocket();
+    // Strict Mode cleans up its first effect before this task runs.
+    const connectionTimer = setTimeout(() => {
+      if (socket.connected) void recoverActiveRide();
+      else connectSocket();
+    }, 0);
 
     return () => {
+      disposed = true;
+      clearTimeout(connectionTimer);
       socket.off('connect', recoverActiveRide);
       socket.off('ride:joined', handleRideJoined);
       socket.off('ride:status_changed', handleStatusChanged);
       socket.off('ride:location_updated', handleLocationUpdated);
       disconnectSocket();
     };
-  }, [queryClient, refetchActiveRide]);
+  }, [queryClient, refetchActiveRide, routeRideId]);
 
   useEffect(() => {
-    const activeRideId = activeRide?.id;
+    const activeRideId = subscribedRideId;
     const socket = getSocket();
 
     if (activeRideId && socket.connected)
       socket.emit('ride:join', { rideId: activeRideId });
-  }, [activeRide?.id]);
+  }, [subscribedRideId]);
 
   return (
     <RidesRealtimeContext.Provider value={{ driverLocations }}>
